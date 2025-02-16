@@ -12,7 +12,7 @@ def natural_key(s: str):
     E.g., "item10" -> ["item", 10, ""]
     """
     return [
-        int(text) if text.isdigit() else text.lower() for text in re.split("(\d+)", s)
+        int(text) if text.isdigit() else text.lower() for text in re.split(r"(\d+)", s)
     ]
 
 
