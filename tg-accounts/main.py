@@ -4,11 +4,22 @@ from tkinter import messagebox
 
 TELEGRAM_DIR = "/home/sajal/telegram_instances"
 
+
 def get_instances():
-    return [f for f in os.listdir(TELEGRAM_DIR) if os.path.isdir(os.path.join(TELEGRAM_DIR, f))]
+    instances = [
+        f
+        for f in os.listdir(TELEGRAM_DIR)
+        if os.path.isdir(os.path.join(TELEGRAM_DIR, f))
+    ]
+    instances.sort()
+    return instances
+
 
 def open_instance(instance):
-    os.system(f'telegram-desktop -many -workdir "{os.path.join(TELEGRAM_DIR, instance)}" &')
+    os.system(
+        f'telegram-desktop -many -workdir "{os.path.join(TELEGRAM_DIR, instance)}" &'
+    )
+
 
 def handle_selection():
     selection = listbox.curselection()
@@ -18,9 +29,11 @@ def handle_selection():
     else:
         messagebox.showwarning("No Selection", "Please select an instance to open.")
 
+
 def open_all():
     for instance in instances:
         open_instance(instance)
+
 
 def create_new_instance():
     new_name = entry.get()
@@ -35,12 +48,14 @@ def create_new_instance():
     else:
         messagebox.showwarning("Invalid Name", "Please enter a valid instance name.")
 
+
 def refresh_list():
     global instances
     instances = get_instances()
     listbox.delete(0, tk.END)
     for item in instances:
         listbox.insert(tk.END, item)
+
 
 root = tk.Tk()
 root.title("Telegram Instance Manager")
