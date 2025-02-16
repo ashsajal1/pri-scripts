@@ -1,8 +1,19 @@
 import os
 import tkinter as tk
 from tkinter import messagebox
+import re
 
 TELEGRAM_DIR = "/home/sajal/telegram_instances"
+
+
+def natural_key(s: str):
+    """
+    Splits the string into a list of strings and integers for natural sorting.
+    E.g., "item10" -> ["item", 10, ""]
+    """
+    return [
+        int(text) if text.isdigit() else text.lower() for text in re.split("(\d+)", s)
+    ]
 
 
 def get_instances():
@@ -11,7 +22,7 @@ def get_instances():
         for f in os.listdir(TELEGRAM_DIR)
         if os.path.isdir(os.path.join(TELEGRAM_DIR, f))
     ]
-    instances.sort()
+    instances.sort(key=natural_key)
     return instances
 
 
