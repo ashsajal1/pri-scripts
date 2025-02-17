@@ -182,13 +182,27 @@
 
     // now starting task one time and daily
 
-    const tasksTab = Array.from(document.querySelectorAll(
-      "button.tgui-b5d680db78c4cc2e.tgui-7c5d6c1f6bbe3eaf.tgui-64cd0db020a9bacf._Tab_1xy61_1"
-    ))[1]
+    const tasksTab = Array.from(
+      document.querySelectorAll(
+        "button.tgui-b5d680db78c4cc2e.tgui-7c5d6c1f6bbe3eaf.tgui-64cd0db020a9bacf._Tab_1xy61_1"
+      )
+    )[1];
 
     if (tasksTab) {
       tasksTab.click();
-      console.log("Clicked tasks tab.")
+      console.log("Clicked tasks tab.");
+      setTimeout(() => {
+        const twitterTask = document.querySelector(
+          ".tgui-b5d680db78c4cc2e._wrapper_1tboh_1._Cell_1b60i_1"
+        );
+
+        if (twitterTask) {
+          twitterTask.click();
+          console.log("Clicked twitter task.");
+        } else {
+          console.log("Twitter task not found.");
+        }
+      }, 1000);
     } else {
       console.log("Tasks tab not found.");
     }
