@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         !BlumFarm!
-// @version      2.4
-// @namespace    NSNoman
-// @author       NSNoman
+// @version      1.0
+// @namespace    Zaman
+// @author       Zaman
 // @match        https://telegram.blum.codes/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
