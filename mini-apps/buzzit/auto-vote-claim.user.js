@@ -234,10 +234,30 @@
       if (dailyTaskTab) {
         dailyTaskTab.click();
         console.log("Clicked daily task tab.");
-        //   const dailyTask = document.querySelector(".tgui-b5d680db78c4cc2e._wrapper_1tboh_1._Cell_1b60i_1");
-        //   if(dailyTask){
-        //     dailyTask.click();
-        //     console.log("Clicked daily task.");
+        const dailyTasks = Array.from(
+          document.querySelectorAll(
+            ".tgui-b5d680db78c4cc2e._wrapper_1tboh_1._Cell_1b60i_1"
+          )
+        );
+        if (dailyTasks) {
+          console.log("Daily task qunatity : ", dailyTasks.length);
+          dailyTasks.forEach((task) => {
+            task.click();
+            console.log("Clicked daily task.");
+            setTimeout(() => {
+              //check btn or similar to claim btn
+              const claimBtn = document.querySelector(
+                ".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-91bda9a36246a33c.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0"
+              );
+              if (claimBtn) {
+                claimBtn.click();
+                console.log("Clicked claim/check button.");
+              } else {
+                console.log("Claim/Check button not found.");
+              }
+            }, 1000);
+          });
+        }
       } else {
         console.log("Daily task tab not found!");
       }
