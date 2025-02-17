@@ -21,7 +21,9 @@
     const tasksList = [];
 
     // Select all task elements
-    const taskElements = document.querySelectorAll("._EventCard2_1asrk_1, ._EventCard2_partner_1asrk_13");
+    const taskElements = document.querySelectorAll(
+      "._EventCard2_1asrk_1, ._EventCard2_partner_1asrk_13"
+    );
     console.log("Found tasks:", taskElements.length);
 
     // Step 1: (Optional) Update global tickets count (if needed)
@@ -49,43 +51,48 @@
           const match = ticketElement.textContent.match(/\d+/);
           ticketQuantity = match ? parseInt(match[0], 10) : 0;
           console.log("Ticket Quantity for task:", ticketQuantity);
-        } else {
-          console.log("Ticket quantity not found for this task.");
-        }
+          // Check if the event is a partner event using a fixed selector.
+          const isPartnerEventElement = task.querySelector(
+            ".tgui-c3e2e598bd70eee6.tgui-080a44e6ac3f4d27.tgui-5b8bdfbd2af10f59.tgui-f37a43dcc29ade55.tgui-2916d621b0ea5857._alignedText_1asrk_91"
+          );
+          let isPartnerEvent = false;
+          if (
+            isPartnerEventElement.textContent
+              .toLowerCase()
+              .trim()
+              .includes("partner")
+          ) {
+            isPartnerEvent = true;
+            console.log("Event is a partner event.");
+          } else {
+            console.log("Event is not a partner event.");
+          }
 
-        // Check if the event is a partner event using a fixed selector.
-        const isPartnerEventElement = task.querySelector(
-          ".tgui-c3e2e598bd70eee6.tgui-080a44e6ac3f4d27.tgui-5b8bdfbd2af10f59.tgui-f37a43dcc29ade55.tgui-2916d621b0ea5857._alignedText_1asrk_91"
-        );
-        let isPartnerEvent = false;
-        if (
-          isPartnerEventElement.textContent
-            .toLowerCase()
-            .trim()
-            .includes("partner")
-        ) {
-          isPartnerEvent = true;
-          console.log("Event is a partner event.");
+          // Only add non-partner events to the task list
+          if (!isPartnerEvent) {
+            const titleElement = task.querySelector("._TitleMarkdown_1vt67_1");
+            const taskName = titleElement
+              ? titleElement.textContent.trim()
+              : "Unnamed Task";
+            tasksList.push({
+              element: task,
+              name: taskName,
+              required: ticketQuantity,
+              isPartnerEvent: isPartnerEvent,
+            });
+            console.log("Task added:", {
+              name: taskName,
+              required: ticketQuantity,
+            });
+          }
         } else {
-          console.log("Event is not a partner event.");
-        }
-
-        // Only add non-partner events to the task list
-        if (!isPartnerEvent) {
           const titleElement = task.querySelector("._TitleMarkdown_1vt67_1");
           const taskName = titleElement
             ? titleElement.textContent.trim()
             : "Unnamed Task";
-          tasksList.push({
-            element: task,
-            name: taskName,
-            required: ticketQuantity,
-            isPartnerEvent: isPartnerEvent,
-          });
-          console.log("Task added:", {
-            name: taskName,
-            required: ticketQuantity,
-          });
+          console.log(
+            `Ticket quantity not found for "${taskName}" task so skipping it.`
+          );
         }
       } catch (error) {
         console.error("Error parsing task data:", error);
@@ -148,8 +155,13 @@
                 );
                 const closeButton = modal.querySelector('svg[type="button"]');
                 if (closeButton) {
-                  ["mousedown", "mouseup", "click"].forEach(eventType => {
-                    closeButton.dispatchEvent(new MouseEvent(eventType, { bubbles: true, cancelable: true }));
+                  ["mousedown", "mouseup", "click"].forEach((eventType) => {
+                    closeButton.dispatchEvent(
+                      new MouseEvent(eventType, {
+                        bubbles: true,
+                        cancelable: true,
+                      })
+                    );
                     console.log("clicked close button");
                   });
                 } else {
@@ -195,6 +207,7 @@
       document.body.appendChild(controlsContainer);
     }
   }
+
   console.log("Waiting boss");
 
   setTimeout(() => {
