@@ -5,8 +5,7 @@
 // @author       Zaman
 // @match        https://front.buzzitcdn.ru/*
 // @grant        none
-// @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
-// @updateURL    
+// @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp 
 // ==/UserScript==
 
 (function () {
