@@ -199,14 +199,18 @@
         if (twitterTask) {
           twitterTask.click();
           console.log("Clicked twitter task.");
-          const followBtn = document.querySelector(".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-8a1ca9efa24f4809.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0")
-          if(followBtn) {
+          const followBtn = document.querySelector(
+            ".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-8a1ca9efa24f4809.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0"
+          );
+          if (followBtn) {
             followBtn.click();
             console.log("Clicked follow button.");
             setTimeout(() => {
-              const checkBtn = document.querySelector(".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-91bda9a36246a33c.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0");
+              const checkBtn = document.querySelector(
+                ".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-91bda9a36246a33c.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0"
+              );
 
-              if(checkBtn){
+              if (checkBtn) {
                 checkBtn.click();
                 console.log("Clicked check button.");
               } else {
@@ -220,6 +224,23 @@
           console.log("Twitter task not found.");
         }
       }, 1000);
+
+      console.log("Twitter tasks is done now or previously, now daily task.");
+      const dailyTaskTab = Array.from(
+        document.querySelectorAll(
+          ".tgui-b5d680db78c4cc2e.tgui-bbfb272d22eb23e8"
+        )
+      ).find((tab) => tab.textContent.trim() === "Daily");
+      if (dailyTaskTab) {
+        dailyTaskTab.click();
+        console.log("Clicked daily task tab.");
+        //   const dailyTask = document.querySelector(".tgui-b5d680db78c4cc2e._wrapper_1tboh_1._Cell_1b60i_1");
+        //   if(dailyTask){
+        //     dailyTask.click();
+        //     console.log("Clicked daily task.");
+      } else {
+        console.log("Daily task tab not found!");
+      }
     } else {
       console.log("Tasks tab not found.");
     }
