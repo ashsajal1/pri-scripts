@@ -6,7 +6,8 @@
 // @match        https://telegram.blum.codes/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
-// @upadteUrl    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/blum/auto-tasker.user.js
+// @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/blum/auto-tasker.user.js
+// @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/blum/auto-tasker.user.js
 // ==/UserScript==
 
 // --- UI: Inject custom CSS for a high-quality, iOS-like control panel and text animation ---
