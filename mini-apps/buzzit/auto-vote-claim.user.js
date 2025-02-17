@@ -57,7 +57,7 @@
           ".tgui-c3e2e598bd70eee6.tgui-080a44e6ac3f4d27.tgui-5b8bdfbd2af10f59.tgui-f37a43dcc29ade55.tgui-2916d621b0ea5857._alignedText_1asrk_91"
         );
         let isPartnerEvent = false;
-        if (isPartnerEventElement) {
+        if (isPartnerEventElement.textContent.toLowerCase().trim().includes("partner")) {
           isPartnerEvent = true;
           console.log("Event is a partner event.");
         } else {
