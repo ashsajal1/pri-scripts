@@ -6,6 +6,7 @@
 // @match        https://telegram.blum.codes/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
+// @upadteUrl    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/blum/auto-game.user.js
 // ==/UserScript==
 
 (function () {
