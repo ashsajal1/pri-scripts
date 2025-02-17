@@ -132,11 +132,33 @@
                   } else {
                     console.log("Confirm button not found for", task.name);
                   }
+
+                  const closeButton = modalConfirm.querySelector('svg[type="button"]');
+                  if(closeButton) {
+                    closeButton.click();
+                  } else {
+                    console.log("Cannot found close btn.")
+                  }
+
                 }, 1000); // Adjust delay as needed
+              } else {
+                console.log("Vote is not available for:", task.name);
               }
             }, 1000);
           } else {
             console.log("Insufficient tickets for:", task.name);
+          }
+
+          // now starting task one time and daily
+
+          const tasksTab = Array.from(
+            document.querySelectorAll("._Tab_1xy61_1")
+          ).find((btn) => btn.textContent.trim().toLowerCase() === "tasks");
+
+          if (tasksTab) {
+            tasksTab.click();
+          } else {
+            console.log("Tasks tab not found.");
           }
         } catch (error) {
           console.error("Error handling task:", error);
