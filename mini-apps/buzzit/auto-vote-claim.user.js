@@ -3,7 +3,7 @@
 // @version      1.0
 // @namespace    Zaman
 // @author       Zaman
-// @match        https://telegram.blum.codes/*
+// @match        https://front.buzzitcdn.ru/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
 // @updateURL    
