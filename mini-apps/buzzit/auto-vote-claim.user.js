@@ -199,6 +199,23 @@
         if (twitterTask) {
           twitterTask.click();
           console.log("Clicked twitter task.");
+          const followBtn = document.querySelector(".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-8a1ca9efa24f4809.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0")
+          if(followBtn) {
+            followBtn.click();
+            console.log("Clicked follow button.");
+            setTimeout(() => {
+              const checkBtn = document.querySelector(".tgui-b5d680db78c4cc2e.tgui-117e77cd385a9c8d.tgui-91bda9a36246a33c.tgui-1a16a49d89076ff4.tgui-726846958fe7f4a0");
+
+              if(checkBtn){
+                checkBtn.click();
+                console.log("Clicked check button.");
+              } else {
+                console.log("Check button not found.");
+              }
+            }, 1000);
+          } else {
+            console.log("Follow button not found.");
+          }
         } else {
           console.log("Twitter task not found.");
         }
