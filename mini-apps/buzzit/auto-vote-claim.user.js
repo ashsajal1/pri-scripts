@@ -5,7 +5,7 @@
 // @author       Zaman
 // @match        https://front.buzzitcdn.ru/*
 // @grant        none
-// @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/buzzit/buzzit.jpeg
+// @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/buzzit/buzzit.webp
 // @updateUrl    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/buzzit/auto-vote-claim.user.js
 // ==/UserScript==
 
