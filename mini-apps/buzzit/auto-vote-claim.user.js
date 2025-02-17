@@ -172,40 +172,42 @@
           } else {
             console.log("Insufficient tickets for:", task.name);
           }
-
-          // now starting task one time and daily
-
-          const tasksTab = Array.from(
-            document.querySelectorAll("._Tab_1xy61_1")
-          ).find((btn) => btn.textContent.trim().toLowerCase() === "tasks");
-
-          if (tasksTab) {
-            tasksTab.click();
-          } else {
-            console.log("Tasks tab not found.");
-          }
         } catch (error) {
           console.error("Error handling task:", error);
         }
       });
     }
 
-    // Create a controls container (if it doesn't exist) for a visual indicator.
-    if (!document.querySelector("#blumfarm-controls")) {
-      const controlsContainer = document.createElement("div");
-      controlsContainer.id = "blumfarm-controls";
-      controlsContainer.style.position = "fixed";
-      controlsContainer.style.top = "0";
-      controlsContainer.style.left = "50%";
-      controlsContainer.style.transform = "translateX(-50%)";
-      controlsContainer.style.zIndex = "9999";
-      controlsContainer.style.backgroundColor = "black";
-      controlsContainer.style.borderRadius = "10px";
-      controlsContainer.style.padding = "5px 10px";
-      controlsContainer.style.color = "white";
-      controlsContainer.textContent = "Auto play";
-      document.body.appendChild(controlsContainer);
+    console.log("Voting done, now starting task one time and daily");
+
+    // now starting task one time and daily
+
+    const tasksTab = document.querySelector(
+      "button.tgui-b5d680db78c4cc2e.tgui-7c5d6c1f6bbe3eaf.tgui-64cd0db020a9bacf._Tab_1xy61_1"
+    );
+
+    if (tasksTab) {
+      tasksTab.click();
+    } else {
+      console.log("Tasks tab not found.");
     }
+  }
+
+  // Create a controls container (if it doesn't exist) for a visual indicator.
+  if (!document.querySelector("#blumfarm-controls")) {
+    const controlsContainer = document.createElement("div");
+    controlsContainer.id = "blumfarm-controls";
+    controlsContainer.style.position = "fixed";
+    controlsContainer.style.top = "0";
+    controlsContainer.style.left = "50%";
+    controlsContainer.style.transform = "translateX(-50%)";
+    controlsContainer.style.zIndex = "9999";
+    controlsContainer.style.backgroundColor = "black";
+    controlsContainer.style.borderRadius = "10px";
+    controlsContainer.style.padding = "5px 10px";
+    controlsContainer.style.color = "white";
+    controlsContainer.textContent = "Auto play";
+    document.body.appendChild(controlsContainer);
   }
 
   console.log("Waiting boss");
