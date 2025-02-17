@@ -15,6 +15,7 @@
 
   // Total tickets available (can be set dynamically if needed)
   let ticketsAvailable;
+  let status;
 
   // Function to process tasks
   function runTasker() {
@@ -266,7 +267,25 @@
     }
   }
 
-  // Create a controls container (if it doesn't exist) for a visual indicator.
+  // Add Restart Button
+  const restartButton = document.createElement("button");
+  restartButton.textContent = "Restart Tasker";
+  restartButton.style.position = "fixed";
+  restartButton.style.bottom = "10px";
+  restartButton.style.left = "50%";
+  restartButton.style.transform = "translateX(-50%)";
+  restartButton.style.padding = "10px 20px";
+  restartButton.style.zIndex = "9999";
+  restartButton.addEventListener("click", function () {
+    console.log("Restarting tasker...");
+    updateStatusText("Restarting...");
+    setTimeout(() => {
+      runTasker();
+    }, 1000);
+  });
+  document.body.appendChild(restartButton);
+
+  // Create status container
   if (!document.querySelector("#blumfarm-controls")) {
     const controlsContainer = document.createElement("div");
     controlsContainer.id = "blumfarm-controls";
@@ -279,8 +298,27 @@
     controlsContainer.style.borderRadius = "10px";
     controlsContainer.style.padding = "5px 10px";
     controlsContainer.style.color = "white";
-    controlsContainer.textContent = "Auto play";
+    controlsContainer.style.animation = "blink 1s infinite"; // Added animation
+    controlsContainer.textContent = "Idle";
     document.body.appendChild(controlsContainer);
+  }
+
+  // Add CSS animation for blinking effect
+  const style = document.createElement("style");
+  style.textContent = `
+     @keyframes blink {
+       50% {
+         opacity: 0;
+       }
+     }
+   `;
+  document.head.appendChild(style);
+
+  function updateStatusText(text) {
+    const statusElement = document.querySelector("#blumfarm-controls");
+    if (statusElement) {
+      statusElement.textContent = text;
+    }
   }
 
   console.log("Waiting boss");
