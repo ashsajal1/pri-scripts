@@ -21,7 +21,7 @@
     const tasksList = [];
 
     // Select all task elements
-    const taskElements = document.querySelectorAll("._EventCard2_1asrk_1");
+    const taskElements = document.querySelectorAll("._EventCard2_1asrk_1, ._EventCard2_partner_1asrk_13");
     console.log("Found tasks:", taskElements.length);
 
     // Step 1: (Optional) Update global tickets count (if needed)
@@ -133,16 +133,28 @@
                     console.log("Confirm button not found for", task.name);
                   }
 
-                  const closeButton = modalConfirm.querySelector('svg[type="button"]');
-                  if(closeButton) {
+                  const closeButton =
+                    modalConfirm.querySelector('svg[type="button"]');
+                  if (closeButton) {
                     closeButton.click();
                   } else {
-                    console.log("Cannot found close btn.")
+                    console.log("Cannot found close btn.");
                   }
-
                 }, 1000); // Adjust delay as needed
               } else {
                 console.log("Vote is not available for:", task.name);
+                const modal = document.querySelector(
+                  ".tgui-cc76354712c6e8d9._EventModal_l3elv_1"
+                );
+                const closeButton = modal.querySelector('svg[type="button"]');
+                if (closeButton) {
+                  ["mousedown", "mouseup", "click"].forEach(eventType => {
+                    closeButton.dispatchEvent(new MouseEvent(eventType, { bubbles: true, cancelable: true }));
+                    console.log("clicked close button");
+                  });
+                } else {
+                  console.log("Cannot found close btn.");
+                }
               }
             }, 1000);
           } else {
