@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         !Buzzit Auto Tasker 2!
+// @name         !Buzzit Auto Tasker!
 // @version      1.1
 // @namespace    Zaman
 // @author       Zaman
