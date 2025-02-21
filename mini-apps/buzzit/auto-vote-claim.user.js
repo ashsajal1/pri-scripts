@@ -23,7 +23,7 @@
 
     // Select all task elements
     const taskElements = document.querySelectorAll(
-      "._EventCard2_1asrk_1, ._EventCard2_partner_1asrk_13"
+      "._EventCard2_121hn_1, ._EventCard2_partner_1asrk_13"
     );
     console.log("Found tasks:", taskElements.length);
 
