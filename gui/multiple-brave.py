@@ -107,7 +107,7 @@ class BraveManager(Gtk.Window):
         for row in self.liststore:
             folder_name = row[0]
             profile_path = os.path.join(BASE_DIR, folder_name)
-            subprocess.Popen(["brave-browser", f"--user-data-dir={profile_path}"])
+            subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
 
     def on_open_five(self, widget):
         """Launch Brave for the first five instance folders (or fewer)."""
