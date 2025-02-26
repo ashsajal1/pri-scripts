@@ -5,6 +5,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 import os
 import subprocess
+import shutil
 
 # Base directory for Brave profiles
 BASE_DIR = "/home/sajal/multiple-data/brave"
@@ -56,13 +57,21 @@ class BraveManager(Gtk.Window):
 
         vbox.pack_start(hbox_launch, False, False, 0)
 
+        # Cache Info and Clear Cache Button
+        self.cache_label = Gtk.Label(
+            label=f"Total Cache: {self.get_total_cache_size()} MB"
+        )
+        vbox.pack_start(self.cache_label, False, False, 0)
+
+        clear_cache_button = Gtk.Button(label="Clear All Cache")
+        clear_cache_button.connect("clicked", self.on_clear_cache)
+        vbox.pack_start(clear_cache_button, False, False, 0)
+
     def load_profiles(self):
         """Load existing instance folders from BASE_DIR."""
         self.liststore.clear()
-        # Create BASE_DIR if it doesn't exist
         if not os.path.exists(BASE_DIR):
             os.makedirs(BASE_DIR)
-        # List and sort folders; if numeric, sort numerically.
         for entry in sorted(
             os.listdir(BASE_DIR), key=lambda s: int(s) if s.isdigit() else s
         ):
@@ -132,6 +141,53 @@ class BraveManager(Gtk.Window):
             )
             dialog.run()
             dialog.destroy()
+
+    def get_total_cache_size(self):
+        """Calculate total cache size for all Brave instances."""
+        total_size = 0
+        for row in self.liststore:
+            folder_name = row[0]
+            cache_path = os.path.join(BASE_DIR, folder_name, "Default", "Cache")
+            if os.path.exists(cache_path):
+                for dirpath, _, filenames in os.walk(cache_path):
+                    total_size += sum(
+                        os.path.getsize(os.path.join(dirpath, f)) for f in filenames
+                    )
+        return round(total_size / (1024 * 1024), 2)  # Convert bytes to MB
+
+    def on_clear_cache(self, widget):
+        """Clear cache for all instances."""
+        total_cache_before = self.get_total_cache_size()
+        dialog = Gtk.MessageDialog(
+            transient_for=self,
+            flags=0,
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO,
+            text="Clear all cache?",
+        )
+        dialog.format_secondary_text(
+            f"Total Cache: {total_cache_before} MB\nAre you sure?"
+        )
+        response = dialog.run()
+        dialog.destroy()
+
+        if response == Gtk.ResponseType.YES:
+            for row in self.liststore:
+                folder_name = row[0]
+                cache_path = os.path.join(BASE_DIR, folder_name, "Default", "Cache")
+                if os.path.exists(cache_path):
+                    shutil.rmtree(cache_path, ignore_errors=True)
+
+            # Update cache label after clearing
+            self.cache_label.set_text(f"Total Cache: {self.get_total_cache_size()} MB")
+
+            Gtk.MessageDialog(
+                transient_for=self,
+                flags=0,
+                message_type=Gtk.MessageType.INFO,
+                buttons=Gtk.ButtonsType.OK,
+                text="Cache cleared!",
+            ).run()
 
 
 if __name__ == "__main__":
