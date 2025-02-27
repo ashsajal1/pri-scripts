@@ -127,7 +127,7 @@ class BraveManager(Gtk.Window):
         if treeiter is not None:
             folder_name = model[treeiter][0]
             profile_path = os.path.join(BASE_DIR, folder_name)
-            subprocess.Popen(["brave-browser", f"--user-data-dir={profile_path}"])
+            subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
         else:
             dialog = Gtk.MessageDialog(
                 transient_for=self,
