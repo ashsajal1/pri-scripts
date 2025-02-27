@@ -86,6 +86,14 @@ if (!document.querySelector("#blumfarm-controls")) {
   const controlsContainer = document.createElement("div");
   controlsContainer.id = "blumfarm-controls";
 
+  controlsContainer.style.position = "fixed";
+  controlsContainer.style.top = "0";
+  controlsContainer.style.left = "50%";
+  controlsContainer.style.transform = "translateX(-50%)";
+  controlsContainer.style.zIndex = "9999";
+  controlsContainer.style.borderRadius = "10px";
+  controlsContainer.style.padding = "5px 10px";
+
   // Create the title element
   const titleElem = document.createElement("div");
   titleElem.className = "blumfarm-title";
