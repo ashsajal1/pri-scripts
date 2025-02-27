@@ -16,6 +16,7 @@ class BraveManager(Gtk.Window):
         Gtk.Window.__init__(self, title="Brave Instance Manager")
         self.set_border_width(10)
         self.set_default_size(500, 400)
+        self.five_index = 0  # for cycling through batches of 5
 
         # Main vertical layout
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -42,7 +43,6 @@ class BraveManager(Gtk.Window):
 
         # Horizontal box for launch buttons
         hbox_launch = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-
         open_selected_button = Gtk.Button(label="Open Selected")
         open_selected_button.connect("clicked", self.on_open_selected)
         hbox_launch.pack_start(open_selected_button, True, True, 0)
@@ -51,21 +51,28 @@ class BraveManager(Gtk.Window):
         launch_all_button.connect("clicked", self.on_open_all)
         hbox_launch.pack_start(launch_all_button, True, True, 0)
 
-        launch_five_button = Gtk.Button(label="Open 5/5")
-        launch_five_button.connect("clicked", self.on_open_five)
-        hbox_launch.pack_start(launch_five_button, True, True, 0)
+        self.launch_five_button = Gtk.Button(label="Open 5/5")
+        self.launch_five_button.connect("clicked", self.on_open_five)
+        hbox_launch.pack_start(self.launch_five_button, True, True, 0)
 
         vbox.pack_start(hbox_launch, False, False, 0)
 
-        # Cache Info and Clear Cache Button
-        self.cache_label = Gtk.Label(
-            label=f"Total Cache: {self.get_total_cache_size()} MB"
-        )
-        vbox.pack_start(self.cache_label, False, False, 0)
+        # Horizontal box for range input and button
+        hbox_range = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self.range_entry = Gtk.Entry()
+        self.range_entry.set_placeholder_text("e.g. 5-10")
+        hbox_range.pack_start(self.range_entry, True, True, 0)
+        open_range_button = Gtk.Button(label="Open Range")
+        open_range_button.connect("clicked", self.on_open_range)
+        hbox_range.pack_start(open_range_button, False, False, 0)
+        vbox.pack_start(hbox_range, False, False, 0)
 
-        clear_cache_button = Gtk.Button(label="Clear All Cache")
-        clear_cache_button.connect("clicked", self.on_clear_cache)
-        vbox.pack_start(clear_cache_button, False, False, 0)
+        # Clear Cache Button with cache size in its label
+        self.clear_cache_button = Gtk.Button(
+            label=f"Clear {self.get_total_cache_size()} Cache"
+        )
+        self.clear_cache_button.connect("clicked", self.on_clear_cache)
+        vbox.pack_start(self.clear_cache_button, False, False, 0)
 
     def load_profiles(self):
         """Load existing instance folders from BASE_DIR."""
@@ -110,15 +117,56 @@ class BraveManager(Gtk.Window):
             subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
 
     def on_open_five(self, widget):
-        """Launch Brave for the first five instance folders (or fewer)."""
-        count = 0
-        for row in self.liststore:
-            if count >= 5:
-                break
+        """Launch Brave for a batch of five instance folders (cycling through list)."""
+        total_profiles = len(self.liststore)
+        if total_profiles == 0:
+            return
+        # Reset if we've reached the end.
+        if self.five_index >= total_profiles:
+            self.five_index = 0
+        end_index = min(self.five_index + 5, total_profiles)
+        for i in range(self.five_index, end_index):
+            row = self.liststore[i]
             folder_name = row[0]
             profile_path = os.path.join(BASE_DIR, folder_name)
-            subprocess.Popen(["brave-browser", f"--user-data-dir={profile_path}"])
-            count += 1
+            subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
+        self.five_index = end_index if end_index < total_profiles else 0
+
+    def on_open_range(self, widget):
+        """Launch Brave for the instance folders within the user-specified range."""
+        text = self.range_entry.get_text().strip()
+        if not text:
+            return
+        try:
+            parts = text.split("-")
+            if len(parts) != 2:
+                raise ValueError("Invalid format")
+            start = int(parts[0].strip())
+            end = int(parts[1].strip())
+            if start > end:
+                start, end = end, start
+        except ValueError:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                flags=0,
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.OK,
+                text="Invalid range format. Use format like 5-10.",
+            )
+            dialog.run()
+            dialog.destroy()
+            return
+
+        # Open profiles whose folder name (as a number) is within the specified range.
+        for row in self.liststore:
+            folder_name = row[0]
+            try:
+                num = int(folder_name)
+            except ValueError:
+                continue
+            if start <= num <= end:
+                profile_path = os.path.join(BASE_DIR, folder_name)
+                subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
 
     def on_open_selected(self, widget):
         """Launch Brave for the instance folder selected in the list."""
@@ -143,7 +191,7 @@ class BraveManager(Gtk.Window):
             dialog.destroy()
 
     def get_total_cache_size(self):
-        """Calculate total cache size for all Brave instances."""
+        """Calculate total cache size for all Brave instances in MB."""
         total_size = 0
         for row in self.liststore:
             folder_name = row[0]
@@ -156,7 +204,7 @@ class BraveManager(Gtk.Window):
         return round(total_size / (1024 * 1024), 2)  # Convert bytes to MB
 
     def on_clear_cache(self, widget):
-        """Clear cache for all instances."""
+        """Clear cache for all instances and update the clear button label with new cache size."""
         total_cache_before = self.get_total_cache_size()
         dialog = Gtk.MessageDialog(
             transient_for=self,
@@ -178,9 +226,9 @@ class BraveManager(Gtk.Window):
                 if os.path.exists(cache_path):
                     shutil.rmtree(cache_path, ignore_errors=True)
 
-            # Update cache label after clearing
-            self.cache_label.set_text(f"Total Cache: {self.get_total_cache_size()} MB")
-
+            # Update the clear cache button's label after clearing
+            new_cache = self.get_total_cache_size()
+            self.clear_cache_button.set_label(f"Clear {new_cache} Cache")
             Gtk.MessageDialog(
                 transient_for=self,
                 flags=0,
