@@ -95,6 +95,23 @@
 
     // Use setInterval instead of a recursive setTimeout to reduce closures
     setInterval(checkAndClickPlayButton, 1000);
+
+    // Create the controls container if it doesn't exist
+    if (!document.querySelector("#blumfarm-controls")) {
+      const controlsContainer = document.createElement("div");
+      controlsContainer.id = "blumfarm-controls";
+      controlsContainer.style.position = "fixed";
+      controlsContainer.style.top = "0";
+      controlsContainer.style.left = "50%";
+      controlsContainer.style.transform = "translateX(-50%)";
+      controlsContainer.style.zIndex = "9999";
+      controlsContainer.style.backgroundColor = "black";
+      controlsContainer.style.borderRadius = "10px";
+      controlsContainer.style.padding = "5px 10px";
+      controlsContainer.style.color = "white";
+      controlsContainer.textContent = "Auto play";
+      document.body.appendChild(controlsContainer);
+    }
   } catch (e) {
     console.error("!BlumFarm! error:", e);
   }
