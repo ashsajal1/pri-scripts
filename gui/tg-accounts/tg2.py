@@ -92,6 +92,7 @@ class TelegramInstanceManager(Gtk.Window):
         btn_open_batch = Gtk.Button(label="Open 0-5 Apps")
         btn_open_batch.connect("clicked", self.open_batch)
         vbox.pack_start(btn_open_batch, False, False, 0)
+        self.btn_open_batch = btn_open_batch  # Save reference to the button
 
         self.btn_clear_cache = Gtk.Button(label=f"Clear {get_cache_size()} MB Cache")
         self.btn_clear_cache.connect("clicked", self.clear_cache)
