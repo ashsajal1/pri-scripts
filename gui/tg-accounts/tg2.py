@@ -89,7 +89,7 @@ class TelegramInstanceManager(Gtk.Window):
         btn_open_all.connect("clicked", self.open_all)
         hbox_buttons.pack_start(btn_open_all, True, True, 0)
 
-        btn_open_batch = Gtk.Button(label="Open 5 Apps")
+        btn_open_batch = Gtk.Button(label="Open 0-5 Apps")
         btn_open_batch.connect("clicked", self.open_batch)
         vbox.pack_start(btn_open_batch, False, False, 0)
 
@@ -147,6 +147,13 @@ class TelegramInstanceManager(Gtk.Window):
             open_instance(instance)
 
         self.batch_index += 1
+
+        # Update the button label to show the current range
+        next_start = self.batch_index * batch_size
+        next_end = next_start + batch_size
+        if next_start >= len(instances):
+            next_start, next_end = 0, batch_size
+        self.btn_open_batch.set_label(f"Open {next_start}-{next_end} Apps")
 
     def clear_cache(self, widget):
         cleared_size = clear_cache()
