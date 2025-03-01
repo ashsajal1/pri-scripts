@@ -51,7 +51,7 @@ class BraveManager(Gtk.Window):
         launch_all_button.connect("clicked", self.on_open_all)
         hbox_launch.pack_start(launch_all_button, True, True, 0)
 
-        self.launch_five_button = Gtk.Button(label="Open 5/5")
+        self.launch_five_button = Gtk.Button(label="Open 0-5")
         self.launch_five_button.connect("clicked", self.on_open_five)
         hbox_launch.pack_start(self.launch_five_button, True, True, 0)
 
@@ -131,6 +131,11 @@ class BraveManager(Gtk.Window):
             profile_path = os.path.join(BASE_DIR, folder_name)
             subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
         self.five_index = end_index if end_index < total_profiles else 0
+
+        # Update the button label to show the current range
+        next_start = self.five_index
+        next_end = min(next_start + 5, total_profiles)
+        self.launch_five_button.set_label(f"Open {next_start}-{next_end}")
 
     def on_open_range(self, widget):
         """Launch Brave for the instance folders within the user-specified range."""
