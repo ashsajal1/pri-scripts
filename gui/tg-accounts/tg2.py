@@ -29,7 +29,7 @@ def open_instance(instance):
 def get_cache_size():
     total_size = 0
     for instance in get_instances():
-        cache_path = os.path.join(TELEGRAM_DIR, instance, "tdata")
+        cache_path = os.path.join(TELEGRAM_DIR, instance, "tdata", "user_data", "cache")
         if os.path.exists(cache_path):
             for root, _, files in os.walk(cache_path):
                 for file in files:
@@ -41,15 +41,14 @@ def get_cache_size():
 def clear_cache():
     total_cleared = 0
     for instance in get_instances():
-        cache_path = os.path.join(TELEGRAM_DIR, instance, "tdata")
+        cache_path = os.path.join(TELEGRAM_DIR, instance, "tdata", "user_data", "cache")
         if os.path.exists(cache_path):
             for root, _, files in os.walk(cache_path):
                 for file in files:
                     file_path = os.path.join(root, file)
                     file_size = os.path.getsize(file_path)
-                    if file_size >= CACHE_SIZE:
-                        os.remove(file_path)
-                        total_cleared += file_size
+                    os.remove(file_path)
+                    total_cleared += file_size
     print(f"Cleared {total_cleared // (1024 * 1024)} MB cache!")
     return total_cleared // (1024 * 1024)
 
