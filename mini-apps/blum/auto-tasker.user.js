@@ -225,7 +225,7 @@ const blumCodes = [
   { videoName: "BITGET on TON with Vlad Smerkis", keyword: "BITGET" },
   { videoName: "Chartered Cities Explained", keyword: "PROSPERA" },
   { videoName: "Season 1 First Giveaway", keyword: "BLUMCHATS" },
-  { videoName: "Fake AI vs. Real AI", keyword: "Aicoin" },
+  { videoName: "Fake AI vs. Real AI", keyword: "AI COIN" },
   { videoName: "Forks Explained", keyword: "Go Get" },
   { videoName: "Secure your Crypto!", keyword: "Best Project Ever" },
   { videoName: "Navigating Crypto", keyword: "Heyblum" },
