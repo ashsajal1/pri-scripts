@@ -706,10 +706,23 @@ async function clickElements() {
       updateStatus("Sharing story done!");
     });
 
-    await sleep(1000);
+    await waitForStoryPageToDisappear();
+    updateStatus("Story page closed, continuing...");
   }
 
   console.log("Start/Claim finished");
   updateStatus("Start/Claim finished");
   toggleTaskButtons(false);
+}
+
+async function waitForStoryPageToDisappear() {
+  return new Promise((resolve) => {
+    const checkInterval = setInterval(() => {
+      const storyPage = document.querySelector(".pages-tasks-share-story");
+      if (!storyPage) {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 100); // Check every 100ms
+  });
 }
