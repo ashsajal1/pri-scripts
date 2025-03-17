@@ -676,8 +676,18 @@ async function clickElements() {
     );
     await element.click();
     await sleep(1000);
-    const storyPage = document.querySelector(".pages-tasks-share-story");
-    if (storyPage) {
+
+    function waitForStoryPage(callback) {
+      const interval = setInterval(() => {
+        const storyPage = document.querySelector(".pages-tasks-share-story");
+        if (storyPage) {
+          clearInterval(interval);
+          callback(storyPage);
+        }
+      }, 100); // Check every 100 milliseconds
+    }
+
+    waitForStoryPage(async (storyPage) => {
       const shareBtn = storyPage.querySelector(
         ".kit-button.is-large.is-primary.is-fill"
       );
@@ -689,14 +699,13 @@ async function clickElements() {
         updateStatus("Story shared and sleeping for 1 second...");
         console.log("Story shared and sleeping for 1 second...");
       } else {
-        console.log("No story page found.");
-        updateStatus("No story page found.");
+        console.log("No share button found.");
+        updateStatus("No share button found.");
       }
-      console.log("Shareing story done!");
-      updateStatus("Shareing story done!");
-    } else {
-      console.log("No story page found.");
-    }
+      console.log("Sharing story done!");
+      updateStatus("Sharing story done!");
+    });
+
     await sleep(1000);
   }
 
