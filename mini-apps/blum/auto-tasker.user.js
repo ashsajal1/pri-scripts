@@ -620,13 +620,15 @@ async function clickElements() {
 
         await sleep(1000);
         updateStatus("Closing modal...");
+        console.log("Closing modal...");
 
-        const closeBtn = child.querySelector(
+        const closeBtn = document.querySelector(
           ".kit-button.is-medium.is-ghost.is-icon-only.close-btn"
         );
         if (closeBtn) {
           closeBtn.click();
           updateStatus("Modal closed.");
+          console.log("Modal closed.");
         } else {
           console.warn("No close btn found for child:", child);
           updateStatus("No close btn found for child.");
