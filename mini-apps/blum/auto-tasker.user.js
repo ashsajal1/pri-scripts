@@ -617,6 +617,20 @@ async function clickElements() {
         } else {
           console.log("No open btn found for child:", child);
         }
+
+        await sleep(1000);
+        updateStatus("Closing modal...");
+
+        const closeBtn = child.querySelector(
+          ".kit-button.is-medium.is-ghost.is-icon-only.close-btn"
+        );
+        if (closeBtn) {
+          closeBtn.click();
+          updateStatus("Modal closed.");
+        } else {
+          console.warn("No close btn found for child:", child);
+          updateStatus("No close btn found for child.");
+        }
       } else {
         console.log("Element is done:", child);
         updateStatus("Element is done.");
