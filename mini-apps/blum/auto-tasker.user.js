@@ -675,7 +675,29 @@ async function clickElements() {
       `Clicking "${text}" button, sleeping for ${delay.toFixed(0)} ms...`
     );
     await element.click();
-    await sleep(delay);
+    await sleep(1000);
+    const storyPage = document.querySelector(".pages-tasks-share-story");
+    if (storyPage) {
+      const shareBtn = storyPage.querySelector(
+        ".kit-button.is-large.is-primary.is-fill"
+      );
+      if (shareBtn) {
+        shareBtn.click();
+        console.log("Sharing story");
+        updateStatus("Sharing story");
+        await sleep(1000);
+        updateStatus("Story shared and sleeping for 1 second...");
+        console.log("Story shared and sleeping for 1 second...");
+      } else {
+        console.log("No story page found.");
+        updateStatus("No story page found.");
+      }
+      console.log("Shareing story done!");
+      updateStatus("Shareing story done!");
+    } else {
+      console.log("No story page found.");
+    }
+    await sleep(1000);
   }
 
   console.log("Start/Claim finished");
