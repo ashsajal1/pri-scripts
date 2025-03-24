@@ -726,3 +726,24 @@ async function waitForStoryPageToDisappear() {
     }, 100); // Check every 100ms
   });
 }
+
+const doClaim = () => {
+  const buttons = document.querySelectorAll("button");
+
+  buttons.forEach(async (btn) => {
+    const text = btn.textContent.trim().toLowerCase();
+    if (text.includes("claim") || text.includes("restore")) {
+      console.log("Matching button found:", btn);
+      updateStatus("Matching button found.");
+      btn.click();
+      console.log("Button clicked:", btn.textContent.trim());
+      updateStatus("Button clicked : ", btn.textContent.trim());
+      btn.addEventListener("click", () => {
+        console.log("Button clicked:", btn.textContent.trim());
+      });
+
+      // Optional: Add a delay before clicking the next button
+      await sleep(1000);
+    }
+  });
+};
