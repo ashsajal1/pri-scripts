@@ -983,40 +983,52 @@ async function checkHomeAndClickEarn() {
   let attempts = 0;
 
   const tryFindHomeAndClick = async () => {
-    const homeTab = document.querySelector(".tab");
-    
+    // Find home tab by checking both class and content
+    const tabs = document.querySelectorAll(".tab");
+    const homeTab = Array.from(tabs).find((tab) => {
+      const hasHomeText =
+        tab.querySelector(".label")?.textContent.trim().toLowerCase() ===
+        "home";
+      return hasHomeText;
+    });
+
     if (attempts >= maxAttempts) {
       console.log("Max attempts reached, stopping recursion");
       updateStatus("Max attempts reached, stopping");
       return;
     }
 
-    if (homeTab && homeTab.textContent.includes("Home")) {
+    if (homeTab) {
       console.log("Click Home tab.");
       updateStatus("Click Home tab.");
       homeTab.click();
-      
+
       // Wait for navigation
       await sleep(1000);
-      
+
       // Try to find and click earn tab
-      const earnTab = Array.from(document.querySelectorAll("a"))
-        .find(link => link.textContent.trim().toLowerCase().includes("earn"));
-        
+      const earnTab = Array.from(document.querySelectorAll("a")).find((link) =>
+        link.textContent.trim().toLowerCase().includes("earn")
+      );
+
       if (earnTab) {
         earnTab.click();
         console.log("Clicked earn tab");
         updateStatus("Clicked earn tab");
       } else {
         attempts++;
-        console.log(`Attempt ${attempts}/${maxAttempts}: Earn tab not found, retrying...`);
+        console.log(
+          `Attempt ${attempts}/${maxAttempts}: Earn tab not found, retrying...`
+        );
         updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
         await sleep(1000);
         await tryFindHomeAndClick();
       }
     } else {
       attempts++;
-      console.log(`Attempt ${attempts}/${maxAttempts}: Home tab not found, retrying...`);
+      console.log(
+        `Attempt ${attempts}/${maxAttempts}: Home tab not found, retrying...`
+      );
       updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
       await sleep(1000);
       await tryFindHomeAndClick();
