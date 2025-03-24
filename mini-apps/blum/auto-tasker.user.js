@@ -333,8 +333,8 @@ async function clickTabs(targetWork = "Click") {
     // For 'Click' work, match specific tabs including 'Farming'
     if (
       targetWork === "Click" &&
-      ["Socials", "Academy", "Blum Bits", "Farming"].some((t) =>
-        tabText.includes(t)
+      ["Socials", "Academy", "Blum Bits", "Farming", "OnChain", "Frens"].some(
+        (t) => tabText.includes(t)
       )
     ) {
       await tab.click();
@@ -572,9 +572,7 @@ async function clickElements() {
     for (const child of firstTaskSectionChildren) {
       // cheack if child have a button called start or claim
       // tasks-pill-inline is-status-not-started is-dark pages-tasks-pill
-      const btn = child.querySelector(
-        ".tasks-pill-inline.pages-tasks-pill"
-      );
+      const btn = child.querySelector(".tasks-pill-inline.pages-tasks-pill");
 
       if (btn) {
         btn.click();
@@ -594,7 +592,6 @@ async function clickElements() {
         } else {
           console.log("Element is not done:", child);
           updateStatus("Element is not done.");
-
 
           //tasks-pill-inline is-status-not-started is-light pages-tasks-pill
           const openBtn = child.querySelector(
@@ -630,9 +627,7 @@ async function clickElements() {
             }
 
             //kit-button is-medium is-ghost is-icon-only close-btn
-            const closeBtn = document.querySelector(
-              ".close-btn"
-            );
+            const closeBtn = document.querySelector(".close-btn");
             if (closeBtn) {
               closeBtn.click();
               console.log("Clicked close button");
