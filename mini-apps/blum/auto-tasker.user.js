@@ -744,8 +744,12 @@ const doClaim = () => {
 
       // Optional: Add a delay before clicking the next button
       await sleep(1000);
+      console.log("Found a matching button. so clicking earn tabs");
+      updateStatus("Found a matching button. so clicking earn tabs");
       clickEarnTabs();
     } else {
+      console.warn("Could not find a matching button. so clicking earn tabs");
+      updateStatus("Could not find a matching button. so clicking earn tabs");
       clickEarnTabs();
     }
   });
