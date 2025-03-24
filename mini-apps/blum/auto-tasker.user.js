@@ -613,31 +613,44 @@ async function clickElements() {
               console.log("Sleeping for 1 second...");
               updateStatus("Sleeping for 1 second...");
 
-              const modal = document.querySelector(
-                ".pages-tasks-subtasks-modal"
-              );
+              //pages-tasks-subtasks-modal
+              const modal = document.querySelector("dialog");
               // Find all buttons inside child that contain "Start" or "Claim" in their text.
               const elements = Array.from(
                 modal.querySelectorAll(
-                  'button[role="button"]:not([disabled]):contains("Start")'
+                  ".tasks-pill-inline.pages-tasks-pill.pill-btn"
                 )
-              );
+              ).filter((btn) => {
+                const btnText = btn.textContent.trim().toLowerCase();
+                return (
+                  (btnText.includes("start") || btnText.includes("claim")) &&
+                  !btn.disabled
+                );
+              });
+
               if (elements.length > 0) {
-                console.log("Found elements:", elements);
-                updateStatus("Found elements.");
-                elements[0].click();
-                console.log("Clicked start button");
-                updateStatus("Clicked start button");
-                await sleep(1000);
-                console.log("Sleeping for 1 second...");
-                updateStatus("Sleeping for 1 second...");
+                console.log(`Found ${elements.length} elements`);
+                updateStatus(`Found ${elements.length} elements`);
+
+                // Click all elements with a delay between each
+                for (const element of elements) {
+                  const btnText = element.textContent.trim();
+                  console.log(`Clicking element: ${btnText}`);
+                  updateStatus(`Clicking element: ${btnText}`);
+
+                  element.click();
+                  await sleep(1000); // Wait 1 second between clicks
+
+                  console.log(`Clicked element: ${btnText}`);
+                  updateStatus(`Clicked element: ${btnText}`);
+                }
               } else {
                 console.log("No elements found.");
                 updateStatus("No elements found.");
               }
 
               //kit-button is-medium is-ghost is-icon-only close-btn
-              const closeBtn = document.querySelector(".close-btn");
+              const closeBtn = modal.querySelector(".close-btn");
               if (closeBtn) {
                 closeBtn.click();
                 console.log("Clicked close button");
