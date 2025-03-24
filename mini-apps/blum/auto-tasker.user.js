@@ -822,42 +822,56 @@ async function waitForStoryPageToDisappear() {
 }
 
 const doClaim = () => {
-  document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)"; // Bright green with higher opacity
+  document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)";
   document.body.style.transition = "background-color 0.3s";
-  const buttons = document.querySelectorAll(
-    "button.kit-pill-claim, button.kit-pill.farming"
-  );
+  
+  const findAndClickFarmButton = async () => {
+    const buttons = document.querySelectorAll(
+      "button.kit-pill-claim, button.kit-pill.farming"
+    );
 
-  if (buttons.length === 0) {
-    console.warn("No claim buttons found. Clicking earn tabs.");
-    updateStatus("No claim buttons found. Clicking earn tabs.");
-    clickEarnTabs();
-    return;
-  }
+    let farmButtonFound = false;
 
-  buttons.forEach(async (btn) => {
-    console.log("Matching button found:", btn);
-    updateStatus("Matching button found.");
+    for (const btn of buttons) {
+      const btnText = btn.textContent.trim().toLowerCase();
+      
+      console.log("Button found:", btnText);
+      updateStatus("Button found: " + btnText);
 
-    btn.click();
-    console.log("Button clicked:", btn.textContent.trim());
-    updateStatus("Button clicked : ", btn.textContent.trim());
+      // Click button first time
+      btn.click();
+      console.log("Button clicked first time:", btnText);
+      updateStatus("Button clicked first time: " + btnText);
 
-    // Wait 2 seconds and click again
-    await sleep(2000);
-    btn.click();
-    console.log("Button clicked second time:", btn.textContent.trim());
-    updateStatus("Button clicked second time: " + btn.textContent.trim());
+      // If it's a farm button, click again after delay and end loop
+      if (btnText.includes('farm')) {
+        farmButtonFound = true;
+        await sleep(2000);
+        btn.click();
+        console.log("Farm button clicked second time");
+        updateStatus("Farm button clicked second time");
+        break; // Exit loop after farm button is clicked twice
+      }
 
-    btn.addEventListener("click", () => {
-      console.log("Button clicked:", btn.textContent.trim());
-    });
+      await sleep(1000);
+    }
 
-    // Optional: Add a delay before clicking the next button
-    await sleep(1000);
-    console.log("Found a matching button. so clicking earn tabs");
-    updateStatus("Found a matching button. so clicking earn tabs");
-    clickEarnTabs();
+    if (!farmButtonFound) {
+      console.log("Farm button not found, retrying in 1 second...");
+      updateStatus("Farm button not found, retrying...");
+      await sleep(1000);
+      return findAndClickFarmButton(); // Retry if farm button not found
+    } else {
+      console.log("Farm button was clicked, moving to earn tabs");
+      updateStatus("Farm button was clicked, moving to earn tabs");
+      await sleep(1000);
+      clickEarnTabs();
+    }
+  };
+
+  findAndClickFarmButton().catch(err => {
+    console.error("Error in findAndClickFarmButton:", err);
+    updateStatus("Error occurred while finding farm button");
   });
 };
 
