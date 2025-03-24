@@ -346,7 +346,7 @@ async function clickTabs(targetWork = "Click") {
       if (tabText.includes("Frens")) {
         console.log("Click work is done.");
         updateStatus("Click work is done.");
-        // alert("Click work is done!");
+        await checkHomeAndClickEarn();
         return; // Stop after the first "Farming" tab is processed
       }
     }
@@ -976,3 +976,52 @@ const clickEarnTabs = () => {
     checkForEarnLink(); // Recursively check again
   }
 })();
+
+async function checkHomeAndClickEarn() {
+  // Add maximum retry attempts to prevent infinite recursion
+  let maxAttempts = 1;
+  let attempts = 0;
+
+  const tryFindHomeAndClick = async () => {
+    const homeTab = document.querySelector(".tab");
+    
+    if (attempts >= maxAttempts) {
+      console.log("Max attempts reached, stopping recursion");
+      updateStatus("Max attempts reached, stopping");
+      return;
+    }
+
+    if (homeTab && homeTab.textContent.includes("Home")) {
+      console.log("Click Home tab.");
+      updateStatus("Click Home tab.");
+      homeTab.click();
+      
+      // Wait for navigation
+      await sleep(1000);
+      
+      // Try to find and click earn tab
+      const earnTab = Array.from(document.querySelectorAll("a"))
+        .find(link => link.textContent.trim().toLowerCase().includes("earn"));
+        
+      if (earnTab) {
+        earnTab.click();
+        console.log("Clicked earn tab");
+        updateStatus("Clicked earn tab");
+      } else {
+        attempts++;
+        console.log(`Attempt ${attempts}/${maxAttempts}: Earn tab not found, retrying...`);
+        updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
+        await sleep(1000);
+        await tryFindHomeAndClick();
+      }
+    } else {
+      attempts++;
+      console.log(`Attempt ${attempts}/${maxAttempts}: Home tab not found, retrying...`);
+      updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
+      await sleep(1000);
+      await tryFindHomeAndClick();
+    }
+  };
+
+  await tryFindHomeAndClick();
+}
