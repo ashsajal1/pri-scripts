@@ -732,6 +732,8 @@ async function waitForStoryPageToDisappear() {
 }
 
 const doClaim = () => {
+  document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)"; // Bright green with higher opacity
+  document.body.style.transition = "background-color 0.3s";
   const buttons = document.querySelectorAll(
     "button.kit-pill-claim, button.kit-pill.farming"
   );
