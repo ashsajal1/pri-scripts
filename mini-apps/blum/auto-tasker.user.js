@@ -346,7 +346,6 @@ async function clickTabs(targetWork = "Click") {
       if (tabText.includes("Frens")) {
         console.log("Click work is done.");
         updateStatus("Click work is done.");
-        await checkHomeAndClickEarn();
         return; // Stop after the first "Farming" tab is processed
       }
     }
