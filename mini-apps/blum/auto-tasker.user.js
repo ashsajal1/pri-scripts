@@ -333,8 +333,8 @@ async function clickTabs(targetWork = "Click") {
     // For 'Click' work, match specific tabs including 'Farming'
     if (
       targetWork === "Click" &&
-      ["Socials", "Academy", "Blum Bits", "Farming", "Frens", "OnChain"].some((t) =>
-        tabText.includes(t)
+      ["Socials", "Academy", "Blum Bits", "Farming", "Frens", "OnChain"].some(
+        (t) => tabText.includes(t)
       )
     ) {
       await tab.click();
@@ -544,6 +544,11 @@ async function verifyTask() {
   console.log("Finished processing all matching verify buttons.");
   updateStatus("Finished processing all matching verify buttons.");
   toggleTaskButtons(false);
+
+  await sleep(1000);
+
+  //start click tasks
+  clickElements();
 }
 
 /**
@@ -553,7 +558,6 @@ async function clickElements() {
   const taskSections = document.querySelectorAll(".pages-tasks-section");
   if (taskSections.length < 3) {
     console.log("Less than 3 .pages-tasks-section elements found.");
-    return;
   }
 
   // quests section
