@@ -744,21 +744,26 @@ const doClaim = () => {
 
       // Optional: Add a delay before clicking the next button
       await sleep(1000);
+      clickEarnTabs();
+    } else {
+      clickEarnTabs();
+    }
+  });
+};
 
-      const links = document.querySelectorAll("a");
+const clickEarnTabs = () => {
+  const links = document.querySelectorAll("a");
 
-      links.forEach(async (link) => {
-        const text = link.textContent.trim().toLowerCase();
-        if (text.includes("earn")) {
-          console.log("Matching link found:", link);
-          updateStatus("Matching link found.");
-          link.click();
-          console.log("Link clicked:", link.textContent.trim());
-          updateStatus("Link clicked:", link.textContent.trim());
+  links.forEach(async (link) => {
+    const text = link.textContent.trim().toLowerCase();
+    if (text.includes("earn")) {
+      console.log("Matching link found:", link);
+      updateStatus("Matching link found.");
+      link.click();
+      console.log("Link clicked:", link.textContent.trim());
+      updateStatus("Link clicked:", link.textContent.trim());
 
-          await sleep(2000);
-        }
-      });
+      await sleep(2000);
     }
   });
 };
