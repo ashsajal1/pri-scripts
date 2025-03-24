@@ -764,6 +764,35 @@ const clickEarnTabs = () => {
       updateStatus("Link clicked:", link.textContent.trim());
 
       await sleep(2000);
+
+      // Try to find task element with retries
+      let attempts = 0;
+      const maxAttempts = 10; // Maximum number of retry attempts
+      const retryInterval = 1000; // Time between retries in ms
+
+      const findTaskElement = async () => {
+        const taskElement = document.querySelector(".pages-tasks-card");
+        if (taskElement) {
+          console.log("Task element found:", taskElement);
+          updateStatus("Task element found.");
+          // do some stuff with taskElement
+          
+        } else {
+          attempts++;
+          if (attempts < maxAttempts) {
+            console.log(`Attempt ${attempts}/${maxAttempts}: No task element found, retrying...`);
+            updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
+            await sleep(retryInterval);
+            return await findTaskElement();
+          } else {
+            console.log("Max attempts reached, giving up.");
+            updateStatus("Max attempts reached, giving up.");
+            
+          }
+        }
+      };
+
+      await findTaskElement();
     }
   });
 };
