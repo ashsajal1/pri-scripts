@@ -807,18 +807,16 @@ const clickEarnTabs = () => {
 // Replace the self-executing function with this version
 (async function checkForEarnLink() {
   console.log("Checking for earn link...");
-  const links = document.querySelectorAll("a");
+  const buttons = document.querySelectorAll(
+    "button.kit-pill-claim, button.kit-pill.farming"
+  );
   let found = false;
 
-  for (const link of links) {
-    const text = link.textContent.trim().toLowerCase();
-    if (text.includes("earn")) {
-      found = true;
-      console.log("Ready to start tasker");
-      updateStatus("Ready to start tasker");
-      doClaim(); // Call the function to start the process
-      break;
-    }
+  if (buttons.length > 0) {
+    found = true;
+    console.log("Ready to start tasker");
+    updateStatus("Ready to start tasker");
+    doClaim(); // Call the function to start the process
   }
 
   if (!found) {
