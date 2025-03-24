@@ -728,7 +728,9 @@ async function waitForStoryPageToDisappear() {
 }
 
 const doClaim = () => {
-  const buttons = document.querySelectorAll("button");
+  const buttons = document.querySelectorAll(
+    "button.kit-pill-claim, button.kit-pill.farming"
+  );
 
   buttons.forEach(async (btn) => {
     const text = btn.textContent.trim().toLowerCase();
