@@ -548,7 +548,7 @@ async function verifyTask() {
   await sleep(1000);
 
   //start click tasks
-  clickElements();
+  await clickElements();
 }
 
 /**
