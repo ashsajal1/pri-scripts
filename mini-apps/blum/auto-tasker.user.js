@@ -602,8 +602,8 @@ async function clickElements() {
           );
           if (openBtn) {
             openBtn.click();
-            console.log("Clicked claim button");
-            updateStatus("Clicked claim button");
+            console.log("Clicked open button");
+            updateStatus("Clicked open button");
             await sleep(1000);
             console.log("Sleeping for 1 second...");
             updateStatus("Sleeping for 1 second...");
