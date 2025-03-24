@@ -555,261 +555,286 @@ async function verifyTask() {
  * Clicks elements containing the text "Start" or "Claim" with varying delays.
  */
 async function clickElements() {
-  const taskSections = document.querySelectorAll(".pages-tasks-section");
-  if (taskSections.length < 3) {
-    console.log("Less than 3 .pages-tasks-section elements found.");
-  }
+  // Run the click tasks twice
+  for (let run = 1; run <= 2; run++) {
+    console.log(`Starting click run ${run}/2`);
+    updateStatus(`Starting click run ${run}/2`);
 
-  // quests section
-  const firstTaskSection = taskSections[0];
-  console.log("First Task Section:", firstTaskSection);
+    const taskSections = document.querySelectorAll(".pages-tasks-section");
+    if (taskSections.length < 3) {
+      console.log("Less than 3 .pages-tasks-section elements found.");
+    }
 
-  const firstTaskSectionChildren = Array.from(
-    firstTaskSection.querySelectorAll(".pages-tasks-card")
-  );
+    // quests section
+    const firstTaskSection = taskSections[0];
+    console.log("First Task Section:", firstTaskSection);
 
-  console.log("First task section children:", firstTaskSectionChildren);
+    const firstTaskSectionChildren = Array.from(
+      firstTaskSection.querySelectorAll(".pages-tasks-card")
+    );
 
-  if (firstTaskSectionChildren.length > 0) {
-    console.log("Starting to click elements in first task section.");
-    updateStatus("Starting to click elements in first task section.");
-    for (const child of firstTaskSectionChildren) {
-      // cheack if child have a button called start or claim
-      // tasks-pill-inline is-status-not-started is-dark pages-tasks-pill
-      const btn = child.querySelector(".tasks-pill-inline.pages-tasks-pill");
+    console.log("First task section children:", firstTaskSectionChildren);
 
-      if (btn) {
-        btn.click();
-        console.log("Clicked start button");
-        updateStatus("Clicked start button");
-        await sleep(1000);
-        console.log("Sleeping for 1 second...");
-        updateStatus("Sleeping for 1 second...");
-      } else {
-        console.log("Open btn not found for child:", child);
-        updateStatus("Open btn not found for child.");
+    if (firstTaskSectionChildren.length > 0) {
+      console.log("Starting to click elements in first task section.");
+      updateStatus("Starting to click elements in first task section.");
+      for (const child of firstTaskSectionChildren) {
+        // cheack if child have a button called start or claim
+        // tasks-pill-inline is-status-not-started is-dark pages-tasks-pill
+        const btn = child.querySelector(".tasks-pill-inline.pages-tasks-pill");
 
-        const isDone = child.querySelector(".kit-icon.icon");
-        if (isDone) {
-          console.log("Element is done:", child);
-          updateStatus("Element is done.");
+        if (btn) {
+          btn.click();
+          console.log("Clicked start button");
+          updateStatus("Clicked start button");
+          await sleep(1000);
+          console.log("Sleeping for 1 second...");
+          updateStatus("Sleeping for 1 second...");
         } else {
-          console.log("Element is not done:", child);
-          updateStatus("Element is not done.");
+          console.log("Open btn not found for child:", child);
+          updateStatus("Open btn not found for child.");
 
-          //tasks-pill-inline is-status-not-started is-light pages-tasks-pill
+          const isDone = child.querySelector(".kit-icon.icon");
+          if (isDone) {
+            console.log("Element is done:", child);
+            updateStatus("Element is done.");
+          } else {
+            console.log("Element is not done:", child);
+            updateStatus("Element is not done.");
+
+            //tasks-pill-inline is-status-not-started is-light pages-tasks-pill
+            const openBtn = child.querySelector(
+              ".tasks-pill-inline.pages-tasks-pill"
+            );
+            if (openBtn) {
+              openBtn.click();
+              console.log("Clicked open button");
+              updateStatus("Clicked open button");
+              await sleep(1000);
+              console.log("Sleeping for 1 second...");
+              updateStatus("Sleeping for 1 second...");
+
+              const modal = document.querySelector(
+                ".pages-tasks-subtasks-modal"
+              );
+              // Find all buttons inside child that contain "Start" or "Claim" in their text.
+              const elements = Array.from(
+                modal.querySelectorAll(
+                  'button[role="button"]:not([disabled]):contains("Start")'
+                )
+              );
+              if (elements.length > 0) {
+                console.log("Found elements:", elements);
+                updateStatus("Found elements.");
+                elements[0].click();
+                console.log("Clicked start button");
+                updateStatus("Clicked start button");
+                await sleep(1000);
+                console.log("Sleeping for 1 second...");
+                updateStatus("Sleeping for 1 second...");
+              } else {
+                console.log("No elements found.");
+                updateStatus("No elements found.");
+              }
+
+              //kit-button is-medium is-ghost is-icon-only close-btn
+              const closeBtn = document.querySelector(".close-btn");
+              if (closeBtn) {
+                closeBtn.click();
+                console.log("Clicked close button");
+                updateStatus("Clicked close button");
+                await sleep(1000);
+                console.log("Sleeping for 1 second...");
+                updateStatus("Sleeping for 1 second...");
+              } else {
+                console.warn("Close button not found.");
+                updateStatus("Close button not found.");
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /// weekly task
+    const secondTaskSection = taskSections[1];
+    console.log("Second Task Section:", secondTaskSection);
+
+    const secondTaskSectionChildren = Array.from(
+      secondTaskSection.querySelectorAll(".pages-tasks-card")
+    );
+
+    console.log("Second task section children:", secondTaskSectionChildren);
+
+    if (secondTaskSectionChildren.length > 0) {
+      console.log("Starting to click elements in second task section.");
+      updateStatus("Starting to click elements in second task section.");
+      for (const child of secondTaskSectionChildren) {
+        const isDone = child.querySelector(".kit-icon.done-icon");
+        if (!isDone) {
           const openBtn = child.querySelector(
-            ".tasks-pill-inline.pages-tasks-pill"
+            ".tasks-pill-inline.is-status-not-started.is-light.pages-tasks-pill"
           );
           if (openBtn) {
             openBtn.click();
-            console.log("Clicked open button");
-            updateStatus("Clicked open button");
             await sleep(1000);
-            console.log("Sleeping for 1 second...");
-            updateStatus("Sleeping for 1 second...");
 
-            const modal = document.querySelector(".pages-tasks-subtasks-modal");
+            const modal = document.querySelector(
+              ".pages-tasks-subtasks-modal"
+            );
             // Find all buttons inside child that contain "Start" or "Claim" in their text.
             const elements = Array.from(
               modal.querySelectorAll(
-                'button[role="button"]:not([disabled]):contains("Start")'
+                // tasks-pill-inline is-status-not-started is-dark is-nested pages-tasks-pill pill-btn
+                // tasks-pill-inline is-status-ready-for-claim is-dark is-nested pages-tasks-pill pill-btn
+                ".tasks-pill-inline.is-status-not-started.is-dark.is-nested.pages-tasks-pill.pill-btn, .tasks-pill-inline.is-status-ready-for-claim.is-dark.is-nested.pages-tasks-pill.pill-btn"
               )
+            ).filter(
+              (e) =>
+                e.textContent.includes("Start") ||
+                e.textContent.includes("Claim")
             );
-            if (elements.length > 0) {
-              console.log("Found elements:", elements);
-              updateStatus("Found elements.");
-              elements[0].click();
-              console.log("Clicked start button");
-              updateStatus("Clicked start button");
-              await sleep(1000);
-              console.log("Sleeping for 1 second...");
-              updateStatus("Sleeping for 1 second...");
-            } else {
-              console.log("No elements found.");
-              updateStatus("No elements found.");
-            }
 
-            //kit-button is-medium is-ghost is-icon-only close-btn
-            const closeBtn = document.querySelector(".close-btn");
-            if (closeBtn) {
-              closeBtn.click();
-              console.log("Clicked close button");
-              updateStatus("Clicked close button");
-              await sleep(1000);
-              console.log("Sleeping for 1 second...");
-              updateStatus("Sleeping for 1 second...");
-            } else {
-              console.warn("Close button not found.");
-              updateStatus("Close button not found.");
+            console.log(`Clicking ${elements.length} elements.`);
+
+            // Loop through each element and click it with a small delay.
+            for (const element of elements) {
+              const text = element.textContent.trim();
+              let delay = 0;
+
+              // Set delay based on button text.
+              if (text.includes("Claim")) {
+                delay = 500 + Math.random() * 500; // Random delay between 500 and 1000 ms
+              } else if (text.includes("Start")) {
+                delay = 100 + Math.random() * 400; // Random delay between 100 and 500 ms
+              }
+
+              console.log(
+                `Clicking "${text}" button, sleeping for ${delay.toFixed(
+                  0
+                )} ms...`
+              );
+              updateStatus(
+                `Clicking "${text}" button, sleeping for ${delay.toFixed(
+                  0
+                )} ms...`
+              );
+              await element.click();
+              await sleep(delay);
             }
+          } else {
+            console.log("No open btn found for child:", child);
           }
-        }
-      }
-    }
-  }
 
-  /// weekly task
-  const secondTaskSection = taskSections[1];
-  console.log("Second Task Section:", secondTaskSection);
-
-  const secondTaskSectionChildren = Array.from(
-    secondTaskSection.querySelectorAll(".pages-tasks-card")
-  );
-
-  console.log("Second task section children:", secondTaskSectionChildren);
-
-  if (secondTaskSectionChildren.length > 0) {
-    console.log("Starting to click elements in second task section.");
-    updateStatus("Starting to click elements in second task section.");
-    for (const child of secondTaskSectionChildren) {
-      const isDone = child.querySelector(".kit-icon.done-icon");
-      if (!isDone) {
-        const openBtn = child.querySelector(
-          ".tasks-pill-inline.is-status-not-started.is-light.pages-tasks-pill"
-        );
-        if (openBtn) {
-          openBtn.click();
           await sleep(1000);
+          updateStatus("Closing modal...");
+          console.log("Closing modal...");
 
-          const modal = document.querySelector(".pages-tasks-subtasks-modal");
-          // Find all buttons inside child that contain "Start" or "Claim" in their text.
-          const elements = Array.from(
-            modal.querySelectorAll(
-              // tasks-pill-inline is-status-not-started is-dark is-nested pages-tasks-pill pill-btn
-              // tasks-pill-inline is-status-ready-for-claim is-dark is-nested pages-tasks-pill pill-btn
-              ".tasks-pill-inline.is-status-not-started.is-dark.is-nested.pages-tasks-pill.pill-btn, .tasks-pill-inline.is-status-ready-for-claim.is-dark.is-nested.pages-tasks-pill.pill-btn"
-            )
-          ).filter(
-            (e) =>
-              e.textContent.includes("Start") || e.textContent.includes("Claim")
+          const closeBtn = document.querySelector(
+            ".kit-button.is-medium.is-ghost.is-icon-only.close-btn"
           );
-
-          console.log(`Clicking ${elements.length} elements.`);
-
-          // Loop through each element and click it with a small delay.
-          for (const element of elements) {
-            const text = element.textContent.trim();
-            let delay = 0;
-
-            // Set delay based on button text.
-            if (text.includes("Claim")) {
-              delay = 500 + Math.random() * 500; // Random delay between 500 and 1000 ms
-            } else if (text.includes("Start")) {
-              delay = 100 + Math.random() * 400; // Random delay between 100 and 500 ms
-            }
-
-            console.log(
-              `Clicking "${text}" button, sleeping for ${delay.toFixed(
-                0
-              )} ms...`
-            );
-            updateStatus(
-              `Clicking "${text}" button, sleeping for ${delay.toFixed(
-                0
-              )} ms...`
-            );
-            await element.click();
-            await sleep(delay);
+          if (closeBtn) {
+            closeBtn.click();
+            updateStatus("Modal closed.");
+            console.log("Modal closed.");
+          } else {
+            console.warn("No close btn found for child:", child);
+            updateStatus("No close btn found for child.");
           }
         } else {
-          console.log("No open btn found for child:", child);
+          console.log("Element is done:", child);
+          updateStatus("Element is done.");
         }
-
-        await sleep(1000);
-        updateStatus("Closing modal...");
-        console.log("Closing modal...");
-
-        const closeBtn = document.querySelector(
-          ".kit-button.is-medium.is-ghost.is-icon-only.close-btn"
-        );
-        if (closeBtn) {
-          closeBtn.click();
-          updateStatus("Modal closed.");
-          console.log("Modal closed.");
-        } else {
-          console.warn("No close btn found for child:", child);
-          updateStatus("No close btn found for child.");
-        }
-      } else {
-        console.log("Element is done:", child);
-        updateStatus("Element is done.");
       }
     }
-  }
 
-  //weekly task end
+    //weekly task end
 
-  const thirdTaskSection = taskSections[2];
+    const thirdTaskSection = taskSections[2];
 
-  // Find all buttons inside thirdTaskSection that contain "Start" or "Claim" in their text.
-  const elements = Array.from(
-    thirdTaskSection.querySelectorAll(
-      ".tasks-pill-inline.is-status-not-started.is-dark.pages-tasks-pill.pill-btn, .tasks-pill-inline.is-status-ready-for-claim.is-dark.pages-tasks-pill.pill-btn"
-    )
-  ).filter(
-    (e) => e.textContent.includes("Start") || e.textContent.includes("Claim")
-  );
-
-  console.log(`Clicking ${elements.length} elements.`);
-  updateStatus(`Clicking ${elements.length} elements.`);
-
-  // Loop through each element and click it with a small delay.
-  for (const element of elements) {
-    const text = element.textContent.trim();
-    let delay = 0;
-
-    // Set delay based on button text.
-    if (text.includes("Claim")) {
-      delay = 500 + Math.random() * 500; // Random delay between 500 and 1000 ms
-    } else if (text.includes("Start")) {
-      delay = 100 + Math.random() * 400; // Random delay between 100 and 500 ms
-    }
-
-    console.log(
-      `Clicking "${text}" button, sleeping for ${delay.toFixed(0)} ms...`
+    // Find all buttons inside thirdTaskSection that contain "Start" or "Claim" in their text.
+    const elements = Array.from(
+      thirdTaskSection.querySelectorAll(
+        ".tasks-pill-inline.is-status-not-started.is-dark.pages-tasks-pill.pill-btn, .tasks-pill-inline.is-status-ready-for-claim.is-dark.pages-tasks-pill.pill-btn"
+      )
+    ).filter(
+      (e) => e.textContent.includes("Start") || e.textContent.includes("Claim")
     );
-    updateStatus(
-      `Clicking "${text}" button, sleeping for ${delay.toFixed(0)} ms...`
-    );
-    await element.click();
-    await sleep(1000);
 
-    function waitForStoryPage(callback) {
-      const interval = setInterval(() => {
-        const storyPage = document.querySelector(".pages-tasks-share-story");
-        if (storyPage) {
-          clearInterval(interval);
-          callback(storyPage);
-        }
-      }, 100); // Check every 100 milliseconds
-    }
+    console.log(`Clicking ${elements.length} elements.`);
+    updateStatus(`Clicking ${elements.length} elements.`);
 
-    waitForStoryPage(async (storyPage) => {
-      const shareBtn = storyPage.querySelector(
-        ".kit-button.is-large.is-primary.is-fill"
+    // Loop through each element and click it with a small delay.
+    for (const element of elements) {
+      const text = element.textContent.trim();
+      let delay = 0;
+
+      // Set delay based on button text.
+      if (text.includes("Claim")) {
+        delay = 500 + Math.random() * 500; // Random delay between 500 and 1000 ms
+      } else if (text.includes("Start")) {
+        delay = 100 + Math.random() * 400; // Random delay between 100 and 500 ms
+      }
+
+      console.log(
+        `Clicking "${text}" button, sleeping for ${delay.toFixed(0)} ms...`
       );
-      if (shareBtn) {
-        shareBtn.click();
-        console.log("Sharing story");
-        updateStatus("Sharing story");
-        await sleep(1000);
-        updateStatus("Story shared and sleeping for 1 second...");
-        console.log("Story shared and sleeping for 1 second...");
-      } else {
-        console.log("No share button found.");
-        updateStatus("No share button found.");
-      }
-      console.log("Sharing story done!");
-      updateStatus("Sharing story done!");
-    });
+      updateStatus(
+        `Clicking "${text}" button, sleeping for ${delay.toFixed(0)} ms...`
+      );
+      await element.click();
+      await sleep(1000);
 
-    await waitForStoryPageToDisappear();
-    updateStatus("Story page closed, continuing...");
+      function waitForStoryPage(callback) {
+        const interval = setInterval(() => {
+          const storyPage = document.querySelector(".pages-tasks-share-story");
+          if (storyPage) {
+            clearInterval(interval);
+            callback(storyPage);
+          }
+        }, 100); // Check every 100 milliseconds
+      }
+
+      waitForStoryPage(async (storyPage) => {
+        const shareBtn = storyPage.querySelector(
+          ".kit-button.is-large.is-primary.is-fill"
+        );
+        if (shareBtn) {
+          shareBtn.click();
+          console.log("Sharing story");
+          updateStatus("Sharing story");
+          await sleep(1000);
+          updateStatus("Story shared and sleeping for 1 second...");
+          console.log("Story shared and sleeping for 1 second...");
+        } else {
+          console.log("No share button found.");
+          updateStatus("No share button found.");
+        }
+        console.log("Sharing story done!");
+        updateStatus("Sharing story done!");
+      });
+
+      await waitForStoryPageToDisappear();
+      updateStatus("Story page closed, continuing...");
+    }
+
+    console.log("Start/Claim finished");
+    updateStatus("Start/Claim finished");
+
+    // At the end of each run
+    if (run < 2) {
+      console.log("First run complete, waiting 2 seconds before second run...");
+      updateStatus("First run complete, waiting 2 seconds before second run...");
+      await sleep(2000);
+      
+      // Clear any existing "data-verified" attributes before second run
+      const verifiedTasks = document.querySelectorAll('[data-verified="true"]');
+      verifiedTasks.forEach(task => task.removeAttribute('data-verified'));
+    }
   }
 
-  console.log("Start/Claim finished");
-  updateStatus("Start/Claim finished");
+  console.log("Both click runs complete");
+  updateStatus("Both click runs complete");
   toggleTaskButtons(false);
 }
 
