@@ -556,6 +556,98 @@ async function clickElements() {
     return;
   }
 
+  // quests section
+  const firstTaskSection = taskSections[0];
+  console.log("First Task Section:", firstTaskSection);
+
+  const firstTaskSectionChildren = Array.from(
+    firstTaskSection.querySelectorAll(".pages-tasks-card")
+  );
+
+  console.log("First task section children:", firstTaskSectionChildren);
+
+  if (firstTaskSectionChildren.length > 0) {
+    console.log("Starting to click elements in first task section.");
+    updateStatus("Starting to click elements in first task section.");
+    for (const child of firstTaskSectionChildren) {
+      // cheack if child have a button called start or claim
+      // tasks-pill-inline is-status-not-started is-dark pages-tasks-pill
+      const btn = child.querySelector(
+        ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
+      );
+
+      if (btn) {
+        btn.click();
+        console.log("Clicked start button");
+        updateStatus("Clicked start button");
+        await sleep(1000);
+        console.log("Sleeping for 1 second...");
+        updateStatus("Sleeping for 1 second...");
+      } else {
+        console.log("Open btn not found for child:", child);
+        updateStatus("Open btn not found for child.");
+
+        const isDone = child.querySelector(".kit-icon.icon");
+        if (isDone) {
+          console.log("Element is done:", child);
+          updateStatus("Element is done.");
+        } else {
+          console.log("Element is not done:", child);
+          updateStatus("Element is not done.");
+
+          const openBtn = child.querySelector(
+            ".tasks-pill-inline.is-status-ready-for-claim.pages-tasks-pill"
+          );
+          if (openBtn) {
+            openBtn.click();
+            console.log("Clicked claim button");
+            updateStatus("Clicked claim button");
+            await sleep(1000);
+            console.log("Sleeping for 1 second...");
+            updateStatus("Sleeping for 1 second...");
+
+            const modal = document.querySelector(".pages-tasks-subtasks-modal");
+            // Find all buttons inside child that contain "Start" or "Claim" in their text.
+            const elements = Array.from(
+              modal.querySelectorAll(
+                'button[role="button"]:not([disabled]):contains("Start")'
+              )
+            );
+            if (elements.length > 0) {
+              console.log("Found elements:", elements);
+              updateStatus("Found elements.");
+              elements[0].click();
+              console.log("Clicked start button");
+              updateStatus("Clicked start button");
+              await sleep(1000);
+              console.log("Sleeping for 1 second...");
+              updateStatus("Sleeping for 1 second...");
+            } else {
+              console.log("No elements found.");
+              updateStatus("No elements found.");
+            }
+
+            //kit-button is-medium is-ghost is-icon-only close-btn
+            const closeBtn = document.querySelector(
+              ".close-btn"
+            );
+            if (closeBtn) {
+              closeBtn.click();
+              console.log("Clicked close button");
+              updateStatus("Clicked close button");
+              await sleep(1000);
+              console.log("Sleeping for 1 second...");
+              updateStatus("Sleeping for 1 second...");
+            } else {
+              console.warn("Close button not found.");
+              updateStatus("Close button not found.");
+            }
+          }
+        }
+      }
+    }
+  }
+
   /// weekly task
   const secondTaskSection = taskSections[1];
   console.log("Second Task Section:", secondTaskSection);
