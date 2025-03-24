@@ -798,7 +798,18 @@ const clickEarnTabs = () => {
   });
 };
 
-
 (function () {
-  doClaim();  // Call the function to start the process
+  const links = document.querySelectorAll("a");
+
+  links.forEach((link) => {
+    const text = link.textContent.trim().toLowerCase();
+    if (text.includes("earn")) {
+      console.log("Ready to start tasker");
+      updateStatus("Ready to start tasker");
+      doClaim(); // Call the function to start the process
+    } else {
+      console.log("Not ready yet but keep checking");
+      updateStatus("Not ready yet but keep checking");
+    }
+  });
 })();
