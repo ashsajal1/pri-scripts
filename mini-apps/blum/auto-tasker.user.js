@@ -333,8 +333,8 @@ async function clickTabs(targetWork = "Click") {
     // For 'Click' work, match specific tabs including 'Farming'
     if (
       targetWork === "Click" &&
-      ["Socials", "Academy", "Blum Bits", "Farming", "Frens", "OnChain"].some(
-        (t) => tabText.includes(t)
+      ["Socials", "Academy", "Blum Bits", "Farming", "Frens"].some((t) =>
+        tabText.includes(t)
       )
     ) {
       await tab.click();
@@ -679,9 +679,7 @@ async function clickElements() {
             openBtn.click();
             await sleep(1000);
 
-            const modal = document.querySelector(
-              ".pages-tasks-subtasks-modal"
-            );
+            const modal = document.querySelector(".pages-tasks-subtasks-modal");
             // Find all buttons inside child that contain "Start" or "Claim" in their text.
             const elements = Array.from(
               modal.querySelectorAll(
@@ -824,12 +822,14 @@ async function clickElements() {
     // At the end of each run
     if (run < 2) {
       console.log("First run complete, waiting 2 seconds before second run...");
-      updateStatus("First run complete, waiting 2 seconds before second run...");
+      updateStatus(
+        "First run complete, waiting 2 seconds before second run..."
+      );
       await sleep(2000);
-      
+
       // Clear any existing "data-verified" attributes before second run
       const verifiedTasks = document.querySelectorAll('[data-verified="true"]');
-      verifiedTasks.forEach(task => task.removeAttribute('data-verified'));
+      verifiedTasks.forEach((task) => task.removeAttribute("data-verified"));
     }
   }
 
