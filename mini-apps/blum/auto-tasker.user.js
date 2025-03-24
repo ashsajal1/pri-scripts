@@ -333,7 +333,7 @@ async function clickTabs(targetWork = "Click") {
     // For 'Click' work, match specific tabs including 'Farming'
     if (
       targetWork === "Click" &&
-      ["Socials", "Academy", "Blum Bits", "Farming", "Frens"].some((t) =>
+      ["Socials", "Academy", "Blum Bits", "Farming", "Frens", "OnChain"].some((t) =>
         tabText.includes(t)
       )
     ) {
