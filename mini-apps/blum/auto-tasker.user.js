@@ -799,6 +799,7 @@ const clickEarnTabs = () => {
 };
 
 (function () {
+  console.log("Im starting");
   const links = document.querySelectorAll("a");
 
   links.forEach((link) => {
@@ -808,7 +809,7 @@ const clickEarnTabs = () => {
       updateStatus("Ready to start tasker");
       doClaim(); // Call the function to start the process
     } else {
-      console.log("Not ready yet but keep checking");
+      console.warn("Not ready yet but keep checking");
       updateStatus("Not ready yet but keep checking");
     }
   });
