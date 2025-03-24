@@ -179,7 +179,8 @@ async function simulateTask(targetWork = "Click") {
  */
 async function runVerifyTasker() {
   // Set document background to indicate verify task is running
-  document.body.style.backgroundColor = 'rgba(255, 165, 0, 0.2)'; // Orange tint
+  document.body.style.backgroundColor = "rgba(255, 140, 0, 0.4)"; // Bright orange with higher opacity
+  document.body.style.transition = "background-color 0.3s";
   toggleTaskButtons(true);
   updateStatus("Starting verification task...");
 
@@ -189,14 +190,15 @@ async function runVerifyTasker() {
   } catch (error) {
     console.error("Error running auto tasker:", error);
   } finally {
-    document.body.style.backgroundColor = '';
+    document.body.style.backgroundColor = "";
     toggleTaskButtons(false);
   }
 }
 
 async function runClickTasker() {
   // Set document background to indicate click task is running
-  document.body.style.backgroundColor = 'rgba(0, 255, 0, 0.15)'; // Green tint
+  document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)"; // Bright green with higher opacity
+  document.body.style.transition = "background-color 0.3s";
   toggleTaskButtons(true);
   updateStatus("Starting clicking task...");
 
@@ -206,7 +208,7 @@ async function runClickTasker() {
   } catch (error) {
     console.error("Error running auto tasker:", error);
   } finally {
-    document.body.style.backgroundColor = '';
+    document.body.style.backgroundColor = "";
     toggleTaskButtons(false);
   }
 }
