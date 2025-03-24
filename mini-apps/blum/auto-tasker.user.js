@@ -1007,23 +1007,7 @@ async function checkHomeAndClickEarn() {
       await sleep(1000);
 
       // Try to find and click earn tab
-      const earnTab = Array.from(document.querySelectorAll("a")).find((link) =>
-        link.textContent.trim().toLowerCase().includes("earn")
-      );
-
-      if (earnTab) {
-        earnTab.click();
-        console.log("Clicked earn tab");
-        updateStatus("Clicked earn tab");
-      } else {
-        attempts++;
-        console.log(
-          `Attempt ${attempts}/${maxAttempts}: Earn tab not found, retrying...`
-        );
-        updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
-        await sleep(1000);
-        await tryFindHomeAndClick();
-      }
+      clickEarnTabs();
     } else {
       attempts++;
       console.log(
