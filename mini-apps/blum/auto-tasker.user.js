@@ -333,8 +333,8 @@ async function clickTabs(targetWork = "Click") {
     // For 'Click' work, match specific tabs including 'Farming'
     if (
       targetWork === "Click" &&
-      ["Socials", "Academy", "Blum Bits", "Farming", "OnChain", "Frens"].some(
-        (t) => tabText.includes(t)
+      ["Socials", "Academy", "Blum Bits", "Farming", "Frens"].some((t) =>
+        tabText.includes(t)
       )
     ) {
       await tab.click();
@@ -824,7 +824,7 @@ async function waitForStoryPageToDisappear() {
 const doClaim = () => {
   document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)";
   document.body.style.transition = "background-color 0.3s";
-  
+
   const findAndClickFarmButton = async () => {
     const buttons = document.querySelectorAll(
       "button.kit-pill-claim, button.kit-pill.farming"
@@ -834,7 +834,7 @@ const doClaim = () => {
 
     for (const btn of buttons) {
       const btnText = btn.textContent.trim().toLowerCase();
-      
+
       console.log("Button found:", btnText);
       updateStatus("Button found: " + btnText);
 
@@ -844,7 +844,10 @@ const doClaim = () => {
       updateStatus("Button clicked first time: " + btnText);
 
       // If it's a farm button, click again after delay and end loop
-      if (btnText.includes('farm')) {
+      if (
+        btnText.includes("farm") ||
+        (btnText.includes("bp") && !btnText.includes("claim"))
+      ) {
         farmButtonFound = true;
         await sleep(2000);
         btn.click();
@@ -869,7 +872,7 @@ const doClaim = () => {
     }
   };
 
-  findAndClickFarmButton().catch(err => {
+  findAndClickFarmButton().catch((err) => {
     console.error("Error in findAndClickFarmButton:", err);
     updateStatus("Error occurred while finding farm button");
   });
