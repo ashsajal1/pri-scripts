@@ -296,6 +296,7 @@ const blumCodes = [
   { videoName: "TOP Invests in BLUM", keyword: "TOP" },
   { videoName: "S1 Weekly Giveaway", keyword: "GIVEAWAY" },
   { videoName: "BITGET on TON with Vlad", keyword: "BITGET" },
+  { videoName: "Blum Latest Updates", keyword: "BLUMGOESAI" },
 ];
 
 // A simple sleep function returning a Promise.
