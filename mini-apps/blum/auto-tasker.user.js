@@ -178,37 +178,37 @@ async function simulateTask(targetWork = "Click") {
  * Resets flags and re-runs the main auto tasker.
  */
 async function runVerifyTasker() {
+  // Set document background to indicate verify task is running
+  document.body.style.backgroundColor = 'rgba(255, 165, 0, 0.2)'; // Orange tint
   toggleTaskButtons(true);
   updateStatus("Starting verification task...");
 
-  // For testing, call simulateTask:
-  await simulateTask("Verify");
-
-  // Then proceed with your actual verification logic:
   try {
+    await simulateTask("Verify");
     await clickTabs("Verify");
   } catch (error) {
     console.error("Error running auto tasker:", error);
+  } finally {
+    document.body.style.backgroundColor = '';
+    toggleTaskButtons(false);
   }
-  toggleTaskButtons(false);
 }
 
 async function runClickTasker() {
-  //set document background so that it seems like the tasker is working now
-  document.body.style.backgroundColor = 'rgba(0, 122, 255, 0.1)'; // Light blue tint
+  // Set document background to indicate click task is running
+  document.body.style.backgroundColor = 'rgba(0, 255, 0, 0.15)'; // Green tint
   toggleTaskButtons(true);
   updateStatus("Starting clicking task...");
 
-  // For testing, call simulateTask:
-  await simulateTask("Click");
-
-  // Then proceed with your actual verification logic:
   try {
+    await simulateTask("Click");
     await clickTabs("Click");
   } catch (error) {
     console.error("Error running auto tasker:", error);
+  } finally {
+    document.body.style.backgroundColor = '';
+    toggleTaskButtons(false);
   }
-  toggleTaskButtons(false);
 }
 
 // { videoName: "$2.5M+ DOGS Airdrop", keyword: "HAPPYDOGS" },
