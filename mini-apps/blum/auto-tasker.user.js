@@ -343,7 +343,7 @@ async function clickTabs(targetWork = "Click") {
       updateStatus(`Work done for tab: ${tabText}`);
 
       // If we find a "Farming" tab, stop after this task
-      if (tabText.includes("Farming")) {
+      if (tabText.includes("Frens")) {
         console.log("Click work is done.");
         updateStatus("Click work is done.");
         // alert("Click work is done!");
