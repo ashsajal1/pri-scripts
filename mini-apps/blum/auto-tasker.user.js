@@ -797,3 +797,8 @@ const clickEarnTabs = () => {
     }
   });
 };
+
+
+(function () {
+  doClaim();  // Call the function to start the process
+})();
