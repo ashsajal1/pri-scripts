@@ -776,18 +776,19 @@ const clickEarnTabs = () => {
           console.log("Task element found:", taskElement);
           updateStatus("Task element found.");
           // do some stuff with taskElement
-          
+          runClickTasker();
         } else {
           attempts++;
           if (attempts < maxAttempts) {
-            console.log(`Attempt ${attempts}/${maxAttempts}: No task element found, retrying...`);
+            console.log(
+              `Attempt ${attempts}/${maxAttempts}: No task element found, retrying...`
+            );
             updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
             await sleep(retryInterval);
             return await findTaskElement();
           } else {
             console.log("Max attempts reached, giving up.");
             updateStatus("Max attempts reached, giving up.");
-            
           }
         }
       };
