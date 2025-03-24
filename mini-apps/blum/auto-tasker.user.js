@@ -610,58 +610,7 @@ async function clickElements() {
               console.log("Clicked open button");
               updateStatus("Clicked open button");
               await sleep(1000);
-              console.log("Sleeping for 1 second...");
-              updateStatus("Sleeping for 1 second...");
-
-              //pages-tasks-subtasks-modal
-              const modal = document.querySelector("dialog");
-              // Find all buttons inside child that contain "Start" or "Claim" in their text.
-              const elements = Array.from(
-                modal.querySelectorAll(
-                  ".tasks-pill-inline.pages-tasks-pill.pill-btn"
-                )
-              ).filter((btn) => {
-                const btnText = btn.textContent.trim().toLowerCase();
-                return (
-                  (btnText.includes("start") || btnText.includes("claim")) &&
-                  !btn.disabled
-                );
-              });
-
-              if (elements.length > 0) {
-                console.log(`Found ${elements.length} elements`);
-                updateStatus(`Found ${elements.length} elements`);
-
-                // Click all elements with a delay between each
-                for (const element of elements) {
-                  const btnText = element.textContent.trim();
-                  console.log(`Clicking element: ${btnText}`);
-                  updateStatus(`Clicking element: ${btnText}`);
-
-                  element.click();
-                  await sleep(1000); // Wait 1 second between clicks
-
-                  console.log(`Clicked element: ${btnText}`);
-                  updateStatus(`Clicked element: ${btnText}`);
-                }
-              } else {
-                console.log("No elements found.");
-                updateStatus("No elements found.");
-              }
-
-              //kit-button is-medium is-ghost is-icon-only close-btn
-              const closeBtn = modal.querySelector(".close-btn");
-              if (closeBtn) {
-                closeBtn.click();
-                console.log("Clicked close button");
-                updateStatus("Clicked close button");
-                await sleep(1000);
-                console.log("Sleeping for 1 second...");
-                updateStatus("Sleeping for 1 second...");
-              } else {
-                console.warn("Close button not found.");
-                updateStatus("Close button not found.");
-              }
+              await handleModalElements();
             }
           }
         }
@@ -1032,4 +981,66 @@ async function checkHomeAndClickEarn() {
   };
 
   await tryFindHomeAndClick();
+}
+
+async function handleModalElements() {
+  const maxAttempts = 5;
+  let attempts = 0;
+
+  const tryFindModal = async () => {
+    const modal = document.querySelector("dialog");
+    
+    if (!modal) {
+      if (attempts < maxAttempts) {
+        attempts++;
+        console.log(`Modal not found, attempt ${attempts}/${maxAttempts}`);
+        updateStatus(`Modal not found, retrying... ${attempts}/${maxAttempts}`);
+        await sleep(1000);
+        return await tryFindModal();
+      }
+      console.log("Max attempts reached, modal not found");
+      updateStatus("Max attempts reached, modal not found");
+      return;
+    }
+
+    // Find and click elements in modal
+    const elements = Array.from(
+      modal.querySelectorAll(".tasks-pill-inline.pages-tasks-pill.pill-btn")
+    ).filter((btn) => {
+      const btnText = btn.textContent.trim().toLowerCase();
+      return (btnText.includes("start") || btnText.includes("claim")) && !btn.disabled;
+    });
+
+    if (elements.length > 0) {
+      console.log(`Found ${elements.length} elements in modal`);
+      updateStatus(`Found ${elements.length} elements in modal`);
+
+      // Click all elements with delay
+      for (const element of elements) {
+        const btnText = element.textContent.trim();
+        console.log(`Clicking element: ${btnText}`);
+        updateStatus(`Clicking element: ${btnText}`);
+        
+        element.click();
+        await sleep(1000);
+        
+        console.log(`Clicked element: ${btnText}`);
+        updateStatus(`Clicked element: ${btnText}`);
+      }
+
+      // Close modal after clicking all elements
+      const closeBtn = modal.querySelector(".close-btn");
+      if (closeBtn) {
+        closeBtn.click();
+        console.log("Modal closed");
+        updateStatus("Modal closed");
+        await sleep(1000);
+      }
+    } else {
+      console.log("No clickable elements found in modal");
+      updateStatus("No clickable elements found in modal");
+    }
+  };
+
+  await tryFindModal();
 }
