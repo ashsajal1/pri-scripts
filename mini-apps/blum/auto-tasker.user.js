@@ -556,7 +556,7 @@ async function verifyTask() {
  */
 async function clickElements() {
   // Run the click tasks twice
-  for (let run = 1; run <= 2; run++) {
+  for (let run = 1; run <= 1; run++) {
     console.log(`Starting click run ${run}/2`);
     updateStatus(`Starting click run ${run}/2`);
 
