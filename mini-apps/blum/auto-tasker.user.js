@@ -194,6 +194,8 @@ async function runVerifyTasker() {
 }
 
 async function runClickTasker() {
+  //set document background so that it seems like the tasker is working now
+  document.body.style.backgroundColor = 'rgba(0, 122, 255, 0.1)'; // Light blue tint
   toggleTaskButtons(true);
   updateStatus("Starting clicking task...");
 
