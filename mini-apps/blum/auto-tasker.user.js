@@ -595,8 +595,10 @@ async function clickElements() {
           console.log("Element is not done:", child);
           updateStatus("Element is not done.");
 
+
+          //tasks-pill-inline is-status-not-started is-light pages-tasks-pill
           const openBtn = child.querySelector(
-            ".tasks-pill-inline.is-status-ready-for-claim.pages-tasks-pill"
+            ".tasks-pill-inline.pages-tasks-pill"
           );
           if (openBtn) {
             openBtn.click();
