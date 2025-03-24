@@ -798,19 +798,27 @@ const clickEarnTabs = () => {
   });
 };
 
-(function () {
-  console.log("Im starting");
+// Replace the self-executing function with this version
+(async function checkForEarnLink() {
+  console.log("Checking for earn link...");
   const links = document.querySelectorAll("a");
+  let found = false;
 
-  links.forEach((link) => {
+  for (const link of links) {
     const text = link.textContent.trim().toLowerCase();
     if (text.includes("earn")) {
+      found = true;
       console.log("Ready to start tasker");
       updateStatus("Ready to start tasker");
       doClaim(); // Call the function to start the process
-    } else {
-      console.warn("Not ready yet but keep checking");
-      updateStatus("Not ready yet but keep checking");
+      break;
     }
-  });
+  }
+
+  if (!found) {
+    console.warn("Not ready yet, retrying in 1 second...");
+    updateStatus("Not ready yet, retrying in 1 second...");
+    await sleep(1000);
+    checkForEarnLink(); // Recursively check again
+  }
 })();
