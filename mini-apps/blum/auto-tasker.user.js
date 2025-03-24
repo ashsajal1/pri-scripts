@@ -742,9 +742,17 @@ const doClaim = () => {
   buttons.forEach(async (btn) => {
     console.log("Matching button found:", btn);
     updateStatus("Matching button found.");
+
     btn.click();
     console.log("Button clicked:", btn.textContent.trim());
     updateStatus("Button clicked : ", btn.textContent.trim());
+
+    // Wait 2 seconds and click again
+    await sleep(2000);
+    btn.click();
+    console.log("Button clicked second time:", btn.textContent.trim());
+    updateStatus("Button clicked second time: " + btn.textContent.trim());
+
     btn.addEventListener("click", () => {
       console.log("Button clicked:", btn.textContent.trim());
     });
