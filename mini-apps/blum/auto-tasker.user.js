@@ -732,28 +732,28 @@ const doClaim = () => {
     "button.kit-pill-claim, button.kit-pill.farming"
   );
 
-  buttons.forEach(async (btn) => {
-    const text = btn.textContent.trim().toLowerCase();
-    if (text.includes("claim") || text.includes("restore")) {
-      console.log("Matching button found:", btn);
-      updateStatus("Matching button found.");
-      btn.click();
-      console.log("Button clicked:", btn.textContent.trim());
-      updateStatus("Button clicked : ", btn.textContent.trim());
-      btn.addEventListener("click", () => {
-        console.log("Button clicked:", btn.textContent.trim());
-      });
+  if (buttons.length === 0) {
+    console.warn("No claim buttons found. Clicking earn tabs.");
+    updateStatus("No claim buttons found. Clicking earn tabs.");
+    clickEarnTabs();
+    return;
+  }
 
-      // Optional: Add a delay before clicking the next button
-      await sleep(1000);
-      console.log("Found a matching button. so clicking earn tabs");
-      updateStatus("Found a matching button. so clicking earn tabs");
-      clickEarnTabs();
-    } else {
-      console.warn("Could not find a matching button. so clicking earn tabs");
-      updateStatus("Could not find a matching button. so clicking earn tabs");
-      clickEarnTabs();
-    }
+  buttons.forEach(async (btn) => {
+    console.log("Matching button found:", btn);
+    updateStatus("Matching button found.");
+    btn.click();
+    console.log("Button clicked:", btn.textContent.trim());
+    updateStatus("Button clicked : ", btn.textContent.trim());
+    btn.addEventListener("click", () => {
+      console.log("Button clicked:", btn.textContent.trim());
+    });
+
+    // Optional: Add a delay before clicking the next button
+    await sleep(1000);
+    console.log("Found a matching button. so clicking earn tabs");
+    updateStatus("Found a matching button. so clicking earn tabs");
+    clickEarnTabs();
   });
 };
 
