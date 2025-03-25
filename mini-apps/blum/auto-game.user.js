@@ -44,12 +44,12 @@
       switch (assetType) {
         case "CLOVER":
           if (randomValue < GAME_SETTINGS.clickPercentage.flower) {
-            await clickElementWithDelay(element);
+            clickElementWithDelay(element);
           }
           break;
         case "DOGS":
           if (randomValue < GAME_SETTINGS.clickPercentage.dogs) {
-            await clickElementWithDelay(element);
+            clickElementWithDelay(element);
           }
           break;
         default:
