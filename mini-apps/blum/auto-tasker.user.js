@@ -216,6 +216,7 @@ async function runClickTasker() {
 // { videoName: "$2.5M+ DOGS Airdrop", keyword: "HAPPYDOGS" },
 
 const blumCodes = [
+  { videoName: "How to Work at Blum?", keyword: "GROWWITHBLUM" },
   { videoName: "How to analyze Crypto?", keyword: "Value" },
   { videoName: "$2.5M+ DOGS Airdrop", keyword: "HAPPYDOGS" },
   { videoName: "What Are AMMs?", keyword: "Cryptosmart" },
@@ -989,7 +990,7 @@ async function handleModalElements() {
 
   const tryFindModal = async () => {
     const modal = document.querySelector("dialog");
-    
+
     if (!modal) {
       if (attempts < maxAttempts) {
         attempts++;
@@ -1008,7 +1009,10 @@ async function handleModalElements() {
       modal.querySelectorAll(".tasks-pill-inline.pages-tasks-pill.pill-btn")
     ).filter((btn) => {
       const btnText = btn.textContent.trim().toLowerCase();
-      return (btnText.includes("start") || btnText.includes("claim")) && !btn.disabled;
+      return (
+        (btnText.includes("start") || btnText.includes("claim")) &&
+        !btn.disabled
+      );
     });
 
     if (elements.length > 0) {
@@ -1020,10 +1024,10 @@ async function handleModalElements() {
         const btnText = element.textContent.trim();
         console.log(`Clicking element: ${btnText}`);
         updateStatus(`Clicking element: ${btnText}`);
-        
+
         element.click();
         await sleep(1000);
-        
+
         console.log(`Clicked element: ${btnText}`);
         updateStatus(`Clicked element: ${btnText}`);
       }
