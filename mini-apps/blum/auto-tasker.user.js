@@ -581,7 +581,10 @@ async function clickElements() {
       for (const child of firstTaskSectionChildren) {
         // cheack if child have a button called start or claim
         // tasks-pill-inline is-status-not-started is-dark pages-tasks-pill
-        const btn = child.querySelector(".tasks-pill-inline.pages-tasks-pill");
+        const btn = child.querySelector(
+          ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
+        );
+        //tasks-pill-inline is-status-finished is-dark pages-tasks-pill
 
         if (btn) {
           btn.click();
