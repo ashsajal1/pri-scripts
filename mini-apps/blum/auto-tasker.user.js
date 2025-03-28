@@ -581,11 +581,15 @@ async function clickElements() {
       for (const child of firstTaskSectionChildren) {
         // cheack if child have a button called start or claim
         // tasks-pill-inline is-status-not-started is-dark pages-tasks-pill
+        // ".tasks-pill-inline.pages-tasks-pill"
         const btn = child.querySelector(
           ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
         );
 
-        if (btn) {
+        if (
+          btn.textContent.toLowerCase().includes("start") ||
+          btn.textContent.toLowerCase().includes("claim")
+        ) {
           if (
             !btn.parentElement.parentElement
               .querySelector(".title")
@@ -619,7 +623,7 @@ async function clickElements() {
             const openBtn = child.querySelector(
               ".tasks-pill-inline.pages-tasks-pill"
             );
-            if (openBtn) {
+            if (openBtn.textContent.toLowerCase().includes("open")) {
               openBtn.click();
               console.log("Clicked open button");
               updateStatus("Clicked open button");
