@@ -928,6 +928,20 @@ const clickEarnTabs = () => {
 
 // Replace the self-executing function with this version
 (async function checkForEarnLink() {
+  const links = document.querySelectorAll("a");
+  const homeLink = Array.from(links).find((link) => {
+    return link.textContent.trim().toLowerCase().includes("home");
+  });
+
+  if (homeLink) {
+    homeLink.click();
+    console.log("Home link clicked");
+    updateStatus("Home link clicked");
+  } else {
+    console.log("Home link not found, skipping...");
+    updateStatus("Home link not found, skipping...");
+  }
+
   console.log("Checking for earn link...");
   const buttons = document.querySelectorAll(
     "button.kit-pill-claim, button.kit-pill.farming"
