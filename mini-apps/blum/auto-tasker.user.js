@@ -621,7 +621,7 @@ async function clickElements() {
 
             //tasks-pill-inline is-status-not-started is-light pages-tasks-pill
             const openBtn = child.querySelector(
-              ".tasks-pill-inline.pages-tasks-pill"
+              ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
             );
             if (openBtn.textContent.toLowerCase().includes("open")) {
               openBtn.click();
