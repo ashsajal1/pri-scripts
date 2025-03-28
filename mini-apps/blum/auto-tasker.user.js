@@ -587,8 +587,9 @@ async function clickElements() {
         );
 
         if (
-          btn.textContent.toLowerCase().includes("start") ||
-          btn.textContent.toLowerCase().includes("claim")
+          btn &&
+          (btn.textContent.toLowerCase().includes("start") ||
+            btn.textContent.toLowerCase().includes("claim"))
         ) {
           if (
             !btn.parentElement.parentElement
