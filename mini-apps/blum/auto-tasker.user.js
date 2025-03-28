@@ -586,7 +586,12 @@ async function clickElements() {
         );
 
         if (btn) {
-          if (!btn.textContent.toLowerCase().includes("start")) {
+          if (
+            !btn.parentElement.parentElement
+              .querySelector(".title")
+              .textContent.toLowerCase()
+              .includes("story")
+          ) {
             btn.click();
             console.log("Clicked start button");
             updateStatus("Clicked start button");
