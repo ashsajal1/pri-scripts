@@ -584,15 +584,20 @@ async function clickElements() {
         const btn = child.querySelector(
           ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
         );
-        //tasks-pill-inline is-status-finished is-dark pages-tasks-pill
 
         if (btn) {
-          btn.click();
-          console.log("Clicked start button");
-          updateStatus("Clicked start button");
-          await sleep(1000);
-          console.log("Sleeping for 1 second...");
-          updateStatus("Sleeping for 1 second...");
+          if (!btn.textContent.toLowerCase().includes("start")) {
+            btn.click();
+            console.log("Clicked start button");
+            updateStatus("Clicked start button");
+            await sleep(1000);
+            console.log("Sleeping for 1 second...");
+            updateStatus("Sleeping for 1 second...");
+          } else {
+            console.log("Skipping story");
+            updateStatus("Skipping story");
+            sleep(1000);
+          }
         } else {
           console.log("Open btn not found for child:", child);
           updateStatus("Open btn not found for child.");
@@ -759,6 +764,8 @@ async function clickElements() {
       }
 
       waitForStoryPage(async (storyPage) => {
+        //kit-button is-large is-primary is-fill
+        //kit-button is-large is-primary is-fill
         const shareBtn = storyPage.querySelector(
           ".kit-button.is-large.is-primary.is-fill"
         );
@@ -766,9 +773,9 @@ async function clickElements() {
           shareBtn.click();
           console.log("Sharing story");
           updateStatus("Sharing story");
-          await sleep(1000);
-          updateStatus("Story shared and sleeping for 1 second...");
-          console.log("Story shared and sleeping for 1 second...");
+          await waitForStoryPageToDisappear();
+          console.log("Story page closed, continuing...");
+          updateStatus("Story page closed, continuing...");
         } else {
           console.log("No share button found.");
           updateStatus("No share button found.");
@@ -776,9 +783,6 @@ async function clickElements() {
         console.log("Sharing story done!");
         updateStatus("Sharing story done!");
       });
-
-      await waitForStoryPageToDisappear();
-      updateStatus("Story page closed, continuing...");
     }
 
     console.log("Start/Claim finished");
