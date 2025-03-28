@@ -586,50 +586,45 @@ async function clickElements() {
           ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
         );
 
-        if (
-          btn &&
-          (btn.textContent.toLowerCase().includes("start") ||
-            btn.textContent.toLowerCase().includes("claim"))
-        ) {
+        if (btn) {
           if (
-            !btn.parentElement.parentElement
-              .querySelector(".title")
-              .textContent.toLowerCase()
-              .includes("story")
+            btn.textContent.toLowerCase().includes("start") ||
+            btn.textContent.toLowerCase().includes("claim")
           ) {
-            btn.click();
-            console.log("Clicked start button");
-            updateStatus("Clicked start button");
-            await sleep(1000);
-            console.log("Sleeping for 1 second...");
-            updateStatus("Sleeping for 1 second...");
-          } else {
-            console.log("Skipping story");
-            updateStatus("Skipping story");
-            sleep(1000);
-          }
-        } else {
-          console.log("Open btn not found for child:", child);
-          updateStatus("Open btn not found for child.");
-
-          const isDone = child.querySelector(".kit-icon.icon");
-          if (isDone) {
-            console.log("Element is done:", child);
-            updateStatus("Element is done.");
-          } else {
-            console.log("Element is not done:", child);
-            updateStatus("Element is not done.");
-
-            //tasks-pill-inline is-status-not-started is-light pages-tasks-pill
-            const openBtn = child.querySelector(
-              ".tasks-pill-inline.is-status-not-started.pages-tasks-pill"
-            );
-            if (openBtn.textContent.toLowerCase().includes("open")) {
-              openBtn.click();
-              console.log("Clicked open button");
-              updateStatus("Clicked open button");
+            if (
+              !btn.parentElement.parentElement
+                .querySelector(".title")
+                .textContent.toLowerCase()
+                .includes("story")
+            ) {
+              btn.click();
+              console.log("Clicked start button");
+              updateStatus("Clicked start button");
               await sleep(1000);
-              await handleModalElements();
+              console.log("Sleeping for 1 second...");
+              updateStatus("Sleeping for 1 second...");
+            } else {
+              console.log("Skipping story");
+              updateStatus("Skipping story");
+              sleep(1000);
+            }
+          } else if (btn.textContent.toLowerCase().includes("open")) {
+            btn.click();
+            console.log("Clicked open button");
+            updateStatus("Clicked open button");
+            await sleep(1000);
+            await handleModalElements();
+          } else {
+            console.log("Open btn not found for child:", child);
+            updateStatus("Open btn not found for child.");
+
+            const isDone = child.querySelector(".kit-icon.icon");
+            if (isDone) {
+              console.log("Element is done:", child);
+              updateStatus("Element is done.");
+            } else {
+              console.log("Element is not done:", child);
+              updateStatus("Element is not done.");
             }
           }
         }
