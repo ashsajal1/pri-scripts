@@ -4,7 +4,7 @@
 // @version      1.1
 // @namespace    Zaman
 // @author       Zaman
-// @match        https://telegram.blum.codes/*
+// @match        https://web.telegram.org/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg.webp
 // @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg.user.js
