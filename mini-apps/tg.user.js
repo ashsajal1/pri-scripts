@@ -146,17 +146,56 @@ function safeClick(node) {
 }
 
 (async function checkForBlumChat() {
+  const accounts = [1, 2, 3]; // Add your account numbers
+  let currentAccountIndex = 0;
   console.log("I'm starting tg worker...");
-  // This will set the hash to "@BlumCryptoBot"
-  try {
-    window.location.hash = "@BlumCryptoBot";
-    await sleep(1000); // Wait for the page to load
-    console.log("Waiting for the page to load...");
-    updateStatusText("Waiting for the page to load...");
 
-    await findLaunchButtonWithRetry();
-  } catch (error) {
-    console.log("Error in Telegram worker:", error);
-    updateStatusText("Error in Telegram worker: " + error);
+  async function processAccount(accountNumber) {
+    try {
+      // Set URL with account number and bot hash
+      const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
+      window.location.href = newUrl;
+
+      console.log(`Processing account ${accountNumber}...`);
+      updateStatusText(`Processing account ${accountNumber}...`);
+
+      // Wait for page load
+      await sleep(3000);
+
+      // Find and click launch button, then wait for completion
+      return new Promise(async (resolve) => {
+        // Set up one-time message listener for completion
+        const messageHandler = async (event) => {
+          if (
+            event.origin === "https://telegram.blum.codes" &&
+            event.data.message === "Click work is done."
+          ) {
+            window.removeEventListener("message", messageHandler);
+            await clickCloseBtn();
+            console.log(`Account ${accountNumber} completed`);
+            updateStatusText(`Account ${accountNumber} completed`);
+            await sleep(2000); // Wait before resolving
+            resolve();
+          }
+        };
+
+        window.addEventListener("message", messageHandler);
+        await findLaunchButtonWithRetry();
+      });
+    } catch (error) {
+      console.log(`Error processing account ${accountNumber}:`, error);
+      updateStatusText(`Error processing account ${accountNumber}: ${error}`);
+    }
   }
+
+  // Process accounts sequentially
+  for (const account of accounts) {
+    await processAccount(account);
+    console.log(`Moving to next account...`);
+    updateStatusText(`Moving to next account...`);
+    await sleep(2000); // Wait between accounts
+  }
+
+  console.log("All accounts processed!");
+  updateStatusText("All accounts processed!");
 })();
