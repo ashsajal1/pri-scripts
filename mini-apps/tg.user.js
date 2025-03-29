@@ -71,9 +71,16 @@ const checkAutoTaskerDoneStatus = async () => {
     console.log("Auto tasker done button found");
     updateStatusText("Auto tasker done button found");
 
-    await clickCloseBtn();
-    console.log("Auto tasker done, close button clicked");
-    updateStatusText("Auto tasker done, close button clicked");
+    const autoTaskerText = autoTaskerDone.textContent.trim();
+    if (autoTaskerText.includes("Click work is done.")) {
+      await clickCloseBtn();
+      console.log("Auto tasker done, close button clicked");
+      updateStatusText("Auto tasker done, close button clicked");
+    } else {
+      console.log("Auto tasker not done, rechecking...");
+      updateStatusText("Auto tasker not done, rechecking...");
+      setTimeout(checkAutoTaskerDoneStatus, 3000); // Retry after 3 seconds
+    }
   } else {
     console.log("Auto tasker done button not found, retrying...");
     updateStatusText("Auto tasker done button not found, retrying...");
