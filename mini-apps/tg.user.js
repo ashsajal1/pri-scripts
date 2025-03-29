@@ -36,6 +36,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 (async function checkForBlumChat() {
   const chatList = document.querySelector(".chatlist");
   if (chatList) {
+    console.log("Chat list found");
+    updateStatusText("Chat list found");
     for (const item of chatList) {
       const chatTitle = item.querySelector(".peer-title-inner");
       if (chatTitle) {
