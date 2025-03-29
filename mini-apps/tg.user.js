@@ -90,6 +90,7 @@ const checkAutoTaskerDoneStatus = async () => {
 };
 
 (async function checkForBlumChat() {
+  console.log("Checking for Blum chat...");
   const chatList = document.querySelector(".chatlist");
   if (chatList) {
     console.log("Chat list found");
