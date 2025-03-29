@@ -147,11 +147,18 @@ function safeClick(node) {
 
 (async function checkForBlumChat() {
   const accounts = [1, 2, 3]; // Add your account numbers
-  let currentAccountIndex = 0;
-  console.log("I'm starting tg worker...");
+
+  // Get current account index from localStorage or start from 0
+  let currentAccountIndex = parseInt(
+    localStorage.getItem("currentAccountIndex") || 0
+  );
+  console.log(`Resuming from account index: ${currentAccountIndex}`);
 
   async function processAccount(accountNumber) {
     try {
+      // Store current account index before navigation
+      localStorage.setItem("currentAccountIndex", currentAccountIndex);
+
       // Set URL with account number and bot hash
       const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
       window.location.href = newUrl;
@@ -188,14 +195,17 @@ function safeClick(node) {
     }
   }
 
-  // Process accounts sequentially
-  for (const account of accounts) {
-    await processAccount(account);
+  // Process accounts from current index
+  for (let i = currentAccountIndex; i < accounts.length; i++) {
+    currentAccountIndex = i;
+    await processAccount(accounts[i]);
     console.log(`Moving to next account...`);
     updateStatusText(`Moving to next account...`);
-    await sleep(2000); // Wait between accounts
+    await sleep(2000);
   }
 
+  // Clear stored index when all done
+  localStorage.removeItem("currentAccountIndex");
   console.log("All accounts processed!");
   updateStatusText("All accounts processed!");
 })();
