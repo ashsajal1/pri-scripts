@@ -204,11 +204,11 @@ function safeClick(node) {
     await sleep(2000);
   }
 
-  statusText.style.height = "140px";
-  statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
-
   // Clear stored index when all done
   localStorage.removeItem("currentAccountIndex");
   console.log("All accounts processed!");
   updateStatusText("All accounts processed!");
+
+  statusText.style.height = "140px";
+  statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
 })();
