@@ -31,7 +31,9 @@ const updateStatusText = (text) => {
   statusText.textContent = text;
 };
 
-(function checkForBlumChat() {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+(async function checkForBlumChat() {
   const chatList = document.querySelector(".chatlist");
   if (chatList) {
     for (const item of chatList) {
@@ -48,6 +50,9 @@ const updateStatusText = (text) => {
           item.click();
           console.log("Blum chat found and clicked");
           updateStatusText("Blum chat found and clicked");
+          await sleep(1000); // Wait for 1 second after clicking
+          console.log("Waiting for 1 second after clicking");
+          updateStatusText("Waiting for 1 second after clicking");
         }
       }
     }
