@@ -37,14 +37,17 @@ const updateStatusText = (text) => {
     for (const item of chatList) {
       const chatTitle = item.querySelector(".peer-title-inner");
       if (chatTitle) {
+        console.log("Found chat title element");
+        updateStatusText("Found chat title element");
+        // Check if the chat title is "Blum"
         const chatTitleText = chatTitle.textContent.trim();
         if (chatTitleText === "Blum") {
-          const chat = item.querySelector(".chatlist__item--active");
-          if (chat) {
-            chat.click();
-            console.log("Blum chat found and clicked");
-            updateStatusText("Blum chat found and clicked");
-          }
+          console.log("Blum chat found");
+          updateStatusText("Blum chat found");
+
+          item.click();
+          console.log("Blum chat found and clicked");
+          updateStatusText("Blum chat found and clicked");
         }
       }
     }
