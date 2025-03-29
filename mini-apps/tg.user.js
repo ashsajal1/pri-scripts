@@ -115,41 +115,12 @@ function safeClick(node) {
 }
 
 (async function checkForBlumChat() {
-  console.log("Checking for Blum chat...");
-  const chatList = document.querySelector(".chatlist");
-  if (chatList) {
-    console.log("Chat list found");
-    updateStatusText("Chat list found");
-    for (const item of chatList.children) {
-      const chatTitle = item.querySelector(".peer-title-inner");
-      if (chatTitle) {
-        console.log("Found chat title element");
-        updateStatusText("Found chat title element");
-        // Check if the chat title is "Blum"
-        const chatTitleText = chatTitle.textContent.trim();
-        if (chatTitleText === "Blum") {
-          console.log("Blum chat found");
-          updateStatusText("Blum chat found");
+  console.log("I'm starting tg worker...");
+  // This will set the hash to "@BlumCryptoBot"
+  window.location.hash = "@BlumCryptoBot";
+  await sleep(1000); // Wait for the page to load
+  console.log("Waiting for the page to load...");
+  updateStatusText("Waiting for the page to load...");
 
-          const clickRipple = item.querySelector(".c-ripple");
-          if (clickRipple) {
-            safeClick(clickRipple);
-            console.log("Blum chat found and clicked");
-            updateStatusText("Blum chat found and clicked");
-            await sleep(1000); // Wait for 1 second after clicking
-            console.log("Waiting for 1 second after clicking");
-            updateStatusText("Waiting for 1 second after clicking");
-
-            await findLaunchButtonWithRetry();
-          } else {
-            console.log("Click ripple not found");
-            updateStatusText("Click ripple not found");
-          }
-        }
-      }
-    }
-  } else {
-    console.log("Chat list not found  retrying...");
-    setTimeout(checkForBlumChat, 1000); // Retry after 1 second
-  }
+  await findLaunchButtonWithRetry();
 })();
