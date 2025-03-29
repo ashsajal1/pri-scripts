@@ -89,6 +89,31 @@ const checkAutoTaskerDoneStatus = async () => {
   }
 };
 
+// Helper to safely click on a node
+function safeClick(node) {
+  // If the node is not an HTMLElement, try to use its parent
+  let clickable = node instanceof HTMLElement ? node : node.parentElement;
+  if (!clickable) {
+    console.error("No clickable element found for node:", node);
+    return;
+  }
+
+  // First try the direct click() method
+  try {
+    clickable.click();
+    console.log("Called .click() on:", clickable);
+  } catch (e) {
+    console.warn("click() method failed, dispatching MouseEvent:", e);
+    const event = new MouseEvent("click", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    clickable.dispatchEvent(event);
+    console.log("Dispatched click event on:", clickable);
+  }
+}
+
 (async function checkForBlumChat() {
   console.log("Checking for Blum chat...");
   const chatList = document.querySelector(".chatlist");
@@ -108,7 +133,7 @@ const checkAutoTaskerDoneStatus = async () => {
 
           const clickRipple = item.querySelector(".c-ripple");
           if (clickRipple) {
-            clickRipple.click();
+            safeClick(clickRipple);
             console.log("Blum chat found and clicked");
             updateStatusText("Blum chat found and clicked");
             await sleep(1000); // Wait for 1 second after clicking
