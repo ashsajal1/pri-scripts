@@ -42,6 +42,8 @@ const updateStatusText = (text) => {
           const chat = item.querySelector(".chatlist__item--active");
           if (chat) {
             chat.click();
+            console.log("Blum chat found and clicked");
+            updateStatusText("Blum chat found and clicked");
           }
         }
       }
