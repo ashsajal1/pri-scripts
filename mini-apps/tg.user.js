@@ -33,6 +33,21 @@ const updateStatusText = (text) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const findLaunchButtonWithRetry = async () => {
+  const launchBtn = document.querySelector(".new-message-bot-commands-view");
+  if (launchBtn) {
+    console.log("Launch button found");
+    updateStatusText("Launch button found");
+    launchBtn.click();
+    console.log("Launch button clicked");
+    updateStatusText("Launch button clicked");
+  } else {
+    console.log("Launch button not found, retrying...");
+    updateStatusText("Launch button not found, retrying...");
+    setTimeout(findLaunchButtonWithRetry, 1000); // Retry after 1 second
+  }
+};
+
 (async function checkForBlumChat() {
   const chatList = document.querySelector(".chatlist");
   if (chatList) {
@@ -55,6 +70,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
           await sleep(1000); // Wait for 1 second after clicking
           console.log("Waiting for 1 second after clicking");
           updateStatusText("Waiting for 1 second after clicking");
+
+          await findLaunchButtonWithRetry();
         }
       }
     }
