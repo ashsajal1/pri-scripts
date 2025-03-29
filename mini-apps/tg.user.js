@@ -95,7 +95,7 @@ const checkAutoTaskerDoneStatus = async () => {
   if (chatList) {
     console.log("Chat list found");
     updateStatusText("Chat list found");
-    for (const item of chatList) {
+    for (const item of chatList.children) {
       const chatTitle = item.querySelector(".peer-title-inner");
       if (chatTitle) {
         console.log("Found chat title element");
