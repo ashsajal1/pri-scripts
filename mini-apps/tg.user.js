@@ -65,6 +65,22 @@ const clickCloseBtn = async () => {
   }
 };
 
+const checkAutoTaskerDoneStatus = async () => {
+  const autoTaskerDone = document.querySelector("#blumfarm-controls-style");
+  if (autoTaskerDone) {
+    console.log("Auto tasker done button found");
+    updateStatusText("Auto tasker done button found");
+
+    await clickCloseBtn();
+    console.log("Auto tasker done, close button clicked");
+    updateStatusText("Auto tasker done, close button clicked");
+  } else {
+    console.log("Auto tasker done button not found, retrying...");
+    updateStatusText("Auto tasker done button not found, retrying...");
+    setTimeout(checkAutoTaskerDoneStatus, 1000); // Retry after 1 second
+  }
+};
+
 (async function checkForBlumChat() {
   const chatList = document.querySelector(".chatlist");
   if (chatList) {
