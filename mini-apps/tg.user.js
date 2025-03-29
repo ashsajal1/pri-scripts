@@ -117,10 +117,15 @@ function safeClick(node) {
 (async function checkForBlumChat() {
   console.log("I'm starting tg worker...");
   // This will set the hash to "@BlumCryptoBot"
-  window.location.hash = "@BlumCryptoBot";
-  await sleep(1000); // Wait for the page to load
-  console.log("Waiting for the page to load...");
-  updateStatusText("Waiting for the page to load...");
+  try {
+    window.location.hash = "@BlumCryptoBot";
+    await sleep(1000); // Wait for the page to load
+    console.log("Waiting for the page to load...");
+    updateStatusText("Waiting for the page to load...");
 
-  await findLaunchButtonWithRetry();
+    await findLaunchButtonWithRetry();
+  } catch (error) {
+    console.log("Error in Telegram worker:", error);
+    updateStatusText("Error in Telegram worker: " + error);
+  }
 })();
