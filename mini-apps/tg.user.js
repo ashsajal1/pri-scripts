@@ -34,11 +34,11 @@ const updateStatusText = (text) => {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const findLaunchButtonWithRetry = async () => {
-  const launchBtn = document.querySelector(".new-message-bot-commands-view");
+  const launchBtn = document.querySelector(".new-message-bot-commands.is-view");
   if (launchBtn) {
     console.log("Launch button found");
     updateStatusText("Launch button found");
-    launchBtn.click();
+    safeClick(launchBtn);
     console.log("Launch button clicked");
     updateStatusText("Launch button clicked");
     await checkAutoTaskerDoneStatus();
