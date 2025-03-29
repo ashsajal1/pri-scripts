@@ -106,14 +106,20 @@ const checkAutoTaskerDoneStatus = async () => {
           console.log("Blum chat found");
           updateStatusText("Blum chat found");
 
-          item.click();
-          console.log("Blum chat found and clicked");
-          updateStatusText("Blum chat found and clicked");
-          await sleep(1000); // Wait for 1 second after clicking
-          console.log("Waiting for 1 second after clicking");
-          updateStatusText("Waiting for 1 second after clicking");
+          const clickRipple = item.querySelector(".c-ripple");
+          if (clickRipple) {
+            clickRipple.click();
+            console.log("Blum chat found and clicked");
+            updateStatusText("Blum chat found and clicked");
+            await sleep(1000); // Wait for 1 second after clicking
+            console.log("Waiting for 1 second after clicking");
+            updateStatusText("Waiting for 1 second after clicking");
 
-          await findLaunchButtonWithRetry();
+            await findLaunchButtonWithRetry();
+          } else {
+            console.log("Click ripple not found");
+            updateStatusText("Click ripple not found");
+          }
         }
       }
     }
