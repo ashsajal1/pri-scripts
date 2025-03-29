@@ -348,6 +348,14 @@ async function clickTabs(targetWork = "Click") {
       if (tabText.includes("Frens")) {
         console.log("Click work is done.");
         updateStatus("Click work is done.");
+        // Add after tasks are completed
+        window.parent.postMessage(
+          { message: "Click work is done." },
+          "*"
+        );
+        console.log("Sent completion status to parent");
+        updateStatus("Sent completion status to parent");
+
         return; // Stop after the first "Farming" tab is processed
       }
     }
