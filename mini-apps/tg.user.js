@@ -48,6 +48,23 @@ const findLaunchButtonWithRetry = async () => {
   }
 };
 
+const clickCloseBtn = async () => {
+  const closeBtn = document.querySelector(
+    ".btn-icon._BrowserHeaderButton_m63td_65"
+  );
+  if (closeBtn) {
+    console.log("Close button found");
+    updateStatusText("Close button found");
+    closeBtn.click();
+    console.log("Close button clicked");
+    updateStatusText("Close button clicked");
+  } else {
+    console.log("Close button not found, retrying...");
+    updateStatusText("Close button not found, retrying...");
+    setTimeout(clickCloseBtn, 1000); // Retry after 1 second
+  }
+};
+
 (async function checkForBlumChat() {
   const chatList = document.querySelector(".chatlist");
   if (chatList) {
