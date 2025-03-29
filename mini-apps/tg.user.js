@@ -68,13 +68,25 @@ const clickCloseBtn = async () => {
 
 const checkAutoTaskerDoneStatus = async () => {
   const iframe = document.getElementsByTagName("iframe")[0];
-  const autoTaskerDone =
-    iframe.contentDocument.querySelector(".blumfarm-status");
+  
+  if (!iframe) {
+    console.log("Iframe not found, retrying...");
+    updateStatusText("Iframe not found, retrying...");
+    setTimeout(checkAutoTaskerDoneStatus, 1000);
+    return;
+  }
+
+  // Check if contentDocument is accessible
+  if (!iframe.contentDocument) {
+    console.log("Cannot access iframe content, retrying...");
+    updateStatusText("Cannot access iframe content, retrying...");
+    setTimeout(checkAutoTaskerDoneStatus, 1000);
+    return;
+  }
+
+  const autoTaskerDone = iframe.contentDocument.querySelector(".blumfarm-status");
 
   if (autoTaskerDone) {
-    console.log("Auto tasker done button found");
-    updateStatusText("Auto tasker done button found");
-
     const autoTaskerText = autoTaskerDone.textContent.trim();
     if (autoTaskerText.includes("Click work is done.")) {
       await clickCloseBtn();
@@ -83,12 +95,12 @@ const checkAutoTaskerDoneStatus = async () => {
     } else {
       console.log("Work not done, rechecking...");
       updateStatusText("Work not done, rechecking...");
-      setTimeout(checkAutoTaskerDoneStatus, 3000); // Retry after 3 seconds
+      setTimeout(checkAutoTaskerDoneStatus, 3000);
     }
   } else {
     console.log("Auto tasker done button not found, retrying...");
     updateStatusText("Auto tasker done button not found, retrying...");
-    setTimeout(checkAutoTaskerDoneStatus, 1000); // Retry after 1 second
+    setTimeout(checkAutoTaskerDoneStatus, 1000);
   }
 };
 
