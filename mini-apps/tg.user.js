@@ -67,41 +67,92 @@ const clickCloseBtn = async () => {
 };
 
 const checkAutoTaskerDoneStatus = async () => {
-  const iframe = document.getElementsByTagName("iframe")[0];
-  
-  if (!iframe) {
-    console.log("Iframe not found, retrying...");
-    updateStatusText("Iframe not found, retrying...");
-    setTimeout(checkAutoTaskerDoneStatus, 1000);
-    return;
-  }
+  let retryCount = 0;
+  const maxRetries = 30; // Maximum number of retries (30 seconds total)
 
-  // Check if contentDocument is accessible
-  if (!iframe.contentDocument) {
-    console.log("Cannot access iframe content, retrying...");
-    updateStatusText("Cannot access iframe content, retrying...");
-    setTimeout(checkAutoTaskerDoneStatus, 1000);
-    return;
-  }
+  const tryAccessIframe = async () => {
+    const iframe = document.getElementsByTagName("iframe")[0];
 
-  const autoTaskerDone = iframe.contentDocument.querySelector(".blumfarm-status");
+    if (!iframe) {
+      console.log(`Iframe not found, retry ${retryCount + 1}/${maxRetries}`);
+      updateStatusText(
+        `Iframe not found, retry ${retryCount + 1}/${maxRetries}`
+      );
 
-  if (autoTaskerDone) {
-    const autoTaskerText = autoTaskerDone.textContent.trim();
-    if (autoTaskerText.includes("Click work is done.")) {
-      await clickCloseBtn();
-      console.log("Auto tasker done, close button clicked");
-      updateStatusText("Auto tasker done, close button clicked");
-    } else {
-      console.log("Work not done, rechecking...");
-      updateStatusText("Work not done, rechecking...");
-      setTimeout(checkAutoTaskerDoneStatus, 3000);
+      if (retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(tryAccessIframe, 1000);
+      }
+      return;
     }
-  } else {
-    console.log("Auto tasker done button not found, retrying...");
-    updateStatusText("Auto tasker done button not found, retrying...");
-    setTimeout(checkAutoTaskerDoneStatus, 1000);
-  }
+
+    try {
+      // Try accessing contentDocument with error handling
+      const contentDoc =
+        iframe.contentDocument || iframe.contentWindow?.document;
+
+      if (!contentDoc) {
+        console.log(
+          `Cannot access iframe content, retry ${retryCount + 1}/${maxRetries}`
+        );
+        updateStatusText(
+          `Cannot access iframe content, retry ${retryCount + 1}/${maxRetries}`
+        );
+
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(tryAccessIframe, 1000);
+        }
+        return;
+      }
+
+      const autoTaskerDone = contentDoc.querySelector(".blumfarm-status");
+
+      if (autoTaskerDone) {
+        const autoTaskerText = autoTaskerDone.textContent.trim();
+        if (autoTaskerText.includes("Click work is done.")) {
+          await clickCloseBtn();
+          console.log("Auto tasker done, close button clicked");
+          updateStatusText("Auto tasker done, close button clicked");
+        } else {
+          console.log("Work not done, rechecking...");
+          updateStatusText("Work not done, rechecking...");
+          if (retryCount < maxRetries) {
+            retryCount++;
+            setTimeout(tryAccessIframe, 3000);
+          }
+        }
+      } else {
+        console.log(
+          `Auto tasker status not found, retry ${retryCount + 1}/${maxRetries}`
+        );
+        updateStatusText(
+          `Auto tasker status not found, retry ${retryCount + 1}/${maxRetries}`
+        );
+
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(tryAccessIframe, 1000);
+        }
+      }
+    } catch (error) {
+      console.log(
+        `Error accessing iframe: ${error}, retry ${
+          retryCount + 1
+        }/${maxRetries}`
+      );
+      updateStatusText(
+        `Error accessing iframe, retry ${retryCount + 1}/${maxRetries}`
+      );
+
+      if (retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(tryAccessIframe, 1000);
+      }
+    }
+  };
+
+  await tryAccessIframe();
 };
 
 // Helper to safely click on a node
