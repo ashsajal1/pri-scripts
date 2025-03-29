@@ -67,7 +67,10 @@ const clickCloseBtn = async () => {
 };
 
 const checkAutoTaskerDoneStatus = async () => {
-  const autoTaskerDone = document.querySelector("#blumfarm-controls-style");
+  const iframe = document.getElementsByTagName("iframe")[0];
+  const autoTaskerDone =
+    iframe.contentDocument.querySelector(".blumfarm-status");
+
   if (autoTaskerDone) {
     console.log("Auto tasker done button found");
     updateStatusText("Auto tasker done button found");
@@ -78,8 +81,8 @@ const checkAutoTaskerDoneStatus = async () => {
       console.log("Auto tasker done, close button clicked");
       updateStatusText("Auto tasker done, close button clicked");
     } else {
-      console.log("Auto tasker not done, rechecking...");
-      updateStatusText("Auto tasker not done, rechecking...");
+      console.log("Work not done, rechecking...");
+      updateStatusText("Work not done, rechecking...");
       setTimeout(checkAutoTaskerDoneStatus, 3000); // Retry after 3 seconds
     }
   } else {
