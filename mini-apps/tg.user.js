@@ -12,6 +12,20 @@
 // ==/UserScript==
 
 //create a element to show status text in top with rounded and transaprent bg with 0.2 bg opacity and red bg
+// Create a button element to hide/show the status text
+const toggleStatusButton = document.createElement("button");
+toggleStatusButton.textContent = "Hide Status";
+toggleStatusButton.style.position = "fixed";
+toggleStatusButton.style.top = "10px";
+toggleStatusButton.style.right = "10px";
+toggleStatusButton.style.zIndex = "10000";
+toggleStatusButton.style.padding = "5px 10px";
+toggleStatusButton.style.background = "#eee";
+toggleStatusButton.style.border = "1px solid #ccc";
+toggleStatusButton.style.borderRadius = "5px";
+document.body.appendChild(toggleStatusButton);
+
+//create a element to show status text in top with rounded and transaprent bg with 0.2 bg opacity and red bg
 const statusText = document.createElement("div");
 statusText.style.position = "fixed";
 statusText.style.top = "0";
@@ -26,6 +40,20 @@ statusText.style.fontSize = "16px";
 statusText.style.fontWeight = "bold";
 statusText.style.zIndex = "9999";
 document.body.appendChild(statusText);
+
+// Add a click event listener to the button
+let statusVisible = true;
+toggleStatusButton.addEventListener("click", () => {
+  if (statusVisible) {
+    statusText.style.display = "none";
+    toggleStatusButton.textContent = "Show Status";
+  } else {
+    statusText.style.display = "block";
+    toggleStatusButton.textContent = "Hide Status";
+  }
+  statusVisible = !statusVisible;
+});
+
 
 const updateStatusText = (text) => {
   statusText.textContent = text;
