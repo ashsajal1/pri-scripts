@@ -20,7 +20,7 @@ toggleStatusButton.style.top = "10px";
 toggleStatusButton.style.right = "10px";
 toggleStatusButton.style.zIndex = "10000";
 toggleStatusButton.style.padding = "5px 10px";
-toggleStatusButton.style.background = "#eee";
+toggleStatusButton.style.background = "#0955a5";
 toggleStatusButton.style.border = "1px solid #ccc";
 toggleStatusButton.style.borderRadius = "5px";
 document.body.appendChild(toggleStatusButton);
@@ -53,7 +53,6 @@ toggleStatusButton.addEventListener("click", () => {
   }
   statusVisible = !statusVisible;
 });
-
 
 const updateStatusText = (text) => {
   statusText.textContent = text;
