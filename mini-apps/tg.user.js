@@ -94,9 +94,6 @@ const clickCloseBtn = async () => {
 };
 
 const checkAutoTaskerDoneStatus = async () => {
-  let retryCount = 0;
-  const maxRetries = 30; // Maximum number of retries (30 seconds total)
-
   // This function will start listening for messages from the iframe
   const listenForMessages = async () => {
     window.addEventListener("message", async (event) => {
@@ -127,16 +124,10 @@ const checkAutoTaskerDoneStatus = async () => {
     const iframe = document.getElementsByTagName("iframe")[0];
 
     if (!iframe) {
-      console.log(`Iframe not found, retry ${retryCount + 1}/${maxRetries}`);
-      updateStatusText(
-        `Iframe not found, retry ${retryCount + 1}/${maxRetries}`
-      );
-
-      if (retryCount < maxRetries) {
-        retryCount++;
-        setTimeout(tryAccessIframe, 1000);
-      }
-      return;
+      console.log(`Iframe not found, retrying...`);
+      updateStatusText(`Iframe not found, retrying...`);
+      await sleep(1000);
+      return await tryAccessIframe(); // Retry indefinitely
     }
 
     // If iframe exists, listen for messages
