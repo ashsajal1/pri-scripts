@@ -829,7 +829,7 @@ async function waitForStoryPageToDisappear() {
 }
 
 const doClaim = () => {
-  document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)";
+  document.body.style.backgroundColor = "rgba(14, 81, 206, 0.4)";
   document.body.style.transition = "background-color 0.3s";
 
   const findAndClickFarmButton = async () => {
