@@ -197,7 +197,7 @@ async function runVerifyTasker() {
 
 async function runClickTasker() {
   // Set document background to indicate click task is running
-  document.body.style.backgroundColor = "rgba(50, 205, 50, 0.4)"; // Bright green with higher opacity
+  document.body.style.backgroundColor = "rgba(14, 81, 206, 0.4)"; // Bright green with higher opacity
   document.body.style.transition = "background-color 0.3s";
   toggleTaskButtons(true);
   updateStatus("Starting clicking task...");
