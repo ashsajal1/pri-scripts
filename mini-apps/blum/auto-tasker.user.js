@@ -902,9 +902,7 @@ const clickEarnTabs = () => {
 
       await sleep(2000);
 
-      // Try to find task element with retries
-      let attempts = 0;
-      const maxAttempts = 10; // Maximum number of retry attempts
+      // Try to find task element with retries (no max attempts)
       const retryInterval = 1000; // Time between retries in ms
 
       const findTaskElement = async () => {
@@ -915,18 +913,10 @@ const clickEarnTabs = () => {
           // do some stuff with taskElement
           runClickTasker();
         } else {
-          attempts++;
-          if (attempts < maxAttempts) {
-            console.log(
-              `Attempt ${attempts}/${maxAttempts}: No task element found, retrying...`
-            );
-            updateStatus(`Attempt ${attempts}/${maxAttempts}: Retrying...`);
-            await sleep(retryInterval);
-            return await findTaskElement();
-          } else {
-            console.log("Max attempts reached, giving up.");
-            updateStatus("Max attempts reached, giving up.");
-          }
+          console.log(`No task element found, retrying...`);
+          updateStatus(`Retrying...`);
+          await sleep(retryInterval);
+          return await findTaskElement(); // Retry indefinitely
         }
       };
 
@@ -934,6 +924,7 @@ const clickEarnTabs = () => {
     }
   });
 };
+
 
 // Replace the self-executing function with this version
 (async function checkForEarnLink() {
