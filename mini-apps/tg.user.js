@@ -34,10 +34,10 @@ statusText.style.width = "100%";
 statusText.style.height = "40px";
 statusText.style.backgroundColor = "rgba(255, 0, 0, 0.2)";
 statusText.style.color = "red";
-statusText.style.textAlign = "center";
+statusText.style.textAlign = "center"; // Center the text
 statusText.style.lineHeight = "40px";
-statusText.style.fontSize = "16px";
-statusText.style.fontWeight = "bold";
+statusText.style.fontSize = "20px"; // Increased font size
+statusText.style.fontWeight = "bold"; // Make the text bold
 statusText.style.zIndex = "9999";
 document.body.appendChild(statusText);
 
