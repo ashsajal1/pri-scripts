@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         !Blum Tasker!
-// @version      2.03
+// @name         Blum Tasker
+// @version      2.04
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://telegram.blum.codes/*
@@ -349,10 +349,7 @@ async function clickTabs(targetWork = "Click") {
         console.log("Click work is done.");
         updateStatus("Click work is done.");
         // Add after tasks are completed
-        window.parent.postMessage(
-          { message: "Click work is done." },
-          "*"
-        );
+        window.parent.postMessage({ message: "Click work is done." }, "*");
         console.log("Sent completion status to parent");
         updateStatus("Sent completion status to parent");
 
@@ -924,7 +921,6 @@ const clickEarnTabs = () => {
     }
   });
 };
-
 
 // Replace the self-executing function with this version
 (async function checkForEarnLink() {
