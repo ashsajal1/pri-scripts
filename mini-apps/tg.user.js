@@ -125,18 +125,33 @@ const checkAutoTaskerDoneStatus = async () => {
 
   // Try fetching the iframe element and setup the listener
   const tryAccessIframe = async () => {
-    const iframe = document.getElementsByTagName("iframe")[0];
+    const reloadDuration = 90000; // 90 seconds (1.5 minutes)
+    const startTime = Date.now(); // Track the start time
 
-    if (!iframe) {
-      console.log(`Iframe not found, retrying...`);
-      updateStatusText(`Iframe not found, retrying...`);
-      await sleep(1000);
-      return await tryAccessIframe(); // Retry indefinitely
-    }
+    const checkIframe = async () => {
+      const iframe = document.getElementsByTagName("iframe")[0];
+      const elapsedTime = Date.now() - startTime;
 
-    // If iframe exists, listen for messages
-    listenForMessages();
-    console.log("Listening for messages from iframe...");
+      // If 1.5 minutes have passed and iframe is still not found, reload
+      if (!iframe && elapsedTime >= reloadDuration) {
+        console.log("Iframe not found, time's up. Reloading...");
+        window.location.reload();
+        return;
+      }
+
+      if (!iframe) {
+        console.log(`Iframe not found, retrying...`);
+        updateStatusText(`Iframe not found, retrying...`);
+        await sleep(1000);
+        return await checkIframe(); // Retry indefinitely
+      }
+
+      // If iframe exists, listen for messages
+      listenForMessages();
+      console.log("Listening for messages from iframe...");
+    };
+
+    await checkIframe();
   };
 
   await tryAccessIframe();
