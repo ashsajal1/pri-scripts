@@ -239,11 +239,6 @@ function safeClick(node) {
     await processAccount(accounts[i]);
     console.log(`Moving to next account...`);
     updateStatusText(`Moving to next account...`);
-    if (i === accounts.length - 1) {
-      await giveCloseReqAfterDone();
-      console.log("All accounts processed, sending close request...");
-      updateStatusText("All accounts processed, sending close request...");
-    }
     await sleep(2000);
   }
 
@@ -254,6 +249,10 @@ function safeClick(node) {
 
   statusText.style.height = "140px";
   statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
+
+  await giveCloseReqAfterDone();
+  console.log("All accounts processed, sending close request...");
+  updateStatusText("All accounts processed, sending close request...");
 })();
 
 const giveCloseReqAfterDone = async () => {
