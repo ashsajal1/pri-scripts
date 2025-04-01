@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import subprocess
+import psutil
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
@@ -32,14 +33,28 @@ def load_all_profiles() -> List[str]:
 
 
 def close_all_instances():
-    """Close all currently running Brave instances."""
+    """Close all currently running Brave instances using psutil."""
     global running_instances
     print("[REST] Closing all running instances.")
-    for folder, proc in list(running_instances.items()):
-        proc.terminate()
-        print(f"[REST] Closed instance: {folder}")
+    for folder in list(running_instances.keys()):
+        profile_path = os.path.join(BASE_DIR, folder)
 
-    running_instances.clear()
+        # Search for processes matching Brave's process name and command line arguments
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            try:
+                # Check if the process is Brave and the command line contains the user-data-dir argument
+                if proc.info['name'] == 'brave' and any(profile_path in cmd for cmd in proc.info['cmdline']):
+                    print(f"[REST] Terminating Brave process with PID {proc.info['pid']}")
+                    proc.terminate()  # Terminate the process
+                    proc.wait()  # Ensure the process has been terminated
+                    print(f"[REST] Closed instance: {folder}")
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                pass  # Ignore processes that no longer exist or can't be accessed
+
+        # Clear the entry in running_instances
+        running_instances.pop(folder, None)
+
+    print("[REST] All instances closed.")
 
 
 def open_instances():
@@ -104,7 +119,7 @@ def close_instance():
         close_all_instances()
         # Reset the counter
         close_request_count = 0
-        # Open new instances
+        # Open new instances after closing old ones
         open_instances()
         return {"message": "Max close requests reached. All instances closed and new ones opened."}
 
