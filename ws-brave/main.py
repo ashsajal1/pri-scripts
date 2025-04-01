@@ -40,14 +40,18 @@ def close_all_instances():
         profile_path = os.path.join(BASE_DIR, folder)
 
         # Search for processes matching Brave's process name and command line arguments
-        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
                 # Check if the process is Brave and the command line contains the user-data-dir argument
-                if proc.info['name'] == 'brave' and any(profile_path in cmd for cmd in proc.info['cmdline']):
-                    print(f"[REST] Terminating Brave process with PID {proc.info['pid']}")
-                    proc.terminate()  # Terminate the process
-                    proc.wait()  # Ensure the process has been terminated
-                    print(f"[REST] Closed instance: {folder}")
+                if proc.info["name"] == "brave" and proc.info["cmdline"] is not None:
+                    # Ensure that the command line contains the user-data-dir path
+                    if any(profile_path in cmd for cmd in proc.info["cmdline"]):
+                        print(
+                            f"[REST] Terminating Brave process with PID {proc.info['pid']}"
+                        )
+                        proc.terminate()  # Terminate the process
+                        proc.wait()  # Ensure the process has been terminated
+                        print(f"[REST] Closed instance: {folder}")
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 pass  # Ignore processes that no longer exist or can't be accessed
 
@@ -89,8 +93,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Change this to your domain for security
     allow_credentials=True,
-    allow_methods=["*"],   # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],   # Allows all headers
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
 )
 
 
@@ -121,7 +125,9 @@ def close_instance():
         close_request_count = 0
         # Open new instances after closing old ones
         open_instances()
-        return {"message": "Max close requests reached. All instances closed and new ones opened."}
+        return {
+            "message": "Max close requests reached. All instances closed and new ones opened."
+        }
 
     return {"message": "Close request received, waiting for more."}
 
