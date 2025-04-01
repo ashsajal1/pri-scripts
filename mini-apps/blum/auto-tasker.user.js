@@ -352,7 +352,9 @@ async function clickTabs(targetWork = "Click") {
         window.parent.postMessage({ message: "Click work is done." }, "*");
         console.log("Sent completion status to parent");
         updateStatus("Sent completion status to parent");
-
+        await giveCloseReqAfterDone();
+        console.log("Close request sent.");
+        updateStatus("Close request sent.");
         return; // Stop after the first "Farming" tab is processed
       }
     }
@@ -1068,3 +1070,13 @@ async function handleModalElements() {
 
   await tryFindModal();
 }
+
+const giveCloseReqAfterDone = async () => {
+  try {
+    await fetch("http://localhost:8000/close", {
+      method: "POST",
+    });
+  } catch (error) {
+    console.error("Error in giveCloseReqAfterDone:", error);
+  }
+};
