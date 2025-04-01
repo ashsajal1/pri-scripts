@@ -6,18 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from contextlib import asynccontextmanager
 
-
-# Define the lifespan event
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("[REST] Startup: Opening initial instances.")
-    open_instances()  # Start Brave instances
-    yield  # This is where the app runs
-    print("[REST] Shutdown: Closing all instances.")
-    for proc in running_instances.values():
-        proc.terminate()  # Close all running instances
-
-
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
 MAX_INSTANCES = 15
@@ -25,6 +13,7 @@ MAX_INSTANCES = 15
 # Global variables for managing instances
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
 next_profile_index = 0  # Index for the next profile to launch
+close_request_count = 0  # Count of close requests received
 
 
 def load_all_profiles() -> List[str]:
@@ -42,13 +31,22 @@ def load_all_profiles() -> List[str]:
     return profiles
 
 
+def close_all_instances():
+    """Close all currently running Brave instances."""
+    global running_instances
+    print("[REST] Closing all running instances.")
+    for folder, proc in list(running_instances.items()):
+        proc.terminate()
+        print(f"[REST] Closed instance: {folder}")
+
+    running_instances.clear()
+
+
 def open_instances():
-    """
-    Open Brave instances until there are MAX_INSTANCES running (if available).
-    Uses the global next_profile_index to track which profiles to launch next.
-    """
+    """Open Brave instances up to MAX_INSTANCES if available."""
     global next_profile_index, running_instances
     profiles = load_all_profiles()
+
     while len(running_instances) < MAX_INSTANCES and next_profile_index < len(profiles):
         folder = profiles[next_profile_index]
         next_profile_index += 1
@@ -56,6 +54,16 @@ def open_instances():
         proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
         running_instances[folder] = proc
         print(f"[REST] Opened instance: {folder}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handles startup and shutdown events."""
+    print("[REST] Startup: Opening initial instances.")
+    open_instances()
+    yield
+    print("[REST] Shutdown: Closing all instances.")
+    close_all_instances()
 
 
 # Initialize the API application
@@ -70,33 +78,39 @@ app.add_middleware(
     allow_headers=["*"],   # Allows all headers
 )
 
+
 @app.get("/status", response_model=dict)
 def get_status():
-    """
-    Return the list of currently running instances.
-    """
+    """Return the list of currently running instances."""
     return {"running_instances": list(running_instances.keys())}
 
 
-@app.post("/close/{folder}", response_model=dict)
-def close_instance(folder: str):
+@app.post("/close", response_model=dict)
+def close_instance():
     """
-    Close the Brave instance corresponding to the given profile folder.
-    Automatically opens new instances if available.
+    Close all Brave instances when a close request is received.
+    Tracks the number of close requests and closes all instances when the limit is reached.
     """
+    global close_request_count
     global running_instances
-    if folder in running_instances:
-        proc = running_instances.pop(folder)
-        proc.terminate()
-        print(f"[REST] Closed instance: {folder}")
-        # Open new instances if the total running is less than MAX_INSTANCES
+
+    # Increment the close request counter
+    close_request_count += 1
+    print(f"[REST] Close request received. Total close requests: {close_request_count}")
+
+    # If the number of close requests reaches MAX_INSTANCES, close all instances
+    if close_request_count >= MAX_INSTANCES:
+        print(f"[REST] Max close requests reached. Closing all instances.")
+        close_all_instances()
+        # Reset the counter
+        close_request_count = 0
+        # Open new instances
         open_instances()
-        return {"message": f"Closed instance: {folder}"}
-    else:
-        raise HTTPException(status_code=404, detail=f"Instance {folder} not running.")
+        return {"message": "Max close requests reached. All instances closed and new ones opened."}
+
+    return {"message": "Close request received, waiting for more."}
 
 
-# Optional endpoint to force open new instances (if available)
 @app.post("/open", response_model=dict)
 def open_new_instances():
     """
@@ -107,6 +121,3 @@ def open_new_instances():
         "message": "Opened new instances if available.",
         "running_instances": list(running_instances.keys()),
     }
-
-
-#python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
