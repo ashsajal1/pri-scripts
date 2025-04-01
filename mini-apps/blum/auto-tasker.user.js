@@ -1072,11 +1072,35 @@ async function handleModalElements() {
 }
 
 const giveCloseReqAfterDone = async () => {
-  try {
-    await fetch("http://localhost:8000/close", {
-      method: "POST",
-    });
-  } catch (error) {
-    console.error("Error in giveCloseReqAfterDone:", error);
+  let attempts = 0;
+  const maxAttempts = 3; // You can adjust the number of retries here
+  const retryDelay = 2000; // Delay between retries in milliseconds (2 seconds)
+
+  while (attempts < maxAttempts) {
+    try {
+      const response = await fetch("http://localhost:8000/close", {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        console.log("Close request sent successfully.");
+        return; // Exit the function if the request is successful
+      } else {
+        console.error(`Close request failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error in giveCloseReqAfterDone:", error);
+    }
+
+    attempts++;
+    if (attempts < maxAttempts) {
+      console.log(
+        `Retrying close request in ${retryDelay}ms (attempt ${attempts}/${maxAttempts})...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
   }
+
+  console.error(`Failed to send close request after ${maxAttempts} attempts.`);
+  updateStatus("Failed to send close request.");
 };
