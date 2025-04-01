@@ -3,6 +3,19 @@ import os
 import subprocess
 from fastapi import FastAPI, HTTPException
 from typing import List
+from contextlib import asynccontextmanager
+
+
+# Define the lifespan event
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("[REST] Startup: Opening initial instances.")
+    open_instances()  # Start Brave instances
+    yield  # This is where the app runs
+    print("[REST] Shutdown: Closing all instances.")
+    for proc in running_instances.values():
+        proc.terminate()  # Close all running instances
+
 
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
@@ -45,14 +58,7 @@ def open_instances():
 
 
 # Initialize the API application
-app = FastAPI(title="Brave Instance Manager REST API")
-
-
-@app.on_event("startup")
-def startup_event():
-    # On startup, open instances up to MAX_INSTANCES
-    open_instances()
-    print("[REST] Startup: Opened initial instances.")
+app = FastAPI(title="Brave Instance Manager REST API", lifespan=lifespan)
 
 
 @app.get("/status", response_model=dict)
