@@ -2,6 +2,7 @@
 import os
 import subprocess
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from contextlib import asynccontextmanager
 
@@ -60,6 +61,14 @@ def open_instances():
 # Initialize the API application
 app = FastAPI(title="Brave Instance Manager REST API", lifespan=lifespan)
 
+# Allow all origins (You can restrict this later)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to your domain for security
+    allow_credentials=True,
+    allow_methods=["*"],   # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],   # Allows all headers
+)
 
 @app.get("/status", response_model=dict)
 def get_status():
