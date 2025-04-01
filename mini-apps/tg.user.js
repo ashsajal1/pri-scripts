@@ -5,7 +5,8 @@
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://web.telegram.org/*
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @connect      localhost
 // @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg.webp
 // @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg.user.js
 // @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg.user.js
@@ -242,7 +243,6 @@ function safeClick(node) {
       await giveCloseReqAfterDone();
       console.log("All accounts processed, sending close request...");
       updateStatusText("All accounts processed, sending close request...");
-      
     }
     await sleep(2000);
   }
@@ -256,7 +256,6 @@ function safeClick(node) {
   statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
 })();
 
-
 const giveCloseReqAfterDone = async () => {
   let attempts = 0;
   const maxAttempts = 3; // You can adjust the number of retries here
@@ -264,7 +263,8 @@ const giveCloseReqAfterDone = async () => {
 
   while (attempts < maxAttempts) {
     try {
-      const response = await fetch("http://localhost:8000/close", {
+      const response = await GM_xmlhttpRequest({
+        url: "http://localhost:8000/close",
         method: "POST",
       });
 
