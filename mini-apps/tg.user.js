@@ -239,17 +239,27 @@ function safeClick(node) {
     await processAccount(accounts[i]);
     console.log(`Moving to next account...`);
     updateStatusText(`Moving to next account...`);
-    await sleep(2000);
+    await sleep(1000);
   }
 
   // Clear stored index when all done
+  console.log("Before removal:", localStorage.getItem("currentAccountIndex"));
   localStorage.removeItem("currentAccountIndex");
+  console.log("After removal:", localStorage.getItem("currentAccountIndex")); // Should be null
+
+  console.log("Cleared stored index!");
+  updateStatusText("Cleared stored index!");
+  await sleep(1000); // Wait before changing status text
+
   console.log("All accounts processed!");
   updateStatusText("All accounts processed!");
 
   statusText.style.height = "140px";
   statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
 
+  await sleep(1000); // Wait for 1 second before sending close request
+  console.log("Sending close request...");
+  updateStatusText("Sending close request...");
   await giveCloseReqAfterDone();
   console.log("All accounts processed, sending close request...");
   updateStatusText("All accounts processed, sending close request...");
