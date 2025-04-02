@@ -126,7 +126,7 @@ const checkAutoTaskerDoneStatus = async () => {
 
   // Try fetching the iframe element and setup the listener
   const tryAccessIframe = async () => {
-    const reloadDuration = 90000; // 90 seconds (1.5 minutes)
+    const reloadDuration = 10000; // 90 seconds (1.5 minutes)
     const startTime = Date.now(); // Track the start time
 
     const checkIframe = async () => {

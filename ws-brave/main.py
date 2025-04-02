@@ -15,6 +15,7 @@ MAX_INSTANCES = 15
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
 next_profile_index = 0  # Index for the next profile to launch
 close_request_count = 0  # Count of close requests received
+profiles_to_open = [] # List of profiles to open after closing
 
 
 def load_all_profiles() -> List[str]:
@@ -34,8 +35,12 @@ def load_all_profiles() -> List[str]:
 
 def close_all_instances():
     """Close all currently running Brave instances using psutil."""
-    global running_instances
+    global running_instances, profiles_to_open
     print("[REST] Closing all running instances.")
+    
+    # Store the profiles that were running before closing
+    profiles_to_open = list(running_instances.keys())
+    
     for folder in list(running_instances.keys()):
         profile_path = os.path.join(BASE_DIR, folder)
 
@@ -63,16 +68,31 @@ def close_all_instances():
 
 def open_instances():
     """Open Brave instances up to MAX_INSTANCES if available."""
-    global next_profile_index, running_instances
+    global next_profile_index, running_instances, profiles_to_open
     profiles = load_all_profiles()
+    
+    # If there are profiles to open from the previous close, use them first
+    if profiles_to_open:
+        print("[REST] Opening instances from previous close.")
+        for folder in profiles_to_open:
+            if folder in profiles and folder not in running_instances:
+                profile_path = os.path.join(BASE_DIR, folder)
+                proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
+                running_instances[folder] = proc
+                print(f"[REST] Opened instance: {folder}")
+        profiles_to_open = []  # Clear the list after using it
 
+    # Then, open new instances if needed
     while len(running_instances) < MAX_INSTANCES and next_profile_index < len(profiles):
         folder = profiles[next_profile_index]
-        next_profile_index += 1
-        profile_path = os.path.join(BASE_DIR, folder)
-        proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
-        running_instances[folder] = proc
-        print(f"[REST] Opened instance: {folder}")
+        if folder not in running_instances:
+            next_profile_index += 1
+            profile_path = os.path.join(BASE_DIR, folder)
+            proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
+            running_instances[folder] = proc
+            print(f"[REST] Opened instance: {folder}")
+        else:
+            next_profile_index +=1
 
 
 @asynccontextmanager
@@ -109,7 +129,7 @@ def close_instance():
     """
     Close Brave instances in batches of MAX_INSTANCES (15), except for the last smaller batch.
     """
-    global close_request_count
+    global close_request_count, next_profile_index
 
     # Get total profiles in BASE_DIR
     total_profiles = len(load_all_profiles())
@@ -143,8 +163,15 @@ def close_instance():
     if close_request_count >= close_threshold:
         print(f"[REST] Closing all instances for this segment ({close_threshold}).")
         close_all_instances()
-        close_request_count = 0  # Reset counter
-        return {"message": "All instances closed for this segment."}
+        
+        # Reset counter and next_profile_index
+        close_request_count = 0
+        next_profile_index = 0
+        
+        # Open new instances after closing
+        open_instances()
+        
+        return {"message": "All instances closed for this segment and new instances opened."}
 
     return {
         "message": f"Close request received. Waiting for {close_threshold - close_request_count} more requests.",
