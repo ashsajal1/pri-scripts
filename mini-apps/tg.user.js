@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Telegram Auto Worker
 // @description  Auto worker for Telegram bot
-// @version      2.08
+// @version      2.09
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://web.telegram.org/*
