@@ -66,10 +66,8 @@
       setTimeout(() => {
         if (element) {
           element.onClick(element);
-          if (Math.random() < 0.5) {
-            element.isExplosion = true;
-            element.addedAt = performance.now();
-          }
+          element.isExplosion = true;
+          element.addedAt = performance.now();
           // No further references are kept to 'element'
         }
       }, 10);
