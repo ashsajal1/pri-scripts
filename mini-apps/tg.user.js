@@ -186,16 +186,16 @@ function safeClick(node) {
 (async function checkForBlumChat() {
   const accounts = [1, 2, 3]; // Add your account numbers
 
-  // Get current account index from localStorage or start from 0
+  // Get current account index from sessionStorage or start from 0
   let currentAccountIndex = parseInt(
-    localStorage.getItem("currentAccountIndex") || 0
+    sessionStorage.getItem("currentAccountIndex") || 0
   );
   console.log(`Resuming from account index: ${currentAccountIndex}`);
 
   async function processAccount(accountNumber) {
     try {
       // Store current account index before navigation
-      localStorage.setItem("currentAccountIndex", currentAccountIndex);
+      sessionStorage.setItem("currentAccountIndex", currentAccountIndex);
 
       // Set URL with account number and bot hash
       const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
@@ -243,9 +243,9 @@ function safeClick(node) {
   }
 
   // Clear stored index when all done
-  console.log("Before removal:", localStorage.getItem("currentAccountIndex"));
-  localStorage.removeItem("currentAccountIndex");
-  console.log("After removal:", localStorage.getItem("currentAccountIndex")); // Should be null
+  console.log("Before removal:", sessionStorage.getItem("currentAccountIndex"));
+  sessionStorage.removeItem("currentAccountIndex");
+  console.log("After removal:", sessionStorage.getItem("currentAccountIndex")); // Should be null
 
   console.log("Cleared stored index!");
   updateStatusText("Cleared stored index!");
