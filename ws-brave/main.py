@@ -50,18 +50,14 @@ def close_all_instances():
         # Search for processes matching Brave's process name and command line arguments
         for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
-                # Check if the process is Brave and the command line contains the user-data-dir argument
                 if proc.info["name"] == "brave" and proc.info["cmdline"] is not None:
-                    # Ensure that the command line contains the user-data-dir path
                     if any(profile_path in cmd for cmd in proc.info["cmdline"]):
-                        print(
-                            f"[REST] Terminating Brave process with PID {proc.info['pid']}"
-                        )
-                        proc.terminate()  # Terminate the process
-                        proc.wait()  # Ensure the process has been terminated
+                        print(f"[REST] Terminating Brave process with PID {proc.info['pid']}")
+                        proc.terminate()
+                        proc.wait()
                         print(f"[REST] Closed instance: {folder}")
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass  # Ignore processes that no longer exist or can't be accessed
+                pass
 
         # Clear the entry in running_instances
         running_instances.pop(folder, None)
@@ -164,14 +160,14 @@ def close_instance():
         print(f"[REST] Closing all instances for this segment ({close_threshold}).")
         close_all_instances()
 
-        # Calculate the starting index for the next batch
-        next_profile_index = (current_batch + 1) * MAX_INSTANCES
-
-        # Reset counter
-        close_request_count = 0
+        # After closing, reset `next_profile_index` to the beginning to open new profiles
+        next_profile_index = 0  # Reset to open fresh profiles
 
         # Open new instances after closing
         open_instances()
+
+        # Reset the counter
+        close_request_count = 0
 
         return {
             "message": "All instances closed for this segment and new instances opened."
@@ -192,3 +188,4 @@ def open_new_instances():
         "message": "Opened new instances if available.",
         "running_instances": list(running_instances.keys()),
     }
+ 
