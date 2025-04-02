@@ -15,11 +15,13 @@ MAX_INSTANCES = 15
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
 next_profile_index = 0  # Index for the next profile to launch
 close_request_count = 0  # Count of close requests received
-profiles_to_open = [] # List of profiles to open after closing
+profiles_to_open = []  # List of profiles to open after closing
+all_profiles = []  # List of all profiles
 
 
 def load_all_profiles() -> List[str]:
     """Load all profile folder names from BASE_DIR, sorted numerically if possible."""
+    global all_profiles
     if not os.path.exists(BASE_DIR):
         os.makedirs(BASE_DIR)
     profiles = sorted(
@@ -30,6 +32,7 @@ def load_all_profiles() -> List[str]:
         ],
         key=lambda s: int(s) if s.isdigit() else s,
     )
+    all_profiles = profiles
     return profiles
 
 
@@ -37,10 +40,10 @@ def close_all_instances():
     """Close all currently running Brave instances using psutil."""
     global running_instances, profiles_to_open
     print("[REST] Closing all running instances.")
-    
+
     # Store the profiles that were running before closing
     profiles_to_open = list(running_instances.keys())
-    
+
     for folder in list(running_instances.keys()):
         profile_path = os.path.join(BASE_DIR, folder)
 
@@ -68,9 +71,9 @@ def close_all_instances():
 
 def open_instances():
     """Open Brave instances up to MAX_INSTANCES if available."""
-    global next_profile_index, running_instances, profiles_to_open
+    global next_profile_index, running_instances, profiles_to_open, all_profiles
     profiles = load_all_profiles()
-    
+
     # If there are profiles to open from the previous close, use them first
     if profiles_to_open:
         print("[REST] Opening instances from previous close.")
@@ -86,19 +89,18 @@ def open_instances():
     while len(running_instances) < MAX_INSTANCES and next_profile_index < len(profiles):
         folder = profiles[next_profile_index]
         if folder not in running_instances:
-            next_profile_index += 1
             profile_path = os.path.join(BASE_DIR, folder)
             proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
             running_instances[folder] = proc
             print(f"[REST] Opened instance: {folder}")
-        else:
-            next_profile_index +=1
+        next_profile_index += 1
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handles startup and shutdown events."""
     print("[REST] Startup: Opening initial instances.")
+    load_all_profiles()
     open_instances()
     yield
     print("[REST] Shutdown: Closing all instances.")
@@ -129,19 +131,17 @@ def close_instance():
     """
     Close Brave instances in batches of MAX_INSTANCES (15), except for the last smaller batch.
     """
-    global close_request_count, next_profile_index
+    global close_request_count, next_profile_index, all_profiles
 
     # Get total profiles in BASE_DIR
-    total_profiles = len(load_all_profiles())
+    total_profiles = len(all_profiles)
 
     if total_profiles == 0:
         return {"message": "No profiles found in the directory."}
 
     # Calculate batch breakdown
-    full_batches = (
-        total_profiles // MAX_INSTANCES
-    )  # Number of full batches (15 per batch)
-    remaining_profiles = total_profiles % MAX_INSTANCES  # Last batch size (if not zero)
+    full_batches = total_profiles // MAX_INSTANCES
+    remaining_profiles = total_profiles % MAX_INSTANCES
 
     # Determine current batch number based on requests made
     current_batch = close_request_count // MAX_INSTANCES
@@ -163,15 +163,19 @@ def close_instance():
     if close_request_count >= close_threshold:
         print(f"[REST] Closing all instances for this segment ({close_threshold}).")
         close_all_instances()
-        
-        # Reset counter and next_profile_index
+
+        # Calculate the starting index for the next batch
+        next_profile_index = (current_batch + 1) * MAX_INSTANCES
+
+        # Reset counter
         close_request_count = 0
-        next_profile_index = 0
-        
+
         # Open new instances after closing
         open_instances()
-        
-        return {"message": "All instances closed for this segment and new instances opened."}
+
+        return {
+            "message": "All instances closed for this segment and new instances opened."
+        }
 
     return {
         "message": f"Close request received. Waiting for {close_threshold - close_request_count} more requests.",
