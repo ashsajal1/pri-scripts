@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
-MAX_INSTANCES = 1
+MAX_INSTANCES = 15
 
 # Global variables for managing instances
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
