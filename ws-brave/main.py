@@ -107,29 +107,48 @@ def get_status():
 @app.post("/close", response_model=dict)
 def close_instance():
     """
-    Close all Brave instances when a close request is received.
-    Tracks the number of close requests and closes all instances when the limit is reached.
+    Close Brave instances in batches of MAX_INSTANCES (15), except for the last smaller batch.
     """
     global close_request_count
-    global running_instances
+
+    # Get total profiles in BASE_DIR
+    total_profiles = len(load_all_profiles())
+
+    if total_profiles == 0:
+        return {"message": "No profiles found in the directory."}
+
+    # Calculate batch breakdown
+    full_batches = (
+        total_profiles // MAX_INSTANCES
+    )  # Number of full batches (15 per batch)
+    remaining_profiles = total_profiles % MAX_INSTANCES  # Last batch size (if not zero)
+
+    # Determine current batch number based on requests made
+    current_batch = close_request_count // MAX_INSTANCES
+
+    # Is this the last segment?
+    is_last_segment = (current_batch >= full_batches) and (remaining_profiles != 0)
+
+    # Set the correct threshold for closing
+    if is_last_segment:
+        close_threshold = remaining_profiles
+    else:
+        close_threshold = MAX_INSTANCES
 
     # Increment the close request counter
     close_request_count += 1
     print(f"[REST] Close request received. Total close requests: {close_request_count}")
 
-    # If the number of close requests reaches MAX_INSTANCES, close all instances
-    if close_request_count >= MAX_INSTANCES:
-        print(f"[REST] Max close requests reached. Closing all instances.")
+    # If close requests reach the threshold, close all instances for this segment
+    if close_request_count >= close_threshold:
+        print(f"[REST] Closing all instances for this segment ({close_threshold}).")
         close_all_instances()
-        # Reset the counter
-        close_request_count = 0
-        # Open new instances after closing old ones
-        open_instances()
-        return {
-            "message": "Max close requests reached. All instances closed and new ones opened."
-        }
+        close_request_count = 0  # Reset counter
+        return {"message": "All instances closed for this segment."}
 
-    return {"message": "Close request received, waiting for more."}
+    return {
+        "message": f"Close request received. Waiting for {close_threshold - close_request_count} more requests.",
+    }
 
 
 @app.post("/open", response_model=dict)
