@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         !BlumFarm!
-// @version      1.1
+// @version      1.2
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://telegram.blum.codes/*
