@@ -343,6 +343,7 @@ async function clickTabs(targetWork = "Click") {
     ) {
       await tab.click();
       await clickElements();
+      await verifyTask(); // temporary, remove later
       console.log("Work done for tab:", tabText);
       updateStatus(`Work done for tab: ${tabText}`);
 
