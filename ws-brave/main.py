@@ -11,12 +11,11 @@ from contextlib import asynccontextmanager
 BASE_DIR = "/home/sajal/multiple-data/brave"
 MAX_INSTANCES = 13
 
-# Global variables for managing instances
+# Global variables for managing instances and batches
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
-next_profile_index = 0  # Index for the next profile to launch
-close_request_count = 0  # Count of close requests received
-profiles_to_open = []  # List of profiles to open after closing
-all_profiles = []  # List of all profiles
+current_segment = 0     # 0-based index for the current segment (batch)
+close_request_count = 0 # Counter for /close requests received for the current segment
+all_profiles = []       # List of all profiles
 
 
 def load_all_profiles() -> List[str]:
@@ -38,11 +37,8 @@ def load_all_profiles() -> List[str]:
 
 def close_all_instances():
     """Close all currently running Brave instances using psutil."""
-    global running_instances, profiles_to_open
-    print("[REST] Closing all running instances.")
-
-    # Store the profiles that were running before closing
-    profiles_to_open = list(running_instances.keys())
+    global running_instances
+    print("[REST] Closing all running instances in current batch.")
 
     for folder in list(running_instances.keys()):
         profile_path = os.path.join(BASE_DIR, folder)
@@ -52,50 +48,44 @@ def close_all_instances():
             try:
                 if proc.info["name"] == "brave" and proc.info["cmdline"] is not None:
                     if any(profile_path in cmd for cmd in proc.info["cmdline"]):
-                        print(f"[REST] Terminating Brave process with PID {proc.info['pid']}")
+                        print(f"[REST] Terminating Brave process with PID {proc.info['pid']} for profile {folder}")
                         proc.terminate()
                         proc.wait()
                         print(f"[REST] Closed instance: {folder}")
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 pass
 
-        # Clear the entry in running_instances
+        # Remove from running_instances
         running_instances.pop(folder, None)
 
-    print("[REST] All instances closed.")
+    print("[REST] All instances in the current batch closed.")
 
 
 def open_instances():
-    """Open Brave instances up to MAX_INSTANCES if available."""
-    global next_profile_index, running_instances, profiles_to_open, all_profiles
+    """
+    Open Brave instances for the current segment up to MAX_INSTANCES.
+    The starting index is calculated based on the current segment.
+    """
+    global running_instances, current_segment, all_profiles
+
     profiles = load_all_profiles()
+    start_index = current_segment * MAX_INSTANCES
 
-    # If there are profiles to open from the previous close, use them first
-    if profiles_to_open:
-        print("[REST] Opening instances from previous close.")
-        for folder in profiles_to_open:
-            if folder in profiles and folder not in running_instances:
-                profile_path = os.path.join(BASE_DIR, folder)
-                proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
-                running_instances[folder] = proc
-                print(f"[REST] Opened instance: {folder}")
-        profiles_to_open = []  # Clear the list after using it
-
-    # Then, open new instances if needed
-    while len(running_instances) < MAX_INSTANCES and next_profile_index < len(profiles):
-        folder = profiles[next_profile_index]
+    # Open new instances until we reach MAX_INSTANCES or run out of profiles.
+    while len(running_instances) < MAX_INSTANCES and start_index < len(profiles):
+        folder = profiles[start_index]
         if folder not in running_instances:
             profile_path = os.path.join(BASE_DIR, folder)
             proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
             running_instances[folder] = proc
             print(f"[REST] Opened instance: {folder}")
-        next_profile_index += 1
+        start_index += 1
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handles startup and shutdown events."""
-    print("[REST] Startup: Opening initial instances.")
+    print("[REST] Startup: Opening initial batch of instances.")
     load_all_profiles()
     open_instances()
     yield
@@ -106,13 +96,13 @@ async def lifespan(app: FastAPI):
 # Initialize the API application
 app = FastAPI(title="Brave Instance Manager REST API", lifespan=lifespan)
 
-# Allow all origins (You can restrict this later)
+# Allow all origins (you can restrict this later)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Change this to your domain for security
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -125,56 +115,43 @@ def get_status():
 @app.post("/close", response_model=dict)
 def close_instance():
     """
-    Close Brave instances in batches of MAX_INSTANCES (15), except for the last smaller batch.
+    Increment a close request counter.
+    Once the total requests equal MAX_INSTANCES, close all current instances,
+    advance to the next batch, and open new instances.
     """
-    global close_request_count, next_profile_index, all_profiles
+    global close_request_count, current_segment
 
-    # Get total profiles in BASE_DIR
-    total_profiles = len(all_profiles)
-
-    if total_profiles == 0:
-        return {"message": "No profiles found in the directory."}
-
-    # Calculate batch breakdown
-    full_batches = total_profiles // MAX_INSTANCES
-    remaining_profiles = total_profiles % MAX_INSTANCES
-
-    # Determine current batch number based on requests made
-    current_batch = close_request_count // MAX_INSTANCES
-
-    # Is this the last segment?
-    is_last_segment = (current_batch >= full_batches) and (remaining_profiles != 0)
-
-    # Set the correct threshold for closing
-    if is_last_segment:
-        close_threshold = remaining_profiles
-    else:
-        close_threshold = MAX_INSTANCES
-
-    # Increment the close request counter
+    # Increment the counter for each close request
     close_request_count += 1
-    print(f"[REST] Close request received. Total close requests: {close_request_count}")
+    remaining = MAX_INSTANCES - close_request_count
+    print(f"[REST] Close request received. Count: {close_request_count}/{MAX_INSTANCES}")
 
-    # If close requests reach the threshold, close all instances for this segment
-    if close_request_count >= close_threshold:
-        print(f"[REST] Closing all instances for this segment ({close_threshold}).")
-        close_all_instances()
-
-        # After closing, reset `next_profile_index` to the beginning to open new profiles
-        next_profile_index = 0  # Reset to open fresh profiles
-
-        # Open new instances after closing
-        open_instances()
-
-        # Reset the counter
-        close_request_count = 0
-
+    # If the counter hasn't reached MAX_INSTANCES, wait for more requests.
+    if close_request_count < MAX_INSTANCES:
         return {
-            "message": "All instances closed for this segment and new instances opened."
+            "message": f"Close request received. Waiting for {remaining} more request(s) to close current batch."
         }
 
+    # When the counter reaches MAX_INSTANCES, close current instances.
+    close_all_instances()
+
+    # Advance to the next segment (batch)
+    current_segment += 1
+
+    # Check if there are profiles available for the next segment.
+    if current_segment * MAX_INSTANCES >= len(all_profiles):
+        close_request_count = 0  # Reset counter
+        return {"message": "No more profiles available for a new batch."}
+
+    # Open the next batch of instances.
+    open_instances()
+
+    # Reset the counter
+    close_request_count = 0
+
     return {
-        "message": f"Close request received. Waiting for {close_threshold - close_request_count} more requests.",
+        "message": f"Closed current batch and opened batch {current_segment + 1}.",
+        "running_instances": list(running_instances.keys()),
     }
 
 
@@ -182,10 +159,10 @@ def close_instance():
 def open_new_instances():
     """
     Force open new instances until MAX_INSTANCES is reached.
+    This does not change the current segment.
     """
     open_instances()
     return {
         "message": "Opened new instances if available.",
         "running_instances": list(running_instances.keys()),
     }
- 
