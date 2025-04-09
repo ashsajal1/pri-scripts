@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import subprocess
+import time
 import psutil
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -91,6 +92,7 @@ def open_instances():
     """
     Open Brave instances for the current segment up to MAX_INSTANCES.
     The starting index is calculated based on the current segment.
+    Each instance is opened with a 100ms delay between launches.
     """
     global running_instances, current_segment, all_profiles
 
@@ -105,6 +107,7 @@ def open_instances():
             proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
             running_instances[folder] = proc
             print(f"[REST] Opened instance: {folder}")
+            time.sleep(0.1)  # 100 milliseconds delay
         start_index += 1
 
 
