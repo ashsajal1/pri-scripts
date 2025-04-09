@@ -65,6 +65,46 @@ const updateStatusText = (text) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// New function to find the "launch" button with the "c-ripple" class
+const findLaunchButtonByTextAndClass = async () => {
+  let attempt = 0;
+
+  const tryFindButton = async () => {
+    attempt++;
+
+    // Find all elements with the class "c-ripple"
+    const elementsWithClass = document.querySelectorAll(
+      ".popup-button.btn.primary.rp"
+    );
+    console.log("Elements with class 'c-ripple':", elementsWithClass);
+
+    // Iterate through the elements and check their text content
+    for (const element of elementsWithClass) {
+      if (element.textContent.trim().toLowerCase() === "launch") {
+        console.warn("Launch button found by text content and class:", element);
+        safeClick(element); // Click the element
+        console.log("Second Launch button clicked");
+        updateStatusText("Second Launch button clicked");
+        await checkAutoTaskerDoneStatus();
+        // return element; // Return the element if found
+      }
+    }
+
+    // If not found, and we have remaining attempts
+    if (attempt < 5) {
+      console.log(`Retry attempt ${attempt} failed. Retrying...`);
+      setTimeout(tryFindButton, 50); // Retry after 50ms
+    } else {
+      console.log(
+        "Launch button with text content 'launch' and class 'c-ripple' not found after 5 attempts."
+      );
+      return null;
+    }
+  };
+
+  tryFindButton(); // Start the first attempt
+};
+
 const findLaunchButtonWithRetry = async () => {
   const launchBtn = document.querySelector(".new-message-bot-commands.is-view");
   if (launchBtn) {
@@ -73,6 +113,7 @@ const findLaunchButtonWithRetry = async () => {
     safeClick(launchBtn);
     console.log("Launch button clicked");
     updateStatusText("Launch button clicked");
+    await findLaunchButtonByTextAndClass(); // Call the second launch button function
     await checkAutoTaskerDoneStatus();
   } else {
     console.log("Launch button not found, retrying...");
@@ -160,10 +201,16 @@ const checkAutoTaskerDoneStatus = async () => {
 
 // Helper to safely click on a node
 function safeClick(node) {
-  // If the node is not an HTMLElement, try to use its parent
+  // Ensure the node is an HTMLElement and visible
   let clickable = node instanceof HTMLElement ? node : node.parentElement;
   if (!clickable) {
     console.error("No clickable element found for node:", node);
+    return;
+  }
+
+  // Check if the element is visible and enabled
+  if (clickable.offsetParent === null || clickable.disabled) {
+    console.error("Element is not visible or disabled:", clickable);
     return;
   }
 
