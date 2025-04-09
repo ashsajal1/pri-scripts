@@ -231,6 +231,31 @@ function safeClick(node) {
 }
 
 (async function checkForBlumChat() {
+  // Function to call the API endpoint
+  async function checkAPI() {
+    try {
+      const response = await fetch("http://localhost:8000/check", {
+        method: "GET", // or POST depending on your API setup
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      return data.success; // Assuming the API returns { success: true } if it's okay to proceed
+    } catch (error) {
+      console.error("Error calling API:", error);
+      return false; // In case of error, return false to prevent processing
+    }
+  }
+
+  // First, check the API to decide whether to proceed
+  const canProceed = await checkAPI();
+  if (!canProceed) {
+    console.log("API check failed. Stopping the process.");
+    updateStatusText("API check failed. Stopping the process.");
+    return; // Stop the process if the API doesn't return true
+  }
+
   const accounts = [1, 2, 3]; // Add your account numbers
 
   // Get current account index from sessionStorage or start from 0
