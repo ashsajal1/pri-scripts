@@ -242,7 +242,7 @@ function safeClick(node) {
       });
       const data = await response.json();
       // Explicitly convert the success flag to a boolean
-      if (data.success === true || data.success === "true") {
+      if (data.success === true) {
         return true;
       }
       return false;
