@@ -8,7 +8,10 @@ from typing import List
 from contextlib import asynccontextmanager
 from pydantic import BaseModel, validator, ValidationError
 
-custom_value = True  # Default value for custom_value
+# Access the environment variable, default to True if not set
+custom_value = os.getenv("CUSTOM_VALUE", "true").lower() == "true"
+
+
 class IsTrueValue(BaseModel):
     custom_value: bool
 
