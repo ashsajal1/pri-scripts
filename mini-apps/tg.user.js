@@ -232,40 +232,67 @@ function safeClick(node) {
 
 (async function checkForBlumChat() {
   // Function to call the API endpoint
+  // The updated function to check the API using GM_xmlhttpRequest
   async function checkAPI() {
-    try {
-      const response = await fetch("http://localhost:8000/check", {
+    return new Promise((resolve, reject) => {
+      GM_xmlhttpRequest({
         method: "GET",
+        url: "http://localhost:8000/check",
         headers: {
           "Content-Type": "application/json",
         },
+        onload: function (response) {
+          try {
+            // Check if the response is successful (status 200-299)
+            if (response.status >= 200 && response.status < 300) {
+              const data = JSON.parse(response.responseText);
+              console.log("API response:", data);
+
+              // Check if the success flag is true
+              if (data.success === true) {
+                console.log("API success: true");
+                resolve(true); // Proceed if success is true
+              } else {
+                console.log("API returned success: false");
+                resolve(false); // Stop the process if success is false
+              }
+            } else {
+              console.log("API call failed with status:", response.status);
+              resolve(false); // Stop the process if status is not ok
+            }
+          } catch (error) {
+            console.error("Error processing the API response:", error.message);
+            resolve(true); // Default to true to proceed if there's an error
+          }
+        },
+        onerror: function (error) {
+          console.error("Error calling API:", error);
+          console.log("API is unreachable. Defaulting to true to proceed.");
+          resolve(true); // Default to true to proceed if there's an error
+        },
       });
+    });
+  }
 
-      const data = await response.json();
-      console.log("API response:", data);
+  // Function to handle what happens when the process proceeds
+  async function proceedWithProcess() {
+    const canProceed = await checkAPI();
 
-      // Proceed only if data.success === true
-      if (data.success === true) {
-        return true;
-      } else {
-        console.log("API returned success: false");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error calling API:", error.message);
-      console.log("API is unreachable. Defaulting to true to proceed.");
-      return false;
+    // If the API check fails or returns false, stop the process
+    if (!canProceed) {
+      console.log("API check failed. Stopping the process.");
+      updateStatusText("API check failed. Stopping the process.");
+      return; // Stop further execution
     }
+
+    // Otherwise, continue with the process
+    console.log("API check succeeded. Continuing the process...");
+    updateStatusText("API check succeeded. Proceeding with the process.");
+    // Add further process logic here...
   }
 
-  // First, check the API to decide whether to proceed.
-  // If the API call fails or returns an error, checkAPI() returns true and the process continues.
-  const canProceed = await checkAPI();
-  if (!canProceed) {
-    console.log("API check failed. Stopping the process.");
-    updateStatusText("API check failed. Stopping the process.");
-    return; // Stop the process if the API returns false
-  }
+  // Call the function to check the API and decide whether to proceed
+  proceedWithProcess();
 
   const accounts = [1, 2, 3]; // Add your account numbers
 
