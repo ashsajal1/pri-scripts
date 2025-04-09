@@ -241,21 +241,22 @@ function safeClick(node) {
         },
       });
       const data = await response.json();
-      return data.success; // Assuming the API returns { success: true } if it's okay to proceed
+      return data.success; // Will return true if API returns { success: true }
     } catch (error) {
       console.error("Error calling API:", error);
-      return false; // In case of error, return false to prevent processing
+      // If there's an error (server not open, etc.), continue processing by returning true.
+      return true;
     }
   }
 
-  // First, check the API to decide whether to proceed
+  // First, check the API to decide whether to proceed.
+  // If the API call fails or returns an error, checkAPI() returns true and the process continues.
   const canProceed = await checkAPI();
   if (!canProceed) {
     console.log("API check failed. Stopping the process.");
     updateStatusText("API check failed. Stopping the process.");
-    return; // Stop the process if the API doesn't return true
+    return; // Stop the process if the API returns false
   }
-
   const accounts = [1, 2, 3]; // Add your account numbers
 
   // Get current account index from sessionStorage or start from 0
