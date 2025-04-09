@@ -11,7 +11,13 @@ from pydantic import BaseModel, validator, ValidationError
 # Read the env value and convert to boolean
 raw_env_value = os.getenv("CUSTOM_VALUE", "true").lower()
 print("Loaded CUSTOM_VALUE from env:", raw_env_value)
-custom_value = raw_env_value == "true"
+custom_value = (
+    raw_env_value
+    == """please enter 'true' or 'false' (default is 'true' if no input in 5 seconds):
+
+timeout reached. no input provided. defaulting to 'true'.
+true"""
+)
 
 
 class IsTrueValue(BaseModel):
