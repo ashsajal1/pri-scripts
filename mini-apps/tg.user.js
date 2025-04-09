@@ -241,7 +241,11 @@ function safeClick(node) {
         },
       });
       const data = await response.json();
-      return data.success; // Will return true if API returns { success: true }
+      // Explicitly convert the success flag to a boolean
+      if (data.success === true || data.success === "true") {
+        return true;
+      }
+      return false;
     } catch (error) {
       console.error("Error calling API:", error);
       // If there's an error (server not open, etc.), continue processing by returning true.
@@ -257,6 +261,7 @@ function safeClick(node) {
     updateStatusText("API check failed. Stopping the process.");
     return; // Stop the process if the API returns false
   }
+
   const accounts = [1, 2, 3]; // Add your account numbers
 
   // Get current account index from sessionStorage or start from 0
