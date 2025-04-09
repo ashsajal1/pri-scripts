@@ -235,21 +235,26 @@ function safeClick(node) {
   async function checkAPI() {
     try {
       const response = await fetch("http://localhost:8000/check", {
-        method: "GET", // or POST depending on your API setup
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
+
       const data = await response.json();
-      // Explicitly convert the success flag to a boolean
+      console.log("API response:", data);
+
+      // Proceed only if data.success === true
       if (data.success === true) {
         return true;
+      } else {
+        console.log("API returned success: false");
+        return false;
       }
-      return false;
     } catch (error) {
-      console.error("Error calling API:", error);
-      // If there's an error (server not open, etc.), continue processing by returning true.
-      return true;
+      console.error("Error calling API:", error.message);
+      console.log("API is unreachable. Defaulting to true to proceed.");
+      return false;
     }
   }
 
