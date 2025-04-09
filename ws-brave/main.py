@@ -8,8 +8,9 @@ from typing import List
 from contextlib import asynccontextmanager
 from pydantic import BaseModel, validator, ValidationError
 
-# Read env value, default to "true" if not set
+# Read the env value and convert to boolean
 raw_env_value = os.getenv("CUSTOM_VALUE", "true").lower()
+print("Loaded CUSTOM_VALUE from env:", raw_env_value)
 custom_value = raw_env_value == "true"
 
 
