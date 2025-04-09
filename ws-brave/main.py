@@ -6,6 +6,17 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from contextlib import asynccontextmanager
+from pydantic import BaseModel, validator, ValidationError
+
+class IsTrueValue(BaseModel):
+    custom_value: bool
+    
+    # Custom validator to enforce custom_value to be True
+    @validator("custom_value")
+    def check_if_true(cls, v):
+        if v is not True:
+            raise ValueError('custom_value must be True')
+        return v
 
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
@@ -13,9 +24,9 @@ MAX_INSTANCES = 13
 
 # Global variables for managing instances and batches
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
-current_segment = 0     # 0-based index for the current segment (batch)
-close_request_count = 0 # Counter for /close requests received for the current segment
-all_profiles = []       # List of all profiles
+current_segment = 0  # 0-based index for the current segment (batch)
+close_request_count = 0  # Counter for /close requests received for the current segment
+all_profiles = []  # List of all profiles
 
 
 def load_all_profiles() -> List[str]:
@@ -48,7 +59,9 @@ def close_all_instances():
             try:
                 if proc.info["name"] == "brave" and proc.info["cmdline"] is not None:
                     if any(profile_path in cmd for cmd in proc.info["cmdline"]):
-                        print(f"[REST] Terminating Brave process with PID {proc.info['pid']} for profile {folder}")
+                        print(
+                            f"[REST] Terminating Brave process with PID {proc.info['pid']} for profile {folder}"
+                        )
                         proc.terminate()
                         proc.wait()
                         print(f"[REST] Closed instance: {folder}")
@@ -124,7 +137,9 @@ def close_instance():
     # Increment the counter for each close request
     close_request_count += 1
     remaining = MAX_INSTANCES - close_request_count
-    print(f"[REST] Close request received. Count: {close_request_count}/{MAX_INSTANCES}")
+    print(
+        f"[REST] Close request received. Count: {close_request_count}/{MAX_INSTANCES}"
+    )
 
     # If the counter hasn't reached MAX_INSTANCES, wait for more requests.
     if close_request_count < MAX_INSTANCES:
@@ -166,3 +181,18 @@ def open_new_instances():
         "message": "Opened new instances if available.",
         "running_instances": list(running_instances.keys()),
     }
+
+
+@app.get("/check", response_model=dict)
+def open_new_instances():
+    """
+    Force open new instances until MAX_INSTANCES is reached.
+    This does not change the current segment.
+    """
+    open_instances()
+    return {"success": True}
+
+
+@app.post("/set-custom-value")
+async def set_custom_value(data: IsTrueValue):
+    return {"message": "custom_value is True!"}
