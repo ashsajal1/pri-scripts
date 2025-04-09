@@ -8,7 +8,7 @@ from typing import List
 from contextlib import asynccontextmanager
 from pydantic import BaseModel, validator, ValidationError
 
-
+custom_value = True  # Default value for custom_value
 class IsTrueValue(BaseModel):
     custom_value: bool
 
@@ -188,11 +188,9 @@ def open_new_instances():
 @app.get("/check", response_model=dict)
 def open_new_instances():
     """
-    Force open new instances until MAX_INSTANCES is reached.
-    This does not change the current segment.
+    Show the current value of custom_value.
     """
-    open_instances()
-    return {"success": IsTrueValue.custom_value}
+    return {"success": custom_value}
 
 
 @app.post("/set-custom-value")
