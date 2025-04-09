@@ -8,15 +8,17 @@ from typing import List
 from contextlib import asynccontextmanager
 from pydantic import BaseModel, validator, ValidationError
 
+
 class IsTrueValue(BaseModel):
     custom_value: bool
-    
+
     # Custom validator to enforce custom_value to be True
     @validator("custom_value")
     def check_if_true(cls, v):
         if v is not True:
-            raise ValueError('custom_value must be True')
+            raise ValueError("custom_value must be True")
         return v
+
 
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
@@ -190,9 +192,11 @@ def open_new_instances():
     This does not change the current segment.
     """
     open_instances()
-    return {"success": True}
+    return {"success": IsTrueValue.custom_value}
 
 
 @app.post("/set-custom-value")
 async def set_custom_value(data: IsTrueValue):
-    return {"message": "custom_value is True!"}
+    global custom_value
+    custom_value = data.custom_value
+    return {"message": f"custom_value is set to {custom_value}"}
