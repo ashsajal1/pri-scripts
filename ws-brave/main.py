@@ -34,7 +34,7 @@ class IsTrueValue(BaseModel):
 
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
-MAX_INSTANCES = 13
+MAX_INSTANCES = 8
 
 # Global variables for managing instances and batches
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
