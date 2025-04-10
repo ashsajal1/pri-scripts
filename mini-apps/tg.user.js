@@ -262,13 +262,13 @@ function safeClick(node) {
             }
           } catch (error) {
             console.error("Error processing the API response:", error.message);
-            resolve(true); // Default to true to proceed if there's an error
+            resolve(false); // ✅ Stop the process if error in parsing
           }
         },
         onerror: function (error) {
           console.error("Error calling API:", error);
           console.log("API is unreachable. Defaulting to true to proceed.");
-          resolve(true); // Default to true to proceed if there's an error
+          resolve(false); // ✅ Stop the process if error in parsing
         },
       });
     });
@@ -277,22 +277,21 @@ function safeClick(node) {
   // Function to handle what happens when the process proceeds
   async function proceedWithProcess() {
     const canProceed = await checkAPI();
+    console.log("Result of checkAPI():", canProceed);
 
-    // If the API check fails or returns false, stop the process
     if (!canProceed) {
       console.log("API check failed. Stopping the process.");
       updateStatusText("API check failed. Stopping the process.");
-      return; // Stop further execution
+      return false; // ⬅️ Return false if blocked
     }
 
-    // Otherwise, continue with the process
     console.log("API check succeeded. Continuing the process...");
     updateStatusText("API check succeeded. Proceeding with the process.");
-    // Add further process logic here...
+    return true; // ⬅️ Return true if OK
   }
 
-  // Call the function to check the API and decide whether to proceed
-  proceedWithProcess();
+  const shouldProceed = await proceedWithProcess();
+  if (!shouldProceed) return;
 
   const accounts = [1, 2, 3]; // Add your account numbers
 
