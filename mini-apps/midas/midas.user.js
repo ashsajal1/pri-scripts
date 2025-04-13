@@ -59,3 +59,20 @@ const findContinueButtonAndClick = async () => {
     }
   }
 };
+
+const findPlayButtonAndClick = async () => {
+  const buttons = Array.from(document.querySelectorAll("h6"));
+  if (buttons.length > 0) {
+    const continueButton = buttons.find(
+      (el) => el.textContent.trim() === "Start tapping"
+    );
+    if (continueButton) {
+      continueButton.click();
+      console.log("Clicked the Continue button");
+      updateStatusText("Clicked the Continue button");
+    } else {
+      console.log("Continue button not found");
+      updateStatusText("Continue button not found");
+    }
+  }
+};
