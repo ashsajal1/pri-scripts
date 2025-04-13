@@ -33,6 +33,12 @@ statusText.style.fontWeight = "bold"; // Make the text bold
 statusText.style.zIndex = "9999";
 document.body.appendChild(statusText);
 
+const updateStatusText = (text) => {
+  statusText.textContent = text;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 (async function () {
   await findContinueButtonAndClick();
 })();
@@ -46,8 +52,10 @@ const findContinueButtonAndClick = async () => {
     if (continueButton) {
       continueButton.click();
       console.log("Clicked the Continue button");
+      updateStatusText("Clicked the Continue button");
     } else {
       console.log("Continue button not found");
+      updateStatusText("Continue button not found");
     }
   }
 };
