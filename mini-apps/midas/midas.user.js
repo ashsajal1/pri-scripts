@@ -68,11 +68,11 @@ const findPlayButtonAndClick = async () => {
     );
     if (continueButton) {
       continueButton.click();
-      console.log("Clicked the Continue button");
-      updateStatusText("Clicked the Continue button");
+      console.log("Clicked the Play button");
+      updateStatusText("Clicked the Play button");
     } else {
-      console.log("Continue button not found");
-      updateStatusText("Continue button not found");
+      console.log("Play button not found");
+      updateStatusText("Play button not found");
     }
   }
 };
