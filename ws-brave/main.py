@@ -34,7 +34,7 @@ class IsTrueValue(BaseModel):
 
 # Base directory for Brave profiles and configuration
 BASE_DIR = "/home/sajal/multiple-data/brave"
-MAX_INSTANCES = 8
+MAX_INSTANCES = 9
 
 # Global variables for managing instances and batches
 running_instances = {}  # Mapping of profile folder name to subprocess.Popen instance
@@ -107,7 +107,7 @@ def open_instances():
             proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
             running_instances[folder] = proc
             print(f"[REST] Opened instance: {folder}")
-            time.sleep(0.1)  # 100 milliseconds delay
+            time.sleep(1)  # 100 milliseconds delay
         start_index += 1
 
 
