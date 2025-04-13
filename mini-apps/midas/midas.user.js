@@ -62,17 +62,17 @@ const findContinueButtonAndClick = async () => {
 
 const findPlayButtonAndClick = async () => {
   const buttons = Array.from(document.querySelectorAll("h6"));
-  if (buttons.length > 0) {
-    const continueButton = buttons.find(
-      (el) => el.textContent.trim() === "Start tapping"
-    );
-    if (continueButton) {
-      continueButton.click();
-      console.log("Clicked the Play button");
-      updateStatusText("Clicked the Play button");
-    } else {
-      console.log("Play button not found");
-      updateStatusText("Play button not found");
-    }
+
+  const playButton = buttons.find(
+    (el) => el.textContent.trim().toLowerCase() === "start tapping"
+  );
+
+  if (playButton) {
+    playButton.click();
+    console.log("✅ Clicked the Play button");
+    updateStatusText("✅ Clicked the Play button");
+  } else {
+    console.warn("❌ Play button not found");
+    updateStatusText("❌ Play button not found");
   }
 };
