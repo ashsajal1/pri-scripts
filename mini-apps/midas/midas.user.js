@@ -71,8 +71,40 @@ const findPlayButtonAndClick = async () => {
     playButton.click();
     console.log("✅ Clicked the Play button");
     updateStatusText("✅ Clicked the Play button");
+
+    await sleep(2000); // Wait for 2 seconds
+    await clickRockRandomly(); // Click on the rock
+    console.log("🪨 Clicked the rock");
+    updateStatusText("🪨 Clicked the rock");
   } else {
     console.warn("❌ Play button not found");
     updateStatusText("❌ Play button not found");
+  }
+};
+
+const clickRockRandomly = async () => {
+  const rock = document.querySelector('img[src="/svg/rock2.webp"][alt="rock"]');
+  if (!rock) {
+    console.warn("❌ Rock image not found");
+    return;
+  }
+
+  const rect = rock.getBoundingClientRect();
+
+  for (let i = 0; i < 9; i++) {
+    const x = rect.left + Math.random() * rect.width;
+    const y = rect.top + Math.random() * rect.height;
+
+    const clickEvent = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+      clientX: x,
+      clientY: y,
+    });
+
+    rock.dispatchEvent(clickEvent);
+    console.log(`🪨 Clicked rock at (${x.toFixed(0)}, ${y.toFixed(0)})`);
+    updateStatusText(`🪨 Clicked rock at (${x.toFixed(0)}, ${y.toFixed(0)})`);
   }
 };
