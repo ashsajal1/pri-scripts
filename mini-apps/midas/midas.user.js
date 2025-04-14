@@ -8,8 +8,8 @@
 // @grant        GM_xmlhttpRequest
 // @connect      localhost
 // @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midas.webp
-// @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midasuser.js
-// @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midasuser.js
+// @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midas.user.js
+// @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midas.user.js
 // ==/UserScript==
 
 // Your code here
