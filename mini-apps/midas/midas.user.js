@@ -172,6 +172,7 @@ const clickSocialEarnTab = async () => {
       socialEarnBtn.click();
       console.log("Social btn clicked");
       updateStatusText("Social btn click");
+      await sleep(2000); // Wait for 1 second before next click
       await clickStartBtns();
       console.log("Start btn work started");
       updateStatusText("Start btn work started");
