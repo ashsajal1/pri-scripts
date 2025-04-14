@@ -172,6 +172,9 @@ const clickSocialEarnTab = async () => {
       socialEarnBtn.click();
       console.log("Social btn clicked");
       updateStatusText("Social btn click");
+      await clickStartBtns();
+      console.log("Start btn work started");
+      updateStatusText("Start btn work started");
       return;
     } else {
       attempts++;
