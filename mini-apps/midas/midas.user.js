@@ -7,7 +7,7 @@
 // @match        https://prod-tg-app.midas.app/*
 // @grant        GM_xmlhttpRequest
 // @connect      localhost
-// @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg.webp
+// @icon         https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midas.webp
 // @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midasuser.js
 // @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/midas/midasuser.js
 // ==/UserScript==
