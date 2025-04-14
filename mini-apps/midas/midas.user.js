@@ -148,6 +148,9 @@ const goToEarnTaskTab = async () => {
       return;
     } else {
       attempts++;
+      await sleep(1000);
+      console.log("Earn tab not found, sleeping");
+      updateStatusText("Earn tab not found, sleeping");
     }
   }
 };
