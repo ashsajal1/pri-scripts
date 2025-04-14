@@ -102,6 +102,7 @@ const clickRockRandomly = async () => {
   const rock = document.querySelector('img[src="/svg/rock2.webp"][alt="rock"]');
   if (!rock) {
     console.warn("❌ Rock image not found");
+    updateStatusText("❌ Rock image not found");
     return;
   }
 
@@ -114,7 +115,6 @@ const clickRockRandomly = async () => {
     const clickEvent = new MouseEvent("click", {
       bubbles: true,
       cancelable: true,
-      view: window,
       clientX: x,
       clientY: y,
     });
@@ -123,7 +123,7 @@ const clickRockRandomly = async () => {
     console.log(`🪨 Clicked rock at (${x.toFixed(0)}, ${y.toFixed(0)})`);
     updateStatusText(`🪨 Clicked rock at (${x.toFixed(0)}, ${y.toFixed(0)})`);
 
-    await sleep(1000); // Wait for 1 second before clicking again
+    await sleep(1000); // Wait for 1 second before next click
   }
 };
 
