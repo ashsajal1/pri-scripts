@@ -145,6 +145,9 @@ const goToEarnTaskTab = async () => {
       earnBtn.click();
       console.log("Earn btn clicked");
       updateStatusText("Earn btn click");
+      await clickSocialEarnTab();
+      console.log("Social tab clicked");
+      updateStatusText("Social tab click");
       return;
     } else {
       attempts++;
@@ -154,6 +157,30 @@ const goToEarnTaskTab = async () => {
     }
   }
 };
+
+const clickSocialEarnTab = async () => {
+  let attempts = 0;
+  let maxAttempts = 5;
+
+  while (attempts < maxAttempts) {
+    const buttons = Array.from(document.querySelectorAll("button"));
+    const socialEarnBtn = buttons.find((btn) =>
+      btn.textContent.trim().toLowerCase().includes("social")
+    );
+
+    if (socialEarnBtn) {
+      socialEarnBtn.click();
+      console.log("Social btn clicked");
+      updateStatusText("Social btn click");
+      return;
+    } else {
+      attempts++;
+      await sleep(1000);
+      console.log("Social tab not found, sleeping");
+      updateStatusText("Social tab not found, sleeping");
+    }
+  }
+}
 
 (async function () {
   await findContinueButtonAndClick();
