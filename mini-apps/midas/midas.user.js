@@ -73,7 +73,9 @@ const findPlayButtonAndClick = async () => {
   while (attempt < maxAttempts) {
     const buttons = Array.from(document.querySelectorAll("h6"));
     const playButton = buttons.find(
-      (el) => el.textContent.trim().toLowerCase() === "start tapping"
+      (el) =>
+        el.textContent.trim().toLowerCase() === "start tapping" ||
+        el.textContent.trim().toLowerCase().includes("play")
     );
 
     if (playButton) {
@@ -125,6 +127,8 @@ const clickRockRandomly = async () => {
 
     await sleep(1000); // Wait for 1 second before next click
   }
+
+  await findPlayButtonAndClick();
 };
 
 (async function () {
