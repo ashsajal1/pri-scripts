@@ -180,7 +180,33 @@ const clickSocialEarnTab = async () => {
       updateStatusText("Social tab not found, sleeping");
     }
   }
-}
+};
+
+const clickStartBtns = async () => {
+  let attempts = 0;
+  let maxAttempts = 5;
+
+  while (attempts < maxAttempts) {
+    const buttons = Array.from(document.querySelectorAll("button"));
+    const startBtn = buttons.filter((btn) =>
+      btn.textContent.trim().toLowerCase().includes("start") || btn.textContent.trim().toLowerCase().includes("claim")
+    );
+
+    if (startBtn.length > 0) {
+      startBtn.forEach((btn, index) => {
+        btn.click();
+        console.log("Start btn clicked ", index);
+        updateStatusText("Start btn click ", index);
+      });
+      return;
+    } else {
+      attempts++;
+      await sleep(1000);
+      console.log("Start btn not found, sleeping");
+      updateStatusText("Start btn not found, sleeping");
+    }
+  }
+};
 
 (async function () {
   await findContinueButtonAndClick();
