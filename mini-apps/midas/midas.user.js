@@ -207,9 +207,7 @@ const clickStartBtns = async () => {
       });
 
       await sleep(2000); // Wait for 2 seconds
-      await goToFarmTab();
-      console.log("Farm tab clicked");
-      updateStatusText("Farm tab click");
+
       return;
     } else {
       attempts++;
@@ -218,6 +216,10 @@ const clickStartBtns = async () => {
       updateStatusText("Start btn not found, sleeping");
     }
   }
+
+  await goToFarmTab();
+  console.log("Farm tab clicked");
+  updateStatusText("Farm tab click");
 };
 
 const goToFarmTab = async () => {
