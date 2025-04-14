@@ -106,5 +106,7 @@ const clickRockRandomly = async () => {
     rock.dispatchEvent(clickEvent);
     console.log(`🪨 Clicked rock at (${x.toFixed(0)}, ${y.toFixed(0)})`);
     updateStatusText(`🪨 Clicked rock at (${x.toFixed(0)}, ${y.toFixed(0)})`);
+
+    await sleep(1000); // Wait for 1 second before clicking again
   }
 };
