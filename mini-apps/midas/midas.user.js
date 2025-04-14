@@ -237,6 +237,9 @@ const goToFarmTab = async () => {
       console.log("Farm btn clicked");
       updateStatusText("Farm btn click");
       await sleep(2000); // Wait for 1 second before next click
+      await clickStartBtns();
+      console.log("Start btn work started");
+      updateStatusText("Start btn work started");
       return;
     } else {
       attempts++;
