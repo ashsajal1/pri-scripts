@@ -39,25 +39,31 @@ const updateStatusText = (text) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-(async function () {
-  await findContinueButtonAndClick();
-})();
-
 const findContinueButtonAndClick = async () => {
-  const buttons = Array.from(document.querySelectorAll("h6"));
-  if (buttons.length > 0) {
+  let attempt = 0;
+  const maxAttempts = 5;
+
+  while (attempt < maxAttempts) {
+    const buttons = Array.from(document.querySelectorAll("h6"));
     const continueButton = buttons.find(
       (el) => el.textContent.trim() === "Continue"
     );
+
     if (continueButton) {
       continueButton.click();
-      console.log("Clicked the Continue button");
-      updateStatusText("Clicked the Continue button");
+      console.log("✅ Clicked the Continue button");
+      updateStatusText("✅ Clicked the Continue button");
+      return; // Exit once clicked
     } else {
-      console.log("Continue button not found");
-      updateStatusText("Continue button not found");
+      console.warn(`❌ Attempt ${attempt + 1}: Continue button not found`);
+      updateStatusText(`❌ Attempt ${attempt + 1}: Continue button not found`);
+      attempt++;
+      await new Promise((resolve) => setTimeout(resolve, 100)); // wait 100ms
     }
   }
+
+  console.error("⛔ Failed to find the Continue button after 5 attempts");
+  updateStatusText("⛔ Failed to find the Continue button after 5 attempts");
 };
 
 const findPlayButtonAndClick = async () => {
@@ -110,3 +116,8 @@ const clickRockRandomly = async () => {
     await sleep(1000); // Wait for 1 second before clicking again
   }
 };
+
+(async function () {
+  await findContinueButtonAndClick();
+  await findPlayButtonAndClick();
+})();
