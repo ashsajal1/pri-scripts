@@ -108,7 +108,7 @@ const clickRockRandomly = async () => {
 
   const rect = rock.getBoundingClientRect();
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     const x = rect.left + Math.random() * rect.width;
     const y = rect.top + Math.random() * rect.height;
 
