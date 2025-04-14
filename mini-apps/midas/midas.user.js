@@ -39,11 +39,11 @@ const updateStatusText = (text) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const findContinueButtonAndClick = async () => {
+const findContinueButtonAndClick = () => {
   let attempt = 0;
   const maxAttempts = 5;
 
-  while (attempt < maxAttempts) {
+  const observer = new MutationObserver((mutationsList, observer) => {
     const buttons = Array.from(document.querySelectorAll("h6"));
     const continueButton = buttons.find(
       (el) => el.textContent.trim() === "Continue"
@@ -53,17 +53,29 @@ const findContinueButtonAndClick = async () => {
       continueButton.click();
       console.log("✅ Clicked the Continue button");
       updateStatusText("✅ Clicked the Continue button");
-      return; // Exit once clicked
+      observer.disconnect(); // Stop observing once found
     } else {
       console.warn(`❌ Attempt ${attempt + 1}: Continue button not found`);
       updateStatusText(`❌ Attempt ${attempt + 1}: Continue button not found`);
       attempt++;
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait 100ms
-    }
-  }
 
-  console.error("⛔ Failed to find the Continue button after 5 attempts");
-  updateStatusText("⛔ Failed to find the Continue button after 5 attempts");
+      if (attempt >= maxAttempts) {
+        console.error("⛔ Failed to find the Continue button after 5 attempts");
+        updateStatusText(
+          "⛔ Failed to find the Continue button after 5 attempts"
+        );
+        observer.disconnect();
+      }
+    }
+  });
+
+  // Start observing the body for changes in the subtree
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  console.log("👀 Watching for Continue button...");
 };
 
 const findPlayButtonAndClick = async () => {
