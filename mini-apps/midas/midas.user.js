@@ -197,8 +197,9 @@ const clickStartBtns = async () => {
     );
 
     if (startBtn.length > 0) {
-      startBtn.forEach((btn, index) => {
+      startBtn.forEach(async (btn, index) => {
         btn.click();
+        await sleep(1000); // Wait for 1 second before next click
         console.log("Start btn clicked ", index);
         updateStatusText("Start btn click ", index);
       });
