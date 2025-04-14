@@ -67,25 +67,35 @@ const findContinueButtonAndClick = async () => {
 };
 
 const findPlayButtonAndClick = async () => {
-  const buttons = Array.from(document.querySelectorAll("h6"));
+  let attempt = 0;
+  const maxAttempts = 5;
 
-  const playButton = buttons.find(
-    (el) => el.textContent.trim().toLowerCase() === "start tapping"
-  );
+  while (attempt < maxAttempts) {
+    const buttons = Array.from(document.querySelectorAll("h6"));
+    const playButton = buttons.find(
+      (el) => el.textContent.trim().toLowerCase() === "start tapping"
+    );
 
-  if (playButton) {
-    playButton.click();
-    console.log("✅ Clicked the Play button");
-    updateStatusText("✅ Clicked the Play button");
+    if (playButton) {
+      playButton.click();
+      console.log("✅ Clicked the Play button");
+      updateStatusText("✅ Clicked the Play button");
 
-    await sleep(2000); // Wait for 2 seconds
-    await clickRockRandomly(); // Click on the rock
-    console.log("🪨 Clicked the rock");
-    updateStatusText("🪨 Clicked the rock");
-  } else {
-    console.warn("❌ Play button not found");
-    updateStatusText("❌ Play button not found");
+      await sleep(2000); // Wait for 2 seconds
+      await clickRockRandomly(); // Click on the rock
+      console.log("🪨 Clicked the rock");
+      updateStatusText("🪨 Clicked the rock");
+      return; // Exit after successful click
+    } else {
+      console.warn(`❌ Attempt ${attempt + 1}: Play button not found`);
+      updateStatusText(`❌ Attempt ${attempt + 1}: Play button not found`);
+      attempt++;
+      await sleep(1000); // Wait before trying again
+    }
   }
+
+  console.error("⛔ Failed to find the Play button after 5 attempts");
+  updateStatusText("⛔ Failed to find the Play button after 5 attempts");
 };
 
 const clickRockRandomly = async () => {
