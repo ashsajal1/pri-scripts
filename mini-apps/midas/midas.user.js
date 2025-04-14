@@ -192,8 +192,10 @@ const clickStartBtns = async () => {
 
   while (attempts < maxAttempts) {
     const buttons = Array.from(document.querySelectorAll("button"));
-    const startBtn = buttons.filter((btn) =>
-      btn.textContent.trim().toLowerCase().includes("start") || btn.textContent.trim().toLowerCase().includes("claim")
+    const startBtn = buttons.filter(
+      (btn) =>
+        btn.textContent.trim().toLowerCase().includes("start") ||
+        btn.textContent.trim().toLowerCase().includes("claim")
     );
 
     if (startBtn.length > 0) {
@@ -203,12 +205,42 @@ const clickStartBtns = async () => {
         console.log("Start btn clicked ", index);
         updateStatusText("Start btn click ", index);
       });
+
+      await sleep(2000); // Wait for 2 seconds
+      await goToFarmTab();
+      console.log("Farm tab clicked");
+      updateStatusText("Farm tab click");
       return;
     } else {
       attempts++;
       await sleep(1000);
       console.log("Start btn not found, sleeping");
       updateStatusText("Start btn not found, sleeping");
+    }
+  }
+};
+
+const goToFarmTab = async () => {
+  let attempts = 0;
+  let maxAttempts = 5;
+
+  while (attempts < maxAttempts) {
+    const buttons = Array.from(document.querySelectorAll("button"));
+    const farmBtn = buttons.find((btn) =>
+      btn.textContent.trim().toLowerCase().includes("farming")
+    );
+
+    if (farmBtn) {
+      farmBtn.click();
+      console.log("Farm btn clicked");
+      updateStatusText("Farm btn click");
+      await sleep(2000); // Wait for 1 second before next click
+      return;
+    } else {
+      attempts++;
+      await sleep(1000);
+      console.log("Farm tab not found, sleeping");
+      updateStatusText("Farm tab not found, sleeping");
     }
   }
 };
