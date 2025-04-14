@@ -131,6 +131,27 @@ const clickRockRandomly = async () => {
   await findPlayButtonAndClick();
 };
 
+const goToEarnTaskTab = async () => {
+  let attempts = 0;
+  let maxAttempts = 5;
+
+  while (attempts < maxAttempts) {
+    const buttons = Array.from(document.querySelectorAll("button"));
+    const earnBtn = buttons.find((btn) =>
+      btn.textContent.trim().toLowerCase().includes("tasks")
+    );
+
+    if (earnBtn) {
+      earnBtn.click();
+      console.log("Earn btn clicked");
+      updateStatusText("Earn btn click");
+      return;
+    } else {
+      attempts++;
+    }
+  }
+};
+
 (async function () {
   await findContinueButtonAndClick();
   await findPlayButtonAndClick();
