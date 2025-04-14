@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Midas Auto Worker
 // @description  Auto worker for Telegram Midas bot
-// @version      0.02
+// @version      0.03
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://prod-tg-app.midas.app/*
