@@ -40,12 +40,21 @@ const updateStatusText = (text) => {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const findContinueButtonAndClick = () => {
-  let attempt = 0;
-  const maxAttempts = 5;
+  const observer = new MutationObserver(() => {
+    // 🪨 Stop if "Tap the rock" is present
+    const tapTheRock = Array.from(document.querySelectorAll("h5")).some(
+      (el) => el.textContent.trim() === "Tap the rock"
+    );
 
-  const observer = new MutationObserver((mutationsList, observer) => {
-    const buttons = Array.from(document.querySelectorAll("h6"));
-    const continueButton = buttons.find(
+    if (tapTheRock) {
+      console.log("🛑 Found 'Tap the rock'. Stopping observer.");
+      updateStatusText("🛑 Found 'Tap the rock'. Stopping observer.");
+      observer.disconnect();
+      return;
+    }
+
+    // 🔘 Click "Continue" if found
+    const continueButton = Array.from(document.querySelectorAll("h6")).find(
       (el) => el.textContent.trim() === "Continue"
     );
 
@@ -53,29 +62,16 @@ const findContinueButtonAndClick = () => {
       continueButton.click();
       console.log("✅ Clicked the Continue button");
       updateStatusText("✅ Clicked the Continue button");
-      observer.disconnect(); // Stop observing once found
-    } else {
-      console.warn(`❌ Attempt ${attempt + 1}: Continue button not found`);
-      updateStatusText(`❌ Attempt ${attempt + 1}: Continue button not found`);
-      attempt++;
-
-      if (attempt >= maxAttempts) {
-        console.error("⛔ Failed to find the Continue button after 5 attempts");
-        updateStatusText(
-          "⛔ Failed to find the Continue button after 5 attempts"
-        );
-        observer.disconnect();
-      }
+      observer.disconnect();
     }
   });
 
-  // Start observing the body for changes in the subtree
   observer.observe(document.body, {
     childList: true,
     subtree: true,
   });
 
-  console.log("👀 Watching for Continue button...");
+  console.log("👀 Watching for 'Continue' button or 'Tap the rock'...");
 };
 
 const findPlayButtonAndClick = async () => {
