@@ -158,4 +158,5 @@ const goToEarnTaskTab = async () => {
 (async function () {
   await findContinueButtonAndClick();
   await findPlayButtonAndClick();
+  await goToEarnTaskTab();
 })();
