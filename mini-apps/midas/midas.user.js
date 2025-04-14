@@ -58,7 +58,7 @@ const findContinueButtonAndClick = async () => {
       console.warn(`❌ Attempt ${attempt + 1}: Continue button not found`);
       updateStatusText(`❌ Attempt ${attempt + 1}: Continue button not found`);
       attempt++;
-      await new Promise((resolve) => setTimeout(resolve, 100)); // wait 100ms
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait 100ms
     }
   }
 
