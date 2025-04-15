@@ -847,7 +847,7 @@ const waitForGameToFinish = async () => {
       console.log("Earn link appeared, game seems finished");
       updateStatus("Earn link appeared, game seems finished");
 
-      // await clickEarnTabs(); // Use your full existing function
+      await clickEarnTabs(); // Use your full existing function
     } else {
       console.log("Earn link not found yet, game is still running, waiting...");
       updateStatus(
@@ -921,7 +921,6 @@ const doClaim = () => {
         );
         updateStatus("Game finished. Clicking Earn tabs.");
         await sleep(1000); // Optional short delay after game finishes
-        await clickEarnTabs(); // Click Earn tabs ONLY after the game is finished
       } else {
         console.log(
           "Game not available via API. Proceeding to Earn tabs directly."
