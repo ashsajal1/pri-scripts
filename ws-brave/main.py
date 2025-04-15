@@ -206,6 +206,12 @@ def open_new_instances():
     """
     return {"success": custom_value}
 
+@app.get("/play-game", response_model=dict)
+def open_new_instances():
+    """
+    Show the current value of custom_value.
+    """
+    return {"success": True}
 
 @app.post("/set-custom-value")
 async def set_custom_value(data: IsTrueValue):
