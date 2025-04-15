@@ -1013,13 +1013,10 @@ const playGame = () => {
   }
 
   // give http req to http://localhost:8000/play-game, if it returns success: true, then play game
-  const response = await checkAPI();
-
-  // const data = await response.json();
-  if (response.success) {
+  const isAvailable = await checkAPI();
+  if (isAvailable) {
     console.log("Playing game...");
     updateStatus("Playing game...");
-    // Call the function to start the game
     playGame();
   } else {
     console.log("Game not available yet");
