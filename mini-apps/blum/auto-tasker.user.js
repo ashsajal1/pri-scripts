@@ -834,23 +834,29 @@ async function waitForStoryPageToDisappear() {
 }
 
 const waitForGameToFinish = async () => {
-  const interval = 15000; // 15 seconds
+  const retryInterval = 15000; // 15 seconds
 
-  while (true) {
-    const earnTab = Array.from(document.querySelectorAll(".kit-pill")).find(
-      (btn) => btn.textContent.trim().toLowerCase().includes("earn")
+  const tryClickEarnTabs = async () => {
+    const links = document.querySelectorAll("a");
+
+    const earnLink = Array.from(links).find((link) =>
+      link.textContent.trim().toLowerCase().includes("earn")
     );
 
-    if (earnTab) {
-      console.log("Game seems to be finished");
-      updateStatus("Game seems to be finished");
-      return;
-    }
+    if (earnLink) {
+      console.log("Earn link appeared, game seems finished");
+      updateStatus("Earn link appeared, game seems finished");
 
-    console.log("Still waiting for game to finish...");
-    updateStatus("Still waiting for game to finish...");
-    await sleep(interval);
-  }
+      await clickEarnTabs(); // Use your full existing function
+    } else {
+      console.log("Earn link not found yet, waiting...");
+      updateStatus("Earn link not found yet, waiting...");
+      await sleep(retryInterval);
+      await tryClickEarnTabs(); // Retry after 15s
+    }
+  };
+
+  await tryClickEarnTabs();
 };
 
 const doClaim = () => {
