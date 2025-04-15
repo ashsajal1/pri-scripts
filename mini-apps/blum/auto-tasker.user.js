@@ -833,6 +833,26 @@ async function waitForStoryPageToDisappear() {
   });
 }
 
+const waitForGameToFinish = async () => {
+  const interval = 15000; // 15 seconds
+
+  while (true) {
+    const earnTab = Array.from(document.querySelectorAll(".kit-pill")).find(
+      (btn) => btn.textContent.trim().toLowerCase().includes("earn")
+    );
+
+    if (earnTab) {
+      console.log("Game seems to be finished");
+      updateStatus("Game seems to be finished");
+      return;
+    }
+
+    console.log("Still waiting for game to finish...");
+    updateStatus("Still waiting for game to finish...");
+    await sleep(interval);
+  }
+};
+
 const doClaim = () => {
   document.body.style.backgroundColor = "rgba(14, 81, 206, 0.4)";
   document.body.style.transition = "background-color 0.3s";
@@ -886,6 +906,7 @@ const doClaim = () => {
         console.log("Playing game...");
         updateStatus("Playing game...");
         playGame();
+        await waitForGameToFinish();
       } else {
         console.log("Game not available yet");
         updateStatus("Game not available yet");
