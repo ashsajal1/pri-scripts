@@ -280,6 +280,7 @@ function safeClick(node) {
     console.log("Result of checkAPI():", canProceed);
 
     if (!canProceed) {
+      statusText.style.backgroundColor = "rgba(255, 0, 0, 0.7)"; // Red background
       console.log("API check failed. Stopping the process.");
       updateStatusText("API check failed. Stopping the process.");
       return false; // ⬅️ Return false if blocked
