@@ -879,7 +879,6 @@ const doClaim = () => {
     } else {
       console.log("Farm button was clicked, moving to earn tabs");
       updateStatus("Farm button was clicked, moving to earn tabs");
-      await sleep(1000);
 
       // give http req to http://localhost:8000/play-game, if it returns success: true, then play game
       const isAvailable = await checkAPI();
@@ -891,6 +890,8 @@ const doClaim = () => {
         console.log("Game not available yet");
         updateStatus("Game not available yet");
       }
+
+      await sleep(1000);
 
       await clickEarnTabs();
     }
