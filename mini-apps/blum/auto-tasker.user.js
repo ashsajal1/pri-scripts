@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Blum Tasker
-// @version      3.01
+// @version      3.02
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://telegram.blum.codes/*
@@ -972,7 +972,7 @@ const playGame = () => {
   const playButton = Array.from(document.querySelectorAll(".kit-pill")).find(
     (btn) => btn.textContent.trim().toLowerCase().includes("play")
   );
-  
+
   if (playButton) {
     playButton.click();
     console.log("Play button clicked");
