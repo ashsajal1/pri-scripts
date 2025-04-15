@@ -4,7 +4,8 @@
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://telegram.blum.codes/*
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @connect      localhost
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
 // @updateURL    https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/blum/auto-tasker.user.js
 // @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/blum/auto-tasker.user.js
@@ -926,6 +927,47 @@ const clickEarnTabs = () => {
   });
 };
 
+async function checkAPI() {
+  return new Promise((resolve, reject) => {
+    GM_xmlhttpRequest({
+      method: "GET",
+      url: "http://localhost:8000/play-game",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      onload: function (response) {
+        try {
+          // Check if the response is successful (status 200-299)
+          if (response.status >= 200 && response.status < 300) {
+            const data = JSON.parse(response.responseText);
+            console.log("API response:", data);
+
+            // Check if the success flag is true
+            if (data.success === true) {
+              console.log("API success: true");
+              resolve(true); // Proceed if success is true
+            } else {
+              console.log("API returned success: false");
+              resolve(false); // Stop the process if success is false
+            }
+          } else {
+            console.log("API call failed with status:", response.status);
+            resolve(false); // Stop the process if status is not ok
+          }
+        } catch (error) {
+          console.error("Error processing the API response:", error.message);
+          resolve(false); // ✅ Stop the process if error in parsing
+        }
+      },
+      onerror: function (error) {
+        console.error("Error calling API:", error);
+        console.log("API is unreachable. Defaulting to true to proceed.");
+        resolve(false); // ✅ Stop the process if error in parsing
+      },
+    });
+  });
+}
+
 // Replace the self-executing function with this version
 (async function checkForEarnLink() {
   const links = document.querySelectorAll("a");
@@ -953,6 +995,20 @@ const clickEarnTabs = () => {
     console.log("Ready to start tasker");
     updateStatus("Ready to start tasker");
     doClaim(); // Call the function to start the process
+  }
+
+  // give http req to http://localhost:8000/play-game, if it returns success: true, then play game
+  const response = await checkAPI();
+
+  // const data = await response.json();
+  if (response.success) {
+    console.log("Playing game...");
+    updateStatus("Playing game...");
+    // Call the function to start the game
+    // playGame();
+  } else {
+    console.log("Game not available yet");
+    updateStatus("Game not available yet");
   }
 
   if (!found) {
