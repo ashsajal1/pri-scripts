@@ -968,6 +968,21 @@ async function checkAPI() {
   });
 }
 
+const playGame = () => {
+  const playButton = Array.from(document.querySelectorAll(".kit-pill")).find(
+    (btn) => btn.textContent.trim().toLowerCase().includes("play")
+  );
+  
+  if (playButton) {
+    playButton.click();
+    console.log("Play button clicked");
+    updateStatus("Play button clicked");
+  } else {
+    console.log("Play button not found");
+    updateStatus("Play button not found");
+  }
+};
+
 // Replace the self-executing function with this version
 (async function checkForEarnLink() {
   const links = document.querySelectorAll("a");
@@ -1005,7 +1020,7 @@ async function checkAPI() {
     console.log("Playing game...");
     updateStatus("Playing game...");
     // Call the function to start the game
-    // playGame();
+    playGame();
   } else {
     console.log("Game not available yet");
     updateStatus("Game not available yet");
