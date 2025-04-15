@@ -880,7 +880,19 @@ const doClaim = () => {
       console.log("Farm button was clicked, moving to earn tabs");
       updateStatus("Farm button was clicked, moving to earn tabs");
       await sleep(1000);
-      clickEarnTabs();
+
+      // give http req to http://localhost:8000/play-game, if it returns success: true, then play game
+      const isAvailable = await checkAPI();
+      if (isAvailable) {
+        console.log("Playing game...");
+        updateStatus("Playing game...");
+        await playGame();
+      } else {
+        console.log("Game not available yet");
+        updateStatus("Game not available yet");
+      }
+
+      await clickEarnTabs();
     }
   };
 
@@ -890,7 +902,7 @@ const doClaim = () => {
   });
 };
 
-const clickEarnTabs = () => {
+const clickEarnTabs = async () => {
   const links = document.querySelectorAll("a");
 
   links.forEach(async (link) => {
@@ -968,7 +980,7 @@ async function checkAPI() {
   });
 }
 
-const playGame = () => {
+const playGame = async () => {
   const playButton = Array.from(document.querySelectorAll(".kit-pill")).find(
     (btn) => btn.textContent.trim().toLowerCase().includes("play")
   );
@@ -1010,17 +1022,6 @@ const playGame = () => {
     console.log("Ready to start tasker");
     updateStatus("Ready to start tasker");
     doClaim(); // Call the function to start the process
-  }
-
-  // give http req to http://localhost:8000/play-game, if it returns success: true, then play game
-  const isAvailable = await checkAPI();
-  if (isAvailable) {
-    console.log("Playing game...");
-    updateStatus("Playing game...");
-    playGame();
-  } else {
-    console.log("Game not available yet");
-    updateStatus("Game not available yet");
   }
 
   if (!found) {
