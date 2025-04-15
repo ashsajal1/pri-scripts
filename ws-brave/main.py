@@ -107,7 +107,7 @@ def open_instances():
             proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
             running_instances[folder] = proc
             print(f"[REST] Opened instance: {folder}")
-            time.sleep(.2)  # 100 milliseconds delay
+            time.sleep(0.2)  # 100 milliseconds delay
         start_index += 1
 
 
@@ -204,14 +204,16 @@ def open_new_instances():
     """
     Show the current value of custom_value.
     """
-    return {"success": custom_value}
+    return {"success": True}
+
 
 @app.get("/play-game", response_model=dict)
 def open_new_instances():
     """
     Show the current value of custom_value.
     """
-    return {"success": True}
+    return {"success": not custom_value}
+
 
 @app.post("/set-custom-value")
 async def set_custom_value(data: IsTrueValue):
