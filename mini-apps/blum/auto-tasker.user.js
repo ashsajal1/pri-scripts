@@ -886,7 +886,7 @@ const doClaim = () => {
       if (isAvailable) {
         console.log("Playing game...");
         updateStatus("Playing game...");
-        await playGame();
+        playGame();
       } else {
         console.log("Game not available yet");
         updateStatus("Game not available yet");
@@ -980,7 +980,7 @@ async function checkAPI() {
   });
 }
 
-const playGame = async () => {
+const playGame = () => {
   const playButton = Array.from(document.querySelectorAll(".kit-pill")).find(
     (btn) => btn.textContent.trim().toLowerCase().includes("play")
   );
