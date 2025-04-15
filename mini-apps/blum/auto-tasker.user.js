@@ -847,10 +847,12 @@ const waitForGameToFinish = async () => {
       console.log("Earn link appeared, game seems finished");
       updateStatus("Earn link appeared, game seems finished");
 
-      await clickEarnTabs(); // Use your full existing function
+      // await clickEarnTabs(); // Use your full existing function
     } else {
-      console.log("Earn link not found yet, waiting...");
-      updateStatus("Earn link not found yet, waiting...");
+      console.log("Earn link not found yet, game is still running, waiting...");
+      updateStatus(
+        "Earn link not found yet, game is still running, waiting..."
+      );
       await sleep(retryInterval);
       await tryClickEarnTabs(); // Retry after 15s
     }
@@ -908,19 +910,28 @@ const doClaim = () => {
 
       // give http req to http://localhost:8000/play-game, if it returns success: true, then play game
       const isAvailable = await checkAPI();
+
       if (isAvailable) {
-        console.log("Playing game...");
-        updateStatus("Playing game...");
-        playGame();
-        await waitForGameToFinish();
+        console.log("API indicates game is available. Starting game...");
+        updateStatus("API indicates game is available. Starting game...");
+        playGame(); // Attempt to click the play button
+        await waitForGameToFinish(); // Wait until the game completion signal is detected
+        console.log(
+          "Game finished or wait completed. Proceeding to Earn tabs."
+        );
+        updateStatus("Game finished. Clicking Earn tabs.");
+        await sleep(1000); // Optional short delay after game finishes
+        await clickEarnTabs(); // Click Earn tabs ONLY after the game is finished
       } else {
-        console.log("Game not available yet");
-        updateStatus("Game not available yet");
+        console.log(
+          "Game not available via API. Proceeding to Earn tabs directly."
+        );
+        updateStatus(
+          "Game not available via API. Clicking Earn tabs directly."
+        );
+        await sleep(1000); // Wait a bit before clicking Earn tabs
+        await clickEarnTabs(); // Click Earn tabs since no game was played
       }
-
-      await sleep(1000);
-
-      await clickEarnTabs();
     }
   };
 
