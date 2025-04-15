@@ -914,7 +914,7 @@ const doClaim = () => {
       if (isAvailable) {
         console.log("API indicates game is available. Starting game...");
         updateStatus("API indicates game is available. Starting game...");
-        playGame(); // Attempt to click the play button
+        await playGame(); // Attempt to click the play button
         await waitForGameToFinish(); // Wait until the game completion signal is detected
         console.log(
           "Game finished or wait completed. Proceeding to Earn tabs."
@@ -1018,15 +1018,19 @@ async function checkAPI() {
   });
 }
 
-const playGame = () => {
+const playGame = async () => {
+  // Make the function async
   const playButton = Array.from(document.querySelectorAll(".kit-pill")).find(
     (btn) => btn.textContent.trim().toLowerCase().includes("play")
   );
 
   if (playButton) {
     playButton.click();
-    console.log("Play button clicked");
-    updateStatus("Play button clicked");
+    console.log("Play button clicked, waiting 5 seconds...");
+    updateStatus("Play button clicked, waiting 5 seconds...");
+    await sleep(5000); // Wait for 5 seconds (5000 milliseconds)
+    console.log("Finished waiting after clicking play.");
+    updateStatus("Finished waiting after clicking play.");
   } else {
     console.log("Play button not found");
     updateStatus("Play button not found");
