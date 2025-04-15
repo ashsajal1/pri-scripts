@@ -835,8 +835,10 @@ async function waitForStoryPageToDisappear() {
 
 const waitForGameToFinish = async () => {
   const retryInterval = 15000; // 15 seconds
+  let attempts = 0; // Initialize attempt counter
 
   const tryClickEarnTabs = async () => {
+    attempts++; // Increment attempts at the start of each try
     const links = document.querySelectorAll("a");
 
     const earnLink = Array.from(links).find((link) =>
@@ -844,17 +846,27 @@ const waitForGameToFinish = async () => {
     );
 
     if (earnLink) {
-      console.log("Earn link appeared, game seems finished");
-      updateStatus("Earn link appeared, game seems finished");
+      // Log how many attempts it took
+      console.log(
+        `Earn link appeared after ${attempts} attempts, game seems finished`
+      );
+      updateStatus(
+        `Earn link appeared after ${attempts} attempts, game finished`
+      );
 
       await clickEarnTabs(); // Use your full existing function
     } else {
-      console.log("Earn link not found yet, game is still running, waiting...");
+      // Log the current attempt number
+      console.log(
+        `Earn link not found (Attempt ${attempts}), game is still running, waiting ${
+          retryInterval / 1000
+        }s...`
+      );
       updateStatus(
-        "Earn link not found yet, game is still running, waiting..."
+        `Game running, waiting... (Attempt ${attempts})` // Show attempt number in status
       );
       await sleep(retryInterval);
-      await tryClickEarnTabs(); // Retry after 15s
+      await tryClickEarnTabs(); // Retry after 15s (no max attempts)
     }
   };
 
