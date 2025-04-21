@@ -107,7 +107,7 @@ def open_instances():
             proc = subprocess.Popen(["brave", f"--user-data-dir={profile_path}"])
             running_instances[folder] = proc
             print(f"[REST] Opened instance: {folder}")
-            time.sleep(0.2)  # 100 milliseconds delay
+            time.sleep(0.4)  # 100 milliseconds delay
         start_index += 1
 
 
