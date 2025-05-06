@@ -183,8 +183,8 @@ function safeClick(node) {
   }
 }
 
-const gamePlayTime = 10000; // 30 minutes in milliseconds
-const delayedTime = 5000; // 3 minutes in milliseconds
+const gamePlayTime = 1800000; // 30 minutes in milliseconds
+const delayedTime = 180000; // 3 minutes in milliseconds
 
 const showDelayTimer = async () => {
   let countdownTime = delayedTime; // 3 minutes in milliseconds
