@@ -198,6 +198,33 @@ const delayedTime = 180000; // 3 minutes in milliseconds
 
       const whenToLaunch = sessionStorage.getItem("whenToLaunch");
 
+      if (!whenToLaunch || whenToLaunch && Date.now() > whenToLaunch) {
+        console.log("Launching the bot...");
+        updateStatusText("Launching the bot...");
+        await findLaunchButtonWithRetry();
+        await showGameTimer();
+        // set when to launch to to 33 mins after
+        const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
+        sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
+        console.log("New when to launch set to:", newWhenToLaunch);
+        updateStatusText("New when to launch set to: " + newWhenToLaunch);
+        await clickCloseBtn(); // Click the close button
+      } else {
+        // Show waiting timer for the launch button after page reload
+        let waitingTimer = delayedTime; // 3 minutes in milliseconds (waiting for launch button)
+        const waitingInterval = setInterval(async () => {
+          const formattedTime = formatTime(waitingTimer);
+          updateStatusText(`Waiting for launch button: ${formattedTime}`);
+          waitingTimer -= 1000; // Decrease by 1 second
+          if (waitingTimer <= 0) {
+            clearInterval(waitingInterval);
+            console.log("Launch button is ready!");
+            updateStatusText("Launch button is ready!");
+            await findLaunchButtonWithRetry(); // Try to click the launch button
+          }
+        }, 1000);
+      }
+
       console.log("Launching the bot...");
       updateStatusText("Launching the bot...");
       await findLaunchButtonWithRetry();
