@@ -205,11 +205,10 @@ const delayedTime = 5000; // 3 minutes in milliseconds
     }
   }
 
-  // First account processing
-  await processAccount();
-
-  // game timer
-  await showGameTimer();
+  const delayedTimeOut = setTimeout(async () => {
+    await processAccount();
+    await showGameTimer();
+  }, delayedTime);
 })();
 
 const showGameTimer = async () => {
@@ -222,6 +221,19 @@ const showGameTimer = async () => {
       clearInterval(countdownInterval);
       console.log("Reloading page after 30 minutes...");
       window.location.reload();
+    }
+  }, 1000);
+};
+
+const showDelayTimer = async () => {
+  let countdownTime = delayedTime; // 3 minutes in milliseconds
+  const countdownInterval = setInterval(() => {
+    const formattedTime = formatTime(countdownTime);
+    updateStatusText(`Wait to click launch btn ${formattedTime}`);
+    countdownTime -= 1000; // Decrease by 1 second
+    if (countdownTime <= 0) {
+      clearInterval(countdownInterval);
+      console.log("click launch btn after 3 minutes...");
     }
   }, 1000);
 };
