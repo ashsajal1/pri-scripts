@@ -46,7 +46,7 @@
       if (!element || !element.asset) return;
 
       const amountValue = getAmountValue();
-      if (amountValue !== null && amountValue >= 501 && amountValue <= 551) {
+      if (amountValue !== null && amountValue >= 521 && amountValue <= 551) {
         console.log(
           "Skipping element click — amount in restricted range:",
           amountValue
