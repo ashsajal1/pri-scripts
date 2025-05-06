@@ -186,6 +186,19 @@ function safeClick(node) {
 const gamePlayTime = 10000; // 30 minutes in milliseconds
 const delayedTime = 5000; // 3 minutes in milliseconds
 
+const showDelayTimer = async () => {
+  let countdownTime = delayedTime; // 3 minutes in milliseconds
+  const countdownInterval = setInterval(() => {
+    const formattedTime = formatTime(countdownTime);
+    updateStatusText(`Wait to click launch btn ${formattedTime}`);
+    countdownTime -= 1000; // Decrease by 1 second
+    if (countdownTime <= 0) {
+      clearInterval(countdownInterval);
+      console.log("click launch btn after 3 minutes...");
+    }
+  }, 1000);
+};
+
 (async function checkForBlumChat() {
   async function processAccount() {
     try {
@@ -205,6 +218,8 @@ const delayedTime = 5000; // 3 minutes in milliseconds
     }
   }
 
+  await showDelayTimer();
+
   const delayedTimeOut = setTimeout(async () => {
     await processAccount();
     await showGameTimer();
@@ -221,19 +236,6 @@ const showGameTimer = async () => {
       clearInterval(countdownInterval);
       console.log("Reloading page after 30 minutes...");
       window.location.reload();
-    }
-  }, 1000);
-};
-
-const showDelayTimer = async () => {
-  let countdownTime = delayedTime; // 3 minutes in milliseconds
-  const countdownInterval = setInterval(() => {
-    const formattedTime = formatTime(countdownTime);
-    updateStatusText(`Wait to click launch btn ${formattedTime}`);
-    countdownTime -= 1000; // Decrease by 1 second
-    if (countdownTime <= 0) {
-      clearInterval(countdownInterval);
-      console.log("click launch btn after 3 minutes...");
     }
   }, 1000);
 };
