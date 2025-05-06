@@ -183,8 +183,8 @@ function safeClick(node) {
   }
 }
 
-const gamePlayTime = 1800000; // 30 minutes in milliseconds
-const delayedTime = 180000; // 3 minutes in milliseconds
+const gamePlayTime = 10000; // 30 minutes in milliseconds
+const delayedTime = 5000; // 3 minutes in milliseconds
 
 (async function checkForBlumChat() {
   async function processAccount(accountNumber) {
@@ -221,6 +221,14 @@ const delayedTime = 180000; // 3 minutes in milliseconds
             console.log("Launch button is ready!");
             updateStatusText("Launch button is ready!");
             await findLaunchButtonWithRetry(); // Try to click the launch button
+
+            await showGameTimer();
+            // set when to launch to to 33 mins after
+            const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
+            sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
+            console.log("New when to launch set to:", newWhenToLaunch);
+            updateStatusText("New when to launch set to: " + newWhenToLaunch);
+            await clickCloseBtn(); // Click the close button
           }
         }, 1000);
       }
