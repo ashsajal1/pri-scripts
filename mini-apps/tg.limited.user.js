@@ -114,7 +114,6 @@ const findLaunchButtonWithRetry = async () => {
     console.log("Launch button clicked");
     updateStatusText("Launch button clicked");
     await findLaunchButtonByTextAndClass(); // Call the second launch button function
-    await checkAutoTaskerDoneStatus();
   } else {
     console.log("Launch button not found, retrying...");
     updateStatusText("Launch button not found, retrying...");
