@@ -187,51 +187,15 @@ const gamePlayTime = 10000; // 30 minutes in milliseconds
 const delayedTime = 5000; // 3 minutes in milliseconds
 
 (async function checkForBlumChat() {
-  async function processAccount(accountNumber) {
+  async function processAccount() {
     try {
       // Set URL with account number and bot hash
-      const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
+      const newUrl = `https://web.telegram.org/k/?account=${3}#@BlumCryptoBot`;
       window.location.href = newUrl;
 
-      console.log(`Processing account ${accountNumber}...`);
-      updateStatusText(`Processing account ${accountNumber}...`);
-
-      const whenToLaunch = sessionStorage.getItem("whenToLaunch");
-
-      if (!whenToLaunch || (whenToLaunch && Date.now() > whenToLaunch)) {
-        console.log("Launching the bot...");
-        updateStatusText("Launching the bot...");
-        await findLaunchButtonWithRetry();
-        await showGameTimer();
-        // set when to launch to to 33 mins after
-        const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
-        sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
-        console.log("New when to launch set to:", newWhenToLaunch);
-        updateStatusText("New when to launch set to: " + newWhenToLaunch);
-        await clickCloseBtn(); // Click the close button
-      } else {
-        // Show waiting timer for the launch button after page reload
-        let waitingTimer = delayedTime; // 3 minutes in milliseconds (waiting for launch button)
-        const waitingInterval = setInterval(async () => {
-          const formattedTime = formatTime(waitingTimer);
-          updateStatusText(`Waiting for launch button: ${formattedTime}`);
-          waitingTimer -= 1000; // Decrease by 1 second
-          if (waitingTimer <= 0) {
-            clearInterval(waitingInterval);
-            console.log("Launch button is ready!");
-            updateStatusText("Launch button is ready!");
-            await findLaunchButtonWithRetry(); // Try to click the launch button
-
-            await showGameTimer();
-            // set when to launch to to 33 mins after
-            const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
-            sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
-            console.log("New when to launch set to:", newWhenToLaunch);
-            updateStatusText("New when to launch set to: " + newWhenToLaunch);
-            await clickCloseBtn(); // Click the close button
-          }
-        }, 1000);
-      }
+      console.log("Launching the bot...");
+      updateStatusText("Launching the bot...");
+      await findLaunchButtonWithRetry();
 
       // Wait for page load
       await sleep(3000);
@@ -242,42 +206,10 @@ const delayedTime = 5000; // 3 minutes in milliseconds
   }
 
   // First account processing
-  await processAccount(3);
+  await processAccount();
 
   // game timer
   await showGameTimer();
-
-  // After 3 minutes post-reload, click the launch button
-  setTimeout(async () => {
-    const whenToLaunch = sessionStorage.getItem("whenToLaunch");
-    // if when to launch is greater than current time, launch the bot
-    if (whenToLaunch && Date.now() > whenToLaunch) {
-      console.log("Launching the bot...");
-      updateStatusText("Launching the bot...");
-      await findLaunchButtonWithRetry();
-      await showGameTimer();
-      // set when to launch to to 33 mins after
-      const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
-      sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
-      console.log("New when to launch set to:", newWhenToLaunch);
-      updateStatusText("New when to launch set to: " + newWhenToLaunch);
-      await clickCloseBtn(); // Click the close button
-    } else {
-      // Show waiting timer for the launch button after page reload
-      let waitingTimer = delayedTime; // 3 minutes in milliseconds (waiting for launch button)
-      const waitingInterval = setInterval(async () => {
-        const formattedTime = formatTime(waitingTimer);
-        updateStatusText(`Waiting for launch button: ${formattedTime}`);
-        waitingTimer -= 1000; // Decrease by 1 second
-        if (waitingTimer <= 0) {
-          clearInterval(waitingInterval);
-          console.log("Launch button is ready!");
-          updateStatusText("Launch button is ready!");
-          await findLaunchButtonWithRetry(); // Try to click the launch button
-        }
-      }, 1000);
-    }
-  }, gamePlayTime); // 30 minutes
 })();
 
 const showGameTimer = async () => {
