@@ -214,17 +214,8 @@ function safeClick(node) {
   // First account processing
   await processAccount(3);
 
-  let countdownTime = 1800000; // 30 minutes in milliseconds
-  const countdownInterval = setInterval(() => {
-    const formattedTime = formatTime(countdownTime);
-    updateStatusText(`Page will reload in ${formattedTime}`);
-    countdownTime -= 1000; // Decrease by 1 second
-    if (countdownTime <= 0) {
-      clearInterval(countdownInterval);
-      console.log("Reloading page after 30 minutes...");
-      window.location.reload();
-    }
-  }, 1000);
+  // game timer
+  await showGameTimer();
 
   // After 3 minutes post-reload, click the launch button
   setTimeout(async () => {
@@ -234,6 +225,13 @@ function safeClick(node) {
       console.log("Launching the bot...");
       updateStatusText("Launching the bot...");
       await findLaunchButtonWithRetry();
+      await showGameTimer();
+      // set when to launch to to 33 mins after
+      const newWhenToLaunch = Date.now() + 1980000; // 33 minutes in milliseconds
+      sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
+      console.log("New when to launch set to:", newWhenToLaunch);
+      updateStatusText("New when to launch set to: " + newWhenToLaunch);
+      await clickCloseBtn(); // Click the close button
     } else {
       // Show waiting timer for the launch button after page reload
       let waitingTimer = 180000; // 3 minutes in milliseconds (waiting for launch button)
@@ -251,3 +249,17 @@ function safeClick(node) {
     }
   }, 1800000); // 30 minutes
 })();
+
+const showGameTimer = async () => {
+  let countdownTime = 1800000; // 30 minutes in milliseconds
+  const countdownInterval = setInterval(() => {
+    const formattedTime = formatTime(countdownTime);
+    updateStatusText(`Page will reload in ${formattedTime}`);
+    countdownTime -= 1000; // Decrease by 1 second
+    if (countdownTime <= 0) {
+      clearInterval(countdownInterval);
+      console.log("Reloading page after 30 minutes...");
+      window.location.reload();
+    }
+  }, 1000);
+};
