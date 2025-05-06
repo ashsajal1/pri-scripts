@@ -198,7 +198,7 @@ const delayedTime = 180000; // 3 minutes in milliseconds
 
       const whenToLaunch = sessionStorage.getItem("whenToLaunch");
 
-      if (!whenToLaunch || whenToLaunch && Date.now() > whenToLaunch) {
+      if (!whenToLaunch || (whenToLaunch && Date.now() > whenToLaunch)) {
         console.log("Launching the bot...");
         updateStatusText("Launching the bot...");
         await findLaunchButtonWithRetry();
