@@ -233,14 +233,6 @@ const delayedTime = 5000; // 3 minutes in milliseconds
         }, 1000);
       }
 
-      console.log("Launching the bot...");
-      updateStatusText("Launching the bot...");
-      await findLaunchButtonWithRetry();
-
-      // set when to launch to to 33 mins after
-      const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
-      sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
-
       // Wait for page load
       await sleep(3000);
     } catch (error) {
