@@ -184,6 +184,8 @@ function safeClick(node) {
 }
 
 (async function checkForBlumChat() {
+  const gamePlayTime = 1800000; // 30 minutes in milliseconds
+  const delayedTime = 180000; // 3 minutes in milliseconds
   async function processAccount(accountNumber) {
     try {
       // Set URL with account number and bot hash
@@ -200,7 +202,7 @@ function safeClick(node) {
       await findLaunchButtonWithRetry();
 
       // set when to launch to to 33 mins after
-      const newWhenToLaunch = Date.now() + 1980000; // 33 minutes in milliseconds
+      const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
       sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
 
       // Wait for page load
@@ -227,14 +229,14 @@ function safeClick(node) {
       await findLaunchButtonWithRetry();
       await showGameTimer();
       // set when to launch to to 33 mins after
-      const newWhenToLaunch = Date.now() + 1980000; // 33 minutes in milliseconds
+      const newWhenToLaunch = Date.now() + gamePlayTime + delayedTime; // 33 minutes in milliseconds
       sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
       console.log("New when to launch set to:", newWhenToLaunch);
       updateStatusText("New when to launch set to: " + newWhenToLaunch);
       await clickCloseBtn(); // Click the close button
     } else {
       // Show waiting timer for the launch button after page reload
-      let waitingTimer = 180000; // 3 minutes in milliseconds (waiting for launch button)
+      let waitingTimer = delayedTime; // 3 minutes in milliseconds (waiting for launch button)
       const waitingInterval = setInterval(async () => {
         const formattedTime = formatTime(waitingTimer);
         updateStatusText(`Waiting for launch button: ${formattedTime}`);
@@ -247,11 +249,11 @@ function safeClick(node) {
         }
       }, 1000);
     }
-  }, 1800000); // 30 minutes
+  }, gamePlayTime); // 30 minutes
 })();
 
 const showGameTimer = async () => {
-  let countdownTime = 1800000; // 30 minutes in milliseconds
+  let countdownTime = gamePlayTime; // 30 minutes in milliseconds
   const countdownInterval = setInterval(() => {
     const formattedTime = formatTime(countdownTime);
     updateStatusText(`Page will reload in ${formattedTime}`);
