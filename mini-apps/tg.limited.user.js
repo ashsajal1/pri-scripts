@@ -174,7 +174,7 @@ function safeClick(node) {
   async function processAccount(accountNumber) {
     try {
       // Set URL with account number and bot hash
-      const newUrl = `https://web.telegram.org/k/?account=${3}#@BlumCryptoBot`;
+      const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
       window.location.href = newUrl;
 
       console.log(`Processing account ${accountNumber}...`);
@@ -191,5 +191,20 @@ function safeClick(node) {
     }
   }
 
+  // First account processing
   await processAccount(3);
+
+  // Wait 30 minutes before reloading the page
+  setTimeout(() => {
+    console.log("Reloading page after 30 minutes...");
+    window.location.reload();
+  }, 1800000); // 30 minutes in milliseconds
+
+  // After 3 minutes post-reload, click the launch button
+  setTimeout(async () => {
+    console.log("Waiting 3 minutes after reload...");
+    await sleep(180000); // 3 minutes in milliseconds
+    console.log("Clicking launch button after 3 minutes...");
+    await findLaunchButtonWithRetry();
+  }, 1830000); // 30 minutes + 3 minutes = 33 minutes total
 })();
