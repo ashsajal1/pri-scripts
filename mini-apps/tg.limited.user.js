@@ -193,27 +193,15 @@ function safeClick(node) {
       console.log(`Processing account ${accountNumber}...`);
       updateStatusText(`Processing account ${accountNumber}...`);
 
-      const whenToLaunch = localStorage.getItem("whenToLaunch");
-      // if when to launch is greater than current time, launch the bot
-      if (whenToLaunch && Date.now() > whenToLaunch) {
-        console.log("Launching the bot...");
-        updateStatusText("Launching the bot...");
-        await findLaunchButtonWithRetry();
-      } else {
-        // Show waiting timer for the launch button after page reload
-        let waitingTimer = 180000; // 3 minutes in milliseconds (waiting for launch button)
-        const waitingInterval = setInterval(async () => {
-          const formattedTime = formatTime(waitingTimer);
-          updateStatusText(`Waiting for launch button: ${formattedTime}`);
-          waitingTimer -= 1000; // Decrease by 1 second
-          if (waitingTimer <= 0) {
-            clearInterval(waitingInterval);
-            console.log("Launch button is ready!");
-            updateStatusText("Launch button is ready!");
-            await findLaunchButtonWithRetry(); // Try to click the launch button
-          }
-        }, 1000);
-      }
+      const whenToLaunch = sessionStorage.getItem("whenToLaunch");
+
+      console.log("Launching the bot...");
+      updateStatusText("Launching the bot...");
+      await findLaunchButtonWithRetry();
+
+      // set when to launch to to 33 mins after
+      const newWhenToLaunch = Date.now() + 1980000; // 33 minutes in milliseconds
+      sessionStorage.setItem("whenToLaunch", newWhenToLaunch);
 
       // Wait for page load
       await sleep(3000);
@@ -240,9 +228,26 @@ function safeClick(node) {
 
   // After 3 minutes post-reload, click the launch button
   setTimeout(async () => {
-    console.log("Waiting 3 minutes after reload...");
-    await sleep(180000); // 3 minutes in milliseconds
-    console.log("Clicking launch button after 3 minutes...");
-    await findLaunchButtonWithRetry();
-  }, 1830000); // 30 minutes + 3 minutes = 33 minutes total
+    const whenToLaunch = sessionStorage.getItem("whenToLaunch");
+    // if when to launch is greater than current time, launch the bot
+    if (whenToLaunch && Date.now() > whenToLaunch) {
+      console.log("Launching the bot...");
+      updateStatusText("Launching the bot...");
+      await findLaunchButtonWithRetry();
+    } else {
+      // Show waiting timer for the launch button after page reload
+      let waitingTimer = 180000; // 3 minutes in milliseconds (waiting for launch button)
+      const waitingInterval = setInterval(async () => {
+        const formattedTime = formatTime(waitingTimer);
+        updateStatusText(`Waiting for launch button: ${formattedTime}`);
+        waitingTimer -= 1000; // Decrease by 1 second
+        if (waitingTimer <= 0) {
+          clearInterval(waitingInterval);
+          console.log("Launch button is ready!");
+          updateStatusText("Launch button is ready!");
+          await findLaunchButtonWithRetry(); // Try to click the launch button
+        }
+      }, 1000);
+    }
+  }, 1800000); // 30 minutes
 })();
