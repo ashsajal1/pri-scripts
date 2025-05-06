@@ -12,7 +12,7 @@
 // @downloadURL  https://raw.githubusercontent.com/ashsajal1/pri-scripts/refs/heads/master/mini-apps/tg-limited.user.js
 // ==/UserScript==
 
-//create a element to show status text in top with rounded and transaprent bg with 0.2 bg opacity and red bg
+//create a element to show status text in top with rounded and transparent bg with 0.2 bg opacity and red bg
 // Create a button element to hide/show the status text
 const toggleStatusButton = document.createElement("button");
 toggleStatusButton.textContent = "Hide Status";
@@ -26,7 +26,7 @@ toggleStatusButton.style.border = "1px solid #ccc";
 toggleStatusButton.style.borderRadius = "5px";
 document.body.appendChild(toggleStatusButton);
 
-//create a element to show status text in top with rounded and transaprent bg with 0.2 bg opacity and red bg
+//create a element to show status text in top with rounded and transparent bg with 0.2 bg opacity and red bg
 const statusText = document.createElement("div");
 statusText.style.position = "fixed";
 statusText.style.top = "0";
@@ -64,6 +64,18 @@ const updateStatusText = (text) => {
 };
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Function to format the timer as "hh:mm:ss"
+const formatTime = (milliseconds) => {
+  let seconds = Math.floor(milliseconds / 1000);
+  let minutes = Math.floor(seconds / 60);
+  let hours = Math.floor(minutes / 60);
+
+  seconds = seconds % 60;
+  minutes = minutes % 60;
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
 
 // New function to find the "launch" button with the "c-ripple" class
 const findLaunchButtonByTextAndClass = async () => {
@@ -193,11 +205,17 @@ function safeClick(node) {
   // First account processing
   await processAccount(3);
 
-  // Wait 30 minutes before reloading the page
-  setTimeout(() => {
-    console.log("Reloading page after 30 minutes...");
-    window.location.reload();
-  }, 1800000); // 30 minutes in milliseconds
+  let countdownTime = 1800000; // 30 minutes in milliseconds
+  const countdownInterval = setInterval(() => {
+    const formattedTime = formatTime(countdownTime);
+    updateStatusText(`Page will reload in ${formattedTime}`);
+    countdownTime -= 1000; // Decrease by 1 second
+    if (countdownTime <= 0) {
+      clearInterval(countdownInterval);
+      console.log("Reloading page after 30 minutes...");
+      window.location.reload();
+    }
+  }, 1000);
 
   // After 3 minutes post-reload, click the launch button
   setTimeout(async () => {
