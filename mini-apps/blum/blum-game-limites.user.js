@@ -45,8 +45,10 @@
     async function handleGameElement(element) {
       if (!element || !element.asset) return;
 
+      const randomNumber = getRandomNumber();
+
       const amountValue = getAmountValue();
-      if (amountValue !== null && amountValue >= 521 && amountValue <= 551) {
+      if (amountValue !== null && amountValue >= randomNumber) {
         console.log(
           "Skipping element click — amount in restricted range:",
           amountValue
@@ -90,8 +92,9 @@
 
     function checkAndClickPlayButton() {
       const playButtons = document.querySelectorAll(
-        'button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary'
+        'button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary, button.kit-pill.reset.is-type-white.pill'
       );
+      //kit-pill reset is-type-white pill
       playButtons.forEach((button) => {
         if (/Play|Continue/.test(button.textContent)) {
           setTimeout(() => {
@@ -107,3 +110,7 @@
     console.error("!BlumFarm! error:", e);
   }
 })();
+
+function getRandomNumber(min = 521, max = 551) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
