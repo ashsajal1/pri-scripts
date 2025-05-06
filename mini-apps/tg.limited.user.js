@@ -183,9 +183,10 @@ function safeClick(node) {
   }
 }
 
+const gamePlayTime = 1800000; // 30 minutes in milliseconds
+const delayedTime = 180000; // 3 minutes in milliseconds
+
 (async function checkForBlumChat() {
-  const gamePlayTime = 1800000; // 30 minutes in milliseconds
-  const delayedTime = 180000; // 3 minutes in milliseconds
   async function processAccount(accountNumber) {
     try {
       // Set URL with account number and bot hash
