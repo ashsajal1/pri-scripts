@@ -218,12 +218,20 @@ const showDelayTimer = async () => {
     }
   }
 
-  await showDelayTimer();
+  const isOld = sessionStorage.getItem("isOld");
 
-  const delayedTimeOut = setTimeout(async () => {
+  if (!isOld === "true" || isOld === null) {
     await processAccount();
     await showGameTimer();
-  }, delayedTime);
+    sessionStorage.setItem("isOld", "true");
+  } else {
+    await showDelayTimer();
+
+    const delayedTimeOut = setTimeout(async () => {
+      await processAccount();
+      await showGameTimer();
+    }, delayedTime);
+  }
 })();
 
 const showGameTimer = async () => {
