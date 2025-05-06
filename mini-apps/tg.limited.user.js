@@ -182,46 +182,61 @@ function safeClick(node) {
 }
 
 (async function checkForBlumChat() {
-  async function processAccount(accountNumber) {
-    try {
-      // Set URL with account number and bot hash
-      const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
-      window.location.href = newUrl;
-
-      console.log(`Processing account ${accountNumber}...`);
-      updateStatusText(`Processing account ${accountNumber}...`);
-
-      // Wait for page load
-      await sleep(3000);
-
-      // Find and click launch button, then wait for completion
+    async function processAccount(accountNumber) {
+      try {
+        // Set URL with account number and bot hash
+        const newUrl = `https://web.telegram.org/k/?account=${accountNumber}#@BlumCryptoBot`;
+        window.location.href = newUrl;
+  
+        console.log(`Processing account ${accountNumber}...`);
+        updateStatusText(`Processing account ${accountNumber}...`);
+  
+        // Wait for page load
+        await sleep(3000);
+  
+        // Find and click launch button, then wait for completion
+        await findLaunchButtonWithRetry();
+      } catch (error) {
+        console.log(`Error processing account ${accountNumber}:`, error);
+        updateStatusText(`Error processing account ${accountNumber}: ${error}`);
+      }
+    }
+  
+    // First account processing
+    await processAccount(3);
+  
+    let countdownTime = 1800000; // 30 minutes in milliseconds
+    const countdownInterval = setInterval(() => {
+      const formattedTime = formatTime(countdownTime);
+      updateStatusText(`Page will reload in ${formattedTime}`);
+      countdownTime -= 1000; // Decrease by 1 second
+      if (countdownTime <= 0) {
+        clearInterval(countdownInterval);
+        console.log("Reloading page after 30 minutes...");
+        window.location.reload();
+      }
+    }, 1000);
+  
+    // After 3 minutes post-reload, click the launch button
+    setTimeout(async () => {
+      console.log("Waiting 3 minutes after reload...");
+      await sleep(180000); // 3 minutes in milliseconds
+      console.log("Clicking launch button after 3 minutes...");
       await findLaunchButtonWithRetry();
-    } catch (error) {
-      console.log(`Error processing account ${accountNumber}:`, error);
-      updateStatusText(`Error processing account ${accountNumber}: ${error}`);
-    }
-  }
-
-  // First account processing
-  await processAccount(3);
-
-  let countdownTime = 1800000; // 30 minutes in milliseconds
-  const countdownInterval = setInterval(() => {
-    const formattedTime = formatTime(countdownTime);
-    updateStatusText(`Page will reload in ${formattedTime}`);
-    countdownTime -= 1000; // Decrease by 1 second
-    if (countdownTime <= 0) {
-      clearInterval(countdownInterval);
-      console.log("Reloading page after 30 minutes...");
-      window.location.reload();
-    }
-  }, 1000);
-
-  // After 3 minutes post-reload, click the launch button
-  setTimeout(async () => {
-    console.log("Waiting 3 minutes after reload...");
-    await sleep(180000); // 3 minutes in milliseconds
-    console.log("Clicking launch button after 3 minutes...");
-    await findLaunchButtonWithRetry();
-  }, 1830000); // 30 minutes + 3 minutes = 33 minutes total
-})();
+    }, 1830000); // 30 minutes + 3 minutes = 33 minutes total
+  
+    // Show waiting timer for the launch button after page reload
+    let waitingTimer = 180000; // 3 minutes in milliseconds (waiting for launch button)
+    const waitingInterval = setInterval(async () => {
+      const formattedTime = formatTime(waitingTimer);
+      updateStatusText(`Waiting for launch button: ${formattedTime}`);
+      waitingTimer -= 1000; // Decrease by 1 second
+      if (waitingTimer <= 0) {
+        clearInterval(waitingInterval);
+        console.log("Launch button is ready!");
+        updateStatusText("Launch button is ready!");
+        await findLaunchButtonWithRetry(); // Try to click the launch button
+      }
+    }, 1000);
+  })();
+  
