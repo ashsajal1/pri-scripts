@@ -111,6 +111,11 @@
   }
 })();
 
-function getRandomNumber(min = 521, max = 551) {
+function getRandomNumber() {
+  const baseMin = 400;
+  const baseMax = 520;
+  const dynamicRange = Math.floor(Math.random() * 50); // Adds some variability to the range
+  const min = baseMin + dynamicRange;
+  const max = baseMax - dynamicRange;
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
