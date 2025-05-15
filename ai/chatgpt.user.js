@@ -32,25 +32,53 @@
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+    .toggle-btn:hover {
+      opacity: 1;
     }
     .prompts-panel {
       display: none;
       background: white;
       border: 1px solid #ddd;
-      border-radius: 4px;
+      border-radius: 8px;
       padding: 15px;
       margin-top: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      min-width: 250px;
     }
     .prompt-item {
       margin-bottom: 10px;
-      padding: 8px;
-      background: #f5f5f5;
-      border-radius: 4px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 6px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      border: 1px solid #e9ecef;
     }
     .prompt-item:hover {
-      background: #e9e9e9;
+      background: #e9ecef;
+      transform: translateY(-1px);
+    }
+    .prompt-text {
+      flex: 1;
+      margin-right: 10px;
+    }
+    .copy-icon {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      color: #10a37f;
+      font-size: 16px;
+    }
+    .prompt-item:hover .copy-icon {
+      opacity: 1;
+    }
+    .copy-success {
+      color: #28a745;
     }
   `;
 
@@ -85,11 +113,28 @@
   prompts.forEach(prompt => {
     const promptItem = document.createElement("div");
     promptItem.className = "prompt-item";
-    promptItem.textContent = prompt;
+    
+    const promptText = document.createElement("span");
+    promptText.className = "prompt-text";
+    promptText.textContent = prompt;
+    
+    const copyIcon = document.createElement("span");
+    copyIcon.className = "copy-icon";
+    copyIcon.innerHTML = "📋";
+    
+    promptItem.appendChild(promptText);
+    promptItem.appendChild(copyIcon);
+    
     promptItem.onclick = () => {
       navigator.clipboard.writeText(prompt);
-      alert("Prompt copied to clipboard!");
+      copyIcon.innerHTML = "✓";
+      copyIcon.classList.add("copy-success");
+      setTimeout(() => {
+        copyIcon.innerHTML = "📋";
+        copyIcon.classList.remove("copy-success");
+      }, 1500);
     };
+    
     promptsPanel.appendChild(promptItem);
   });
 
