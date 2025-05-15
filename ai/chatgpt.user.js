@@ -33,52 +33,85 @@
       border-radius: 4px;
       cursor: pointer;
       opacity: 0.7;
-      transition: opacity 0.3s ease;
+      transition: all 0.3s ease;
+      font-weight: 500;
     }
     .toggle-btn:hover {
       opacity: 1;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(16, 163, 127, 0.2);
     }
     .prompts-panel {
       display: none;
       background: white;
       border: 1px solid #ddd;
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 15px;
       margin-top: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      min-width: 250px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      min-width: 280px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+    .prompts-panel.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     .prompt-item {
       margin-bottom: 10px;
-      padding: 12px;
+      padding: 12px 16px;
       background: #f8f9fa;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
       transition: all 0.2s ease;
       border: 1px solid #e9ecef;
+      position: relative;
+      overflow: hidden;
     }
     .prompt-item:hover {
       background: #e9ecef;
       transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .prompt-text {
       flex: 1;
-      margin-right: 10px;
+      margin-right: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #2d3748;
     }
     .copy-icon {
       opacity: 0;
-      transition: opacity 0.2s ease;
+      transition: all 0.2s ease;
       color: #10a37f;
       font-size: 16px;
+      background: rgba(16, 163, 127, 0.1);
+      padding: 6px;
+      border-radius: 6px;
     }
     .prompt-item:hover .copy-icon {
       opacity: 1;
     }
     .copy-success {
       color: #28a745;
+      background: rgba(40, 167, 69, 0.1);
+    }
+    .prompt-item.copied {
+      animation: fadeOut 0.5s ease forwards;
+    }
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
     }
   `;
 
@@ -109,6 +142,17 @@
     "Convert this code to TypeScript"
   ];
 
+  // Toggle functionality
+  toggleBtn.onclick = () => {
+    const isHidden = promptsPanel.style.display === "none" || !promptsPanel.style.display;
+    promptsPanel.style.display = "block";
+    // Use setTimeout to ensure display: block is applied before adding the visible class
+    setTimeout(() => {
+      promptsPanel.classList.toggle("visible", isHidden);
+    }, 10);
+    toggleBtn.textContent = isHidden ? "Hide Prompts" : "Show Prompts";
+  };
+
   // Add prompts to panel
   prompts.forEach(prompt => {
     const promptItem = document.createElement("div");
@@ -129,21 +173,22 @@
       navigator.clipboard.writeText(prompt);
       copyIcon.innerHTML = "✓";
       copyIcon.classList.add("copy-success");
+      promptItem.classList.add("copied");
+      
+      // Hide the panel after copying
       setTimeout(() => {
-        copyIcon.innerHTML = "📋";
-        copyIcon.classList.remove("copy-success");
-      }, 1500);
+        promptsPanel.classList.remove("visible");
+        setTimeout(() => {
+          promptsPanel.style.display = "none";
+          promptItem.classList.remove("copied");
+          copyIcon.innerHTML = "📋";
+          copyIcon.classList.remove("copy-success");
+        }, 300);
+      }, 500);
     };
     
     promptsPanel.appendChild(promptItem);
   });
-
-  // Toggle functionality
-  toggleBtn.onclick = () => {
-    const isHidden = promptsPanel.style.display === "none" || !promptsPanel.style.display;
-    promptsPanel.style.display = isHidden ? "block" : "none";
-    toggleBtn.textContent = isHidden ? "Hide Prompts" : "Show Prompts";
-  };
 
   // Append elements
   container.appendChild(toggleBtn);
