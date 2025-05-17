@@ -217,6 +217,7 @@ async function runClickTasker() {
 // { videoName: "$2.5M+ DOGS Airdrop", keyword: "HAPPYDOGS" },
 
 const blumCodes = [
+  { videoName: "How to Check Your Blum Rank", keyword: "NEEDMOREBP" },
   { videoName: "#BurjandBurn Recap", keyword: "1001PARTY" },
   { videoName: "How to Import Your SOL", keyword: "IMPORTURSOLANA" },
   { videoName: "We Built THIS In LATAM", keyword: "BLUMFLORESCERA" },
