@@ -19,11 +19,36 @@
 
   // Add CSS styles
   const styles = `
+    :root {
+      --bg-color: white;
+      --text-color: #2d3748;
+      --border-color: #e9ecef;
+      --hover-bg: #e9ecef;
+      --item-bg: #f8f9fa;
+      --shadow-color: rgba(0,0,0,0.15);
+      --icon-bg: rgba(16, 163, 127, 0.1);
+      --success-bg: rgba(40, 167, 69, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --text-color: #e2e8f0;
+      --border-color: #2d3748;
+      --hover-bg: #2d3748;
+      --item-bg: #2d3748;
+      --shadow-color: rgba(0,0,0,0.3);
+      --icon-bg: rgba(16, 163, 127, 0.2);
+      --success-bg: rgba(40, 167, 69, 0.2);
+    }
+
     .prompt-container {
       position: fixed;
       top: 20px;
       right: 20px;
       z-index: 1000;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
     }
     .toggle-btn {
       background: #10a37f;
@@ -41,14 +66,29 @@
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(16, 163, 127, 0.2);
     }
+    .theme-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+      color: var(--text-color);
+      font-size: 18px;
+    }
+    .theme-toggle:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
     .prompts-panel {
       display: none;
-      background: white;
-      border: 1px solid #ddd;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 15px;
       margin-top: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 20px var(--shadow-color);
       min-width: 280px;
       opacity: 0;
       transform: translateY(-10px);
@@ -61,35 +101,35 @@
     .prompt-item {
       margin-bottom: 10px;
       padding: 12px 16px;
-      background: #f8f9fa;
+      background: var(--item-bg);
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
       transition: all 0.2s ease;
-      border: 1px solid #e9ecef;
+      border: 1px solid var(--border-color);
       position: relative;
       overflow: hidden;
     }
     .prompt-item:hover {
-      background: #e9ecef;
+      background: var(--hover-bg);
       transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px var(--shadow-color);
     }
     .prompt-text {
       flex: 1;
       margin-right: 12px;
       font-size: 14px;
       line-height: 1.4;
-      color: #2d3748;
+      color: var(--text-color);
     }
     .copy-icon {
       opacity: 0;
       transition: all 0.2s ease;
       color: #10a37f;
       font-size: 16px;
-      background: rgba(16, 163, 127, 0.1);
+      background: var(--icon-bg);
       padding: 6px;
       border-radius: 6px;
     }
@@ -98,7 +138,7 @@
     }
     .copy-success {
       color: #28a745;
-      background: rgba(40, 167, 69, 0.1);
+      background: var(--success-bg);
     }
     .prompt-item.copied {
       animation: fadeOut 0.5s ease forwards;
@@ -124,6 +164,26 @@
   const container = document.createElement("div");
   container.className = "prompt-container";
 
+  // Create theme toggle button
+  const themeToggle = document.createElement("button");
+  themeToggle.className = "theme-toggle";
+  themeToggle.innerHTML = "🌙"; // Moon icon for dark mode
+  themeToggle.title = "Toggle Dark/Light Mode";
+
+  // Set initial theme
+  const savedTheme = localStorage.getItem("chatgpt-theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  themeToggle.innerHTML = savedTheme === "dark" ? "☀️" : "🌙";
+
+  // Theme toggle functionality
+  themeToggle.onclick = () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("chatgpt-theme", newTheme);
+    themeToggle.innerHTML = newTheme === "dark" ? "☀️" : "🌙";
+  };
+
   // Create toggle button
   const toggleBtn = document.createElement("button");
   toggleBtn.className = "toggle-btn";
@@ -141,17 +201,6 @@
     "Generate unit tests for this code",
     "Convert this code to TypeScript"
   ];
-
-  // Toggle functionality
-  toggleBtn.onclick = () => {
-    const isHidden = promptsPanel.style.display === "none" || !promptsPanel.style.display;
-    promptsPanel.style.display = "block";
-    // Use setTimeout to ensure display: block is applied before adding the visible class
-    setTimeout(() => {
-      promptsPanel.classList.toggle("visible", isHidden);
-    }, 10);
-    toggleBtn.textContent = isHidden ? "Hide Prompts" : "Show Prompts";
-  };
 
   // Add prompts to panel
   prompts.forEach(prompt => {
@@ -190,7 +239,19 @@
     promptsPanel.appendChild(promptItem);
   });
 
+  // Toggle functionality
+  toggleBtn.onclick = () => {
+    const isHidden = promptsPanel.style.display === "none" || !promptsPanel.style.display;
+    promptsPanel.style.display = "block";
+    // Use setTimeout to ensure display: block is applied before adding the visible class
+    setTimeout(() => {
+      promptsPanel.classList.toggle("visible", isHidden);
+    }, 10);
+    toggleBtn.textContent = isHidden ? "Hide Prompts" : "Show Prompts";
+  };
+
   // Append elements
+  container.appendChild(themeToggle);
   container.appendChild(toggleBtn);
   container.appendChild(promptsPanel);
   document.body.appendChild(container);
