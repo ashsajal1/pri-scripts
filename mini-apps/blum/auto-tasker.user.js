@@ -851,10 +851,10 @@ const waitForGameToFinish = async () => {
 
   const tryClickEarnTabs = async () => {
     attempts++; // Increment attempts at the start of each try
-    const links = document.querySelectorAll("a");
+    const buttons = document.querySelectorAll("button");
 
-    const earnLink = Array.from(links).find((link) =>
-      link.textContent.trim().toLowerCase().includes("earn")
+    const earnLink = Array.from(buttons).find((button) =>
+      button.textContent.trim().toLowerCase().includes("earn")
     );
 
     if (earnLink) {
@@ -965,16 +965,16 @@ const doClaim = () => {
 };
 
 const clickEarnTabs = async () => {
-  const links = document.querySelectorAll("a");
+  const buttons = document.querySelectorAll("button");
 
-  links.forEach(async (link) => {
-    const text = link.textContent.trim().toLowerCase();
+  for (const button of buttons) {
+    const text = button.textContent.trim().toLowerCase();
     if (text.includes("earn")) {
-      console.log("Matching link found:", link);
-      updateStatus("Matching link found.");
-      link.click();
-      console.log("Link clicked:", link.textContent.trim());
-      updateStatus("Link clicked:", link.textContent.trim());
+      console.log("Matching button found:", button);
+      updateStatus("Matching button found.");
+      button.click();
+      console.log("Button clicked:", button.textContent.trim());
+      updateStatus("Button clicked: " + button.textContent.trim());
 
       await sleep(2000);
 
@@ -986,11 +986,10 @@ const clickEarnTabs = async () => {
         if (taskElement) {
           console.log("Task element found:", taskElement);
           updateStatus("Task element found.");
-          // do some stuff with taskElement
           runClickTasker();
         } else {
-          console.log(`No task element found, retrying...`);
-          updateStatus(`Retrying...`);
+          console.log("No task element found, retrying...");
+          updateStatus("Retrying...");
           await sleep(retryInterval);
           return await findTaskElement(); // Retry indefinitely
         }
@@ -998,7 +997,7 @@ const clickEarnTabs = async () => {
 
       await findTaskElement();
     }
-  });
+  }
 };
 
 async function checkAPI() {
