@@ -217,6 +217,7 @@ async function runClickTasker() {
 // { videoName: "$2.5M+ DOGS Airdrop", keyword: "HAPPYDOGS" },
 
 const blumCodes = [
+  { videoName: "The Truth About BABYDOGE!", keyword: "BABYBLUM" },
   { videoName: "Blum Chats #20", keyword: "MEMEPADONWEB" },
   { videoName: "Blum Chats #19", keyword: "BLUMALITY" },
   { videoName: "How to Use Limit Orders", keyword: "BLUMNOLIMITS" },
