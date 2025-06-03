@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Blum Tasker
-// @version      3.17
+// @version      3.18
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://telegram.blum.codes/*
