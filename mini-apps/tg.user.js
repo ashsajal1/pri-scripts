@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Telegram Auto Worker
 // @description  Auto worker for Telegram bot (visit each account for 5s, then close req)
-// @version      3.09
+// @version      3.11
 // @namespace    Zaman
 // @author       Zaman
 // @match        https://web.telegram.org/*
