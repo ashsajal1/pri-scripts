@@ -64,47 +64,40 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Main logic: visit each Telegram account for 5 seconds, then send close request
 (async function main() {
-  const accounts = [1, 2, 3]; // Add your account numbers here
+  const accounts = [1, 2, 3]; // your accounts
+  let currentAccountIndex = parseInt(sessionStorage.getItem("currentAccountIndex") || 0);
 
-  // Get current account index from sessionStorage or start from 0
-  let currentAccountIndex = parseInt(
-    sessionStorage.getItem("currentAccountIndex") || 0
-  );
-  console.log(`Resuming from account index: ${currentAccountIndex}`);
+  if (currentAccountIndex < accounts.length) {
+    const accountNumber = accounts[currentAccountIndex];
+    const expectedUrl = `https://web.telegram.org/k/?account=${accountNumber}`;
+    if (window.location.href !== expectedUrl) {
+      // Only navigate if not already on the correct account
+      window.location.href = expectedUrl;
+    } else {
+      // Already on the correct account, do the work
+      updateStatusText(`Visiting account ${accountNumber}...`);
+      await sleep(5000);
+      updateStatusText(`Account ${accountNumber} done, moving to next...`);
+      await sleep(1000);
+      sessionStorage.setItem("currentAccountIndex", currentAccountIndex + 1);
+      // Reload to move to the next account
+      window.location.reload();
+    }
+  } else {
+    // All accounts done
+    sessionStorage.removeItem("currentAccountIndex");
+    updateStatusText("All accounts processed!");
 
-  for (let i = currentAccountIndex; i < accounts.length; i++) {
-    currentAccountIndex = i;
-    sessionStorage.setItem("currentAccountIndex", currentAccountIndex);
+    statusText.style.height = "140px";
+    statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
 
-    const accountNumber = accounts[i];
-    const newUrl = `https://web.telegram.org/k/?account=${accountNumber}`;
-    window.location.href = newUrl;
-
-    console.log(`Visiting account ${accountNumber}...`);
-    updateStatusText(`Visiting account ${accountNumber}...`);
-
-    // Wait for page load and 5 seconds
-    await sleep(5000);
-
-    console.log(`Account ${accountNumber} done, moving to next...`);
-    updateStatusText(`Account ${accountNumber} done, moving to next...`);
-    await sleep(1000);
+    await sleep(1000); // Wait for 1 second before sending close request
+    console.log("Sending close request...");
+    updateStatusText("Sending close request...");
+    await giveCloseReqAfterDone();
+    console.log("All accounts processed, close request sent.");
+    updateStatusText("All accounts processed, close request sent.");
   }
-
-  // Clear stored index when all done
-  sessionStorage.removeItem("currentAccountIndex");
-  console.log("All accounts processed!");
-  updateStatusText("All accounts processed!");
-
-  statusText.style.height = "140px";
-  statusText.style.backgroundColor = "rgba(17, 184, 92, 1)";
-
-  await sleep(1000); // Wait for 1 second before sending close request
-  console.log("Sending close request...");
-  updateStatusText("Sending close request...");
-  await giveCloseReqAfterDone();
-  console.log("All accounts processed, close request sent.");
-  updateStatusText("All accounts processed, close request sent.");
 })();
 
 const giveCloseReqAfterDone = async () => {
