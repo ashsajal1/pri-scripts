@@ -76,7 +76,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     } else {
       // Already on the correct account, do the work
       updateStatusText(`Visiting account ${accountNumber}...`);
-      await sleep(5000);
+      await sleep(30000);
       updateStatusText(`Account ${accountNumber} done, moving to next...`);
       await sleep(1000);
       sessionStorage.setItem("currentAccountIndex", currentAccountIndex + 1);
